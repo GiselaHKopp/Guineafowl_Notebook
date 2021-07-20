@@ -10,7 +10,7 @@ install.packages("bookdown")
 ```
 
 
-Please have a look at the [compiled documentation](https://k-hench.github.io/eas_bookdown/) for more information about this template.
+Please have a look at the [compiled documentation](https://giselahkopp.github.io/Guineafowl_Notebook/index.html) for more information about this template.
 
 ---
 
