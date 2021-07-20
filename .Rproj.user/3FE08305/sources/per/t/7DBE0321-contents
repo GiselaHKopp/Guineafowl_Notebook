@@ -1,0 +1,98 @@
+---
+title: "Analysis"
+output: html_notebook
+editor_options:
+  chunk_output_type: inline
+---
+
+# Analysis
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      comment = "#>",
+                      collapse = TRUE)
+knitr::opts_knit$set(root.dir = '../')
+```
+
+Analysis
+
+
+```{r load packages for data processing, hide=TRUE}
+library(tidyverse)
+library(ggplot2)
+library(ggthemes)
+library(ggforce)
+library(ggridges)
+library(ggsci)
+library(wesanderson)
+library(gghighlight)
+```
+
+
+## Analysis 1
+This is a first assessment of the ngsRelate results, which were created after the first filtering trial and are saved as 0002_ngs_prelim.txt
+
+```{r load ngsRelate results}
+ngsRelate_results <- read.delim("vignettes/data/0002_ngs_prelim.txt", header = TRUE,  as.is = TRUE)
+str(ngsRelate_results)
+```
+
+Relatedness was estimated on an average of `r mean(ngsRelate_results$nSites)` sites and a mean coverage of `r mean(ngsRelate_results$coverage)`.
+
+Let's have a closer look at the samples that were sequenced twice
+
+```{r}
+#first need to create a new column that includes the dyad
+ngsRelate_results$dyad <- paste(ngsRelate_results$a, ngsRelate_results$b, sep = "-")
+
+duplicates <- data.frame(dyad = c("1-2", "5-6", "12-13", "16-17", "20-21", "22-23", "26-27", "28-29", "33-34", "40-41", "43-44", "59-60", "63-64", "68-69", "72-73", "74-75", "81-82", "85-86", "94-95", "103-104", "105-106", "107-108"))
+duplicates <- left_join(duplicates, ngsRelate_results, by = "dyad")
+```
+
+
+To get an overview of the distribution of relatedness coefficients, we plot pairwise relatedness for all dyads
+
+```{r figure dyadic relatedness distribution}
+
+theme_set(theme_classic())
+
+#plot relatedness rab (y-axis) for every dyad (x-axis)
+
+ggplot(ngsRelate_results, aes(x = reorder(dyad, rab), y = rab)) +
+  
+  geom_point(aes(y=rab)) + #plot relatedness estimates as points
+  
+  geom_hline(yintercept = c(0.125, 0.25, 0.5), linetype = "dashed") + #include horizontal line to show traditional kinship categories
+  
+  labs( x = "Dyad", y = "Relatedness")
+
+
+```
+
+
+There are several chicks in the sample set, for which it is likely that the parents or siblings were also samples. Let's check
+
+```{r}
+relatedWT00002a <- dplyr::filter(ngsRelate_results, a == 93)
+relatedWT00002b <- dplyr::filter(ngsRelate_results, b == 93)
+relatedWT00002 <- bind_rows(relatedWT00002a, relatedWT00002b)
+
+relatedWT00163a <- dplyr::filter(ngsRelate_results, a == 94:95)
+relatedWT00163b <- dplyr::filter(ngsRelate_results, b == 94:95)
+relatedWT00163 <- bind_rows(relatedWT00163a, relatedWT00163b)
+
+relatedWT00164a <- dplyr::filter(ngsRelate_results, a == 96)
+relatedWT00164b <- dplyr::filter(ngsRelate_results, b == 96)
+relatedWT00164 <- bind_rows(relatedWT00164a, relatedWT00164b)
+
+relatedWT00202a <- dplyr::filter(ngsRelate_results, a == 97)
+relatedWT00202b <- dplyr::filter(ngsRelate_results, b == 97)
+relatedWT00202 <- bind_rows(relatedWT00202a, relatedWT00202b)
+
+
+```
+
+## Analysis 2
+
+
+---

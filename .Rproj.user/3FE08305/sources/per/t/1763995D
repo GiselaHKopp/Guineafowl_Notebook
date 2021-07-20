@@ -1,0 +1,24 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1618997854654.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3824214267",
+    "id" : "1763995D",
+    "lastKnownWriteTime" : 1614694319,
+    "last_content_update" : 1614694319,
+    "path" : "C:/Users/Gisela/ownCloud/Projects/GuineafowlGenomics/Guineafowl_Notebook/vignettes/1_notes.Rmd",
+    "project_path" : "vignettes/1_notes.Rmd",
+    "properties" : {
+        "chunk_output_type" : "console"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

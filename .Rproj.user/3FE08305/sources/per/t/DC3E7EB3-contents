@@ -1,0 +1,289 @@
+---
+title: "Data"
+output: html_notebook
+editor_options:
+  chunk_output_type: inline
+---
+
+# Data
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      comment = "#>",
+                      collapse = TRUE)
+knitr::opts_knit$set(root.dir = '../')
+```
+
+Data compiled and used in this project
+
+```{r load packages for data processing, hide=TRUE}
+library(tidyverse)
+library(ggplot2)
+library(ggthemes)
+library(ggforce)
+library(ggridges)
+library(ggsci)
+library(wesanderson)
+library(ggallin)
+```
+
+
+## Data collection
+
+
+## Data processing
+
+First we evaluate the quality of the data and the different sequencing approaches.
+An overview of the data as of April 2021 is stored in *Guineafowl-lcWGS_DataOverview_202104.csv*
+
+```{r import data analysis overview}
+data_overview <- read.csv("vignettes/data/Guineafowl-lcWGS_DataOverview_202104.csv", header = TRUE, sep = ";", as.is = TRUE)
+str(data_overview)
+
+```
+
+save data overview
+```{r save data_overview}
+save(data_overview, file = "data_overview.RData")
+```
+
+Calculate total and mean number of raw reads
+!!paired-end sequencing, so need to account for that
+```{r raw reads}
+
+total_raw_reads <- sum(data_overview$total.reads)
+total_raw_reads
+
+mean_raw_reads <- mean(data_overview$total.reads)
+mean_raw_reads
+
+sd_raw_reads <- sd(data_overview$total.reads)
+sd_raw_reads
+
+```
+
+Calculate total and mean number of quality filtered reads
+
+```{r quality filtered reads}
+
+total_filtered_reads <- sum(data_overview$trim.reads.survived.both)
+total_filtered_reads
+
+percent_filtered_reads <- total_filtered_reads/(0.5*total_raw_reads) #account for paired reads by 
+percent_filtered_reads
+
+mean_filtered_reads <- mean(data_overview$trim.reads.survived.both)
+mean_filtered_reads
+
+percent_mean_filtered_reads <- mean_filtered_reads/(0.5*mean_raw_reads)
+percent_mean_filtered_reads
+
+sd_filtered_reads <- sd(data_overview$trim.reads.survived.both)
+sd_filtered_reads
+
+
+median_Trimmomatic_dropped <- median(data_overview$trim.reads.dropped...., na.rm = TRUE)
+median_Trimmomatic_dropped
+
+IQR_Trimmomatic_dropped <- IQR(data_overview$trim.reads.dropped...., na.rm = TRUE)
+IQR_Trimmomatic_dropped
+
+range_Trimmomatic_dropped <- range(data_overview$trim.reads.dropped...., na.rm = TRUE)
+range_Trimmomatic_dropped
+
+```
+
+Calculate mapped reads
+```{r mapped reads}
+median_mapped_reads <- median(data_overview$mapped.reads, na.rm = TRUE)
+median_mapped_reads
+
+IQR_mapped_reads <- IQR(data_overview$mapped.reads, na.rm = TRUE)
+IQR_mapped_reads
+
+range_mapped_reads <- range(data_overview$mapped.reads, na.rm = TRUE)
+range_mapped_reads
+
+```
+
+Calculate duplicates
+```{r duplicates}
+median_duplicates <- median(data_overview$Duplicates...., na.rm = TRUE)
+median_duplicates
+
+range_duplicates <- range(data_overview$Duplicates...., na.rm = TRUE)
+range_duplicates
+
+```
+
+
+Calculate final coverage
+```{r final coverage}
+median_final_coverage <- median(data_overview$coverage.mean, na.rm = TRUE)
+median_final_coverage
+
+IQR_final_coverage <- IQR(data_overview$coverage.mean, na.rm = TRUE)
+IQR_final_coverage
+
+range_final_coverage <- range(data_overview$coverage.mean, na.rm = TRUE)
+range_final_coverage
+
+```
+
+
+For the sequencing success, we compare the reads that passed Quality control (FastCQ and Trimmotaic) depending on original run and resequencing.
+```{r figure compare amount of reads per sequencing strategy}
+theme_set(theme_bw()) #set theme to black and white
+
+#compare reads (y-axis) between original vs. resequenced (x-axis, sorted to have original first) and color according to library prep (shotgun vs. capture)
+ggplot(data_overview, aes(x = factor(original.o..resequenced.r., level = c("o", "r")), y = trim.reads.survived.both, color = original.o..resequenced.r., shape = original.o..resequenced.r.)) + 
+  
+  # scale_color_manual(values = wes_palette("Zissou1", n = 2)) +
+
+  geom_point(size = 2, alpha = 0.6, aes(group = individual), position = position_dodge(0.5)) + #make points, transparent, and group samples
+  
+  geom_boxplot(alpha = 0.4, outlier.shape = NA) + #add boxplots but do not show them in legend
+  
+  #geom_violin(alpha = 0.5) + #or add violin plots
+  
+  
+  geom_line(aes(group = individual), color = "grey", position = position_dodge(0.5), show.legend = FALSE) + #add line to connect samples present in both library approaches
+  
+  #stat_summary(fun = median, geom = "point", size = 5, alpha = 0.3, position = position_dodge(0.5)) +
+  
+  labs(x = "sequencing run", y = "reads after quality filtering") + #adjust axis labels
+  
+ 
+  theme(legend.title = element_blank()) + #remove legend title
+  
+  theme(panel.grid.major.x = element_blank())  #remove x-axis grid lines
+  
+```
+
+
+
+Maybe more informative about the success of the approaches is to compare for the different library approaches (shotgun and capture enrichment, respectively), % reads that mapped in BWA.
+
+```{r figure mapped reads per sequencing strategy}
+theme_set(theme_bw()) #set theme to black and white
+
+#compare mapped reads (y-axis) between sequencing (x-axis, sorted to have original first) and color according to library prep (shotgun vs. capture)
+ggplot(data_overview, aes(x = factor(original.o..resequenced.r., level = c("o", "r")), y = mapped.reads, color = original.o..resequenced.r., shape = original.o..resequenced.r.)) + 
+  
+  # scale_color_manual(values = wes_palette("Zissou1", n = 2)) +
+
+  geom_point(size = 2, alpha = 0.6, aes(group = individual), position = position_dodge(0.5)) + #make points, transparent, and group samples
+  
+  geom_boxplot(alpha = 0.4, outlier.shape = NA) + #add boxplots but do not show them in legend
+  
+  #geom_violin(alpha = 0.5) + #or add violin plots
+  
+  
+  geom_line(aes(group = individual), color = "grey", position = position_dodge(0.5), show.legend = FALSE) + #add line to connect samples present in both library approaches
+  
+  #stat_summary(fun = median, geom = "point", size = 5, alpha = 0.3, position = position_dodge(0.5)) +
+  
+  labs(x = "sequencing run", y = "mapped reads") + #adjust axis labels
+  
+ 
+  theme(legend.title = element_blank()) + #remove legend title
+  
+  theme(panel.grid.major.x = element_blank())  #remove x-axis grid lines
+  
+```
+
+
+
+Finally, let's have a look at the coverage
+
+```{r figure number of reads and final coverage}
+
+theme_set(theme_bw()) #set theme to black and white
+
+#relate number of reads (y-axis) to final coverage (x-axis), color according to sequencing (shotgun vs. capture) and sample type, shape according to original run or resequencing
+ggplot(data_overview, aes(x = coverage.mean, y = trim.reads.survived.both, color = original.o..resequenced.r., shape = original.o..resequenced.r.)) +
+  
+  geom_line(aes(group = individual), color = "lightgrey", show.legend = FALSE) + #connect same samples
+  
+  geom_point(alpha = 0.8, aes(group = individual, size = mapped.reads....)) + #add points with slight transparency
+  
+  geom_vline(xintercept = 1, linetype = "dashed") + #include vertical line to show coverage cutoff
+  
+    #scale_y_log10(breaks = scales::trans_breaks("log10", function(x) 10^x), labels = scales::trans_format("log10", scales::math_format(10^.x))) + #make y-axis logarithmic
+  
+  #scale_x_log10() + #make x-axis logarithmic
+  
+  #annotation_logticks() +
+  
+  labs(x = "coverage", y = "reads (after quality filtering)", 
+       size = "% reads mapped", color ="", shape = "") 
+  
+```
+
+
+C-Curve
+
+```{r figure c-curve}
+theme_set(theme_bw()) #set theme to black and white
+
+#relate number of distinct reads (y-axis) to total reads (x-axis), color and shape according to original run or resequencing
+ggplot(data_overview, aes(x = Lib.complexity.total.reads, y = Lib.complexity.distinct.reads, color = original.o..resequenced.r., shape = original.o..resequenced.r.)) +
+  
+  #geom_line(aes(group = individual), color = "lightgrey", show.legend = FALSE) + #connect same samples
+  
+  geom_point(alpha = 0.8, aes(group = individual, size = coverage.mean)) + #add points with slight transparency
+  
+  theme(panel.grid.minor.x = element_blank(), panel.grid.minor.y = element_blank()) + #remove x/y-axis grid lines
+  
+  labs(x = "total mapped reads", y = "distinct mapped reads", 
+       size = "coverage", color ="", shape = "")  #adjust axis and legend labels
+  
+   #scale_color_manual(values = wes_palette("Zissou1", n = 5))
+  
+```
+
+comparison to total surviving reads from Trimmomatic to distinct mapped reads
+
+```{r figure total surving reads to distinct mapped reads}
+theme_set(theme_bw()) #set theme to black and white
+
+#relate number of distinct reads (y-axis) to total surviving reads (x-axis), color  and sample type, shape according to original run or resequencing
+ggplot(data_overview, aes(x =  trim.reads.survived.both, y = Lib.complexity.distinct.reads, color = original.o..resequenced.r., shape = original.o..resequenced.r.)) +
+  
+  geom_point(alpha = 0.8, aes(group = individual, size = coverage.mean)) + #add points with slight transparency
+  
+  theme(panel.grid.minor.x = element_blank(), panel.grid.minor.y = element_blank()) + #remove x/y-axis grid lines
+  
+  labs(x = "total surviving reads (Trimmomatic)", y = "distinct mapped reads", 
+       size = "coverage", color ="", shape = "")  #adjust axis and legend labels
+  
+  
+
+```
+
+
+plot  coverage and st.dv.
+
+```{r mt coverage}
+theme_set(theme_bw()) #set theme to black and white
+
+#plot coverage (y-axis) including st.dev for every sample (x-axis), color according to original run or resequencing
+ggplot(data_overview, aes(x = reorder(individual, coverage.mean), y = coverage.mean, color = original.o..resequenced.r., shape = original.o..resequenced.r.)) +
+  
+  geom_point(aes(y=coverage.mean), alpha = 0.9) +
+  
+  geom_errorbar(aes(ymin = coverage.mean - coverage.st.dev., ymax = coverage.mean + coverage.st.dev.)) +
+  
+  geom_hline(yintercept = 1, linetype = "dashed") + #include horizontal line to show coverage cutoff
+  
+  
+  labs(x = "sample", y = "coverage (mean+-sd)", 
+       color ="", shape = "") + #adjust axis and legend labels
+  
+  theme(axis.text.x = element_text(angle = 50, vjust = 1, hjust = 1, size = 8)) +
+  
+  scale_x_discrete(guide = guide_axis(n.dodge=2))  #avoid overlap of x-axis labels
+  
+  
+```
+---

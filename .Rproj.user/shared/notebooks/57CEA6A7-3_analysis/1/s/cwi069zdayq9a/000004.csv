@@ -1,0 +1,6 @@
+"0","relatedWT00002a <- dplyr::filter(ngsRelate_results, a == 93)"
+"0","relatedWT00002b <- dplyr::filter(ngsRelate_results, b == 93)"
+"0","relatedWT00002 <- bind_rows(relatedWT00002a, relatedWT00002b)"
+"0",""
+"0",""
+"0",""
