@@ -1,0 +1,8 @@
+book_filename: "Guineafowl-lcWGS_Notebook"
+chapter_name: ""
+repo: https://github.com/GiselaHKopp/Guineafowl-lcWGS
+output_dir: ../docs
+rmd_files: ["index.Rmd", "0_develop.Rmd", "1_notes.Rmd", "2_data.Rmd", "3_analysis.Rmd", "Z_refs.Rmd"]
+clean: [packages.bib, bookdown.bbl]
+new_session: yes
+delete_merged_file: True

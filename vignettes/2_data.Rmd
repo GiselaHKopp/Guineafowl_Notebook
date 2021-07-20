@@ -1,0 +1,726 @@
+---
+title: "Data"
+output: html_notebook
+editor_options:
+  chunk_output_type: inline
+---
+
+# Data
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      comment = "#>",
+                      collapse = TRUE)
+knitr::opts_knit$set(root.dir = '../')
+```
+
+Data compiled and used in this project
+
+## Setup
+
+```{r load packages for data processing, hide=TRUE}
+library(tidyverse)
+library(ggplot2)
+library(ggthemes)
+library(ggforce)
+library(ggridges)
+library(ggsci)
+library(wesanderson)
+library(ggallin)
+```
+
+
+## Data collection
+
+Group information is stored in *sequenced_samples_groups.csv*.
+
+```{r load group informatin}
+sampleID_group <- read.csv("vignettes/data/sequenced_samples_groups.csv", header = TRUE, sep = ";", as.is = TRUE)
+
+
+str(sampleID_group)
+
+#rename Real.ind.code to ID
+sampleID_group <- rename(sampleID_group, "ID" = "Sample.ind.code")
+
+#only keep group and ID
+sampleID_group <- select(sampleID_group, Group_ID, ID)
+str(sampleID_group)
+```
+
+## Data processing
+
+### Sequencing data
+
+First we evaluate the quality of the data and the different sequencing approaches.
+An overview of the data as of 26th April 2021 is stored in *Guineafowl-lcWGS_DataOverview_20210426.csv*
+
+```{r import seq data analysis overview}
+data_overview <- read.csv("vignettes/data/Guineafowl-lcWGS_DataOverview_20210426.csv", header = TRUE, sep = ";", as.is = TRUE)
+str(data_overview)
+
+```
+
+save data overview
+```{r save data_overview}
+save(data_overview, file = "data_overview.RData")
+```
+
+Calculate total and mean number of raw reads
+!!paired-end sequencing, so need to account for that
+```{r raw reads}
+
+total_raw_reads <- sum(data_overview$total.reads)
+total_raw_reads
+
+mean_raw_reads <- mean(data_overview$total.reads)
+mean_raw_reads
+
+sd_raw_reads <- sd(data_overview$total.reads)
+sd_raw_reads
+
+```
+
+Calculate total and mean number of quality filtered reads
+
+```{r quality filtered reads}
+
+total_filtered_reads <- sum(data_overview$trim.reads.survived.both)
+total_filtered_reads
+
+percent_filtered_reads <- total_filtered_reads/(0.5*total_raw_reads) #account for paired reads by 
+percent_filtered_reads
+
+mean_filtered_reads <- mean(data_overview$trim.reads.survived.both)
+mean_filtered_reads
+
+percent_mean_filtered_reads <- mean_filtered_reads/(0.5*mean_raw_reads)
+percent_mean_filtered_reads
+
+sd_filtered_reads <- sd(data_overview$trim.reads.survived.both)
+sd_filtered_reads
+
+
+median_Trimmomatic_dropped <- median(data_overview$trim.reads.dropped...., na.rm = TRUE)
+median_Trimmomatic_dropped
+
+IQR_Trimmomatic_dropped <- IQR(data_overview$trim.reads.dropped...., na.rm = TRUE)
+IQR_Trimmomatic_dropped
+
+range_Trimmomatic_dropped <- range(data_overview$trim.reads.dropped...., na.rm = TRUE)
+range_Trimmomatic_dropped
+
+```
+
+Calculate mapped reads
+```{r mapped reads}
+median_mapped_reads <- median(data_overview$mapped.reads, na.rm = TRUE)
+median_mapped_reads
+
+IQR_mapped_reads <- IQR(data_overview$mapped.reads, na.rm = TRUE)
+IQR_mapped_reads
+
+range_mapped_reads <- range(data_overview$mapped.reads, na.rm = TRUE)
+range_mapped_reads
+
+```
+
+Calculate duplicates
+```{r duplicates}
+median_duplicates <- median(data_overview$Duplicates...., na.rm = TRUE)
+median_duplicates
+
+range_duplicates <- range(data_overview$Duplicates...., na.rm = TRUE)
+range_duplicates
+
+```
+
+
+Calculate final coverage
+```{r final coverage}
+median_final_coverage <- median(data_overview$coverage.mean, na.rm = TRUE)
+median_final_coverage
+
+IQR_final_coverage <- IQR(data_overview$coverage.mean, na.rm = TRUE)
+IQR_final_coverage
+
+range_final_coverage <- range(data_overview$coverage.mean, na.rm = TRUE)
+range_final_coverage
+
+```
+
+
+For the sequencing success, we compare the reads that passed Quality control (FastCQ and Trimmotaic) depending on original run and resequencing.
+```{r figure compare amount of reads per sequencing strategy}
+theme_set(theme_bw()) #set theme to black and white
+
+#compare reads (y-axis) between original vs. resequenced (x-axis, sorted to have original first) and color according to library prep (shotgun vs. capture)
+ggplot(data_overview, aes(x = factor(original.o..resequenced.r., level = c("o", "r")), y = trim.reads.survived.both, color = original.o..resequenced.r., shape = original.o..resequenced.r.)) + 
+  
+  # scale_color_manual(values = wes_palette("Zissou1", n = 2)) +
+
+  geom_point(size = 2, alpha = 0.6, aes(group = individual), position = position_dodge(0.5)) + #make points, transparent, and group samples
+  
+  geom_boxplot(alpha = 0.4, outlier.shape = NA) + #add boxplots but do not show them in legend
+  
+  #geom_violin(alpha = 0.5) + #or add violin plots
+  
+  
+  geom_line(aes(group = individual), color = "grey", position = position_dodge(0.5), show.legend = FALSE) + #add line to connect samples present in both library approaches
+  
+  #stat_summary(fun = median, geom = "point", size = 5, alpha = 0.3, position = position_dodge(0.5)) +
+  
+  labs(x = "sequencing run", y = "reads after quality filtering") + #adjust axis labels
+  
+ 
+  theme(legend.title = element_blank()) + #remove legend title
+  
+  theme(panel.grid.major.x = element_blank())  #remove x-axis grid lines
+  
+```
+
+
+
+Maybe more informative about the success of the approaches is to compare for the different library approaches (shotgun and capture enrichment, respectively), % reads that mapped in BWA.
+
+```{r figure mapped reads per sequencing strategy}
+theme_set(theme_bw()) #set theme to black and white
+
+#compare mapped reads (y-axis) between sequencing (x-axis, sorted to have original first) and color according to library prep (shotgun vs. capture)
+ggplot(data_overview, aes(x = factor(original.o..resequenced.r., level = c("o", "r")), y = mapped.reads, color = original.o..resequenced.r., shape = original.o..resequenced.r.)) + 
+  
+  # scale_color_manual(values = wes_palette("Zissou1", n = 2)) +
+
+  geom_point(size = 2, alpha = 0.6, aes(group = individual), position = position_dodge(0.5)) + #make points, transparent, and group samples
+  
+  geom_boxplot(alpha = 0.4, outlier.shape = NA) + #add boxplots but do not show them in legend
+  
+  #geom_violin(alpha = 0.5) + #or add violin plots
+  
+  
+  geom_line(aes(group = individual), color = "grey", position = position_dodge(0.5), show.legend = FALSE) + #add line to connect samples present in both library approaches
+  
+  #stat_summary(fun = median, geom = "point", size = 5, alpha = 0.3, position = position_dodge(0.5)) +
+  
+  labs(x = "sequencing run", y = "mapped reads") + #adjust axis labels
+  
+ 
+  theme(legend.title = element_blank()) + #remove legend title
+  
+  theme(panel.grid.major.x = element_blank())  #remove x-axis grid lines
+  
+```
+
+
+
+Finally, let's have a look at the coverage
+
+```{r figure number of reads and final coverage}
+
+theme_set(theme_bw()) #set theme to black and white
+
+#relate number of reads (y-axis) to final coverage (x-axis), color according to sequencing (shotgun vs. capture) and sample type, shape according to original run or resequencing
+ggplot(data_overview, aes(x = coverage.mean, y = trim.reads.survived.both, color = original.o..resequenced.r., shape = original.o..resequenced.r.)) +
+  
+  geom_line(aes(group = individual), color = "lightgrey", show.legend = FALSE) + #connect same samples
+  
+  geom_point(alpha = 0.5, aes(group = individual, size = mapped.reads....)) + #add points with slight transparency
+  
+  geom_vline(xintercept = 1, linetype = "dashed") + #include vertical line to show coverage cutoff
+  
+    #scale_y_log10(breaks = scales::trans_breaks("log10", function(x) 10^x), labels = scales::trans_format("log10", scales::math_format(10^.x))) + #make y-axis logarithmic
+  
+  #scale_x_log10() + #make x-axis logarithmic
+  
+  #annotation_logticks() +
+  
+  labs(x = "coverage", y = "reads (after quality filtering)", 
+       size = "% reads mapped", color ="", shape = "") 
+  
+```
+
+
+C-Curve
+
+```{r figure c-curve}
+theme_set(theme_bw()) #set theme to black and white
+
+#relate number of distinct reads (y-axis) to total reads (x-axis), color and shape according to original run or resequencing
+ggplot(data_overview, aes(x = Lib.complexity.total.reads, y = Lib.complexity.distinct.reads, color = original.o..resequenced.r., shape = original.o..resequenced.r.)) +
+  
+  #geom_line(aes(group = individual), color = "lightgrey", show.legend = FALSE) + #connect same samples
+  
+  geom_point(alpha = 0.5, aes(group = individual, size = coverage.mean)) + #add points with slight transparency
+  
+  theme(panel.grid.minor.x = element_blank(), panel.grid.minor.y = element_blank()) + #remove x/y-axis grid lines
+  
+  labs(x = "total mapped reads", y = "distinct mapped reads", 
+       size = "coverage", color ="", shape = "")  #adjust axis and legend labels
+  
+   #scale_color_manual(values = wes_palette("Zissou1", n = 5))
+  
+```
+
+comparison to total surviving reads from Trimmomatic to distinct mapped reads
+
+```{r figure total surving reads to distinct mapped reads}
+theme_set(theme_bw()) #set theme to black and white
+
+#relate number of distinct reads (y-axis) to total surviving reads (x-axis), color  and sample type, shape according to original run or resequencing
+ggplot(data_overview, aes(x =  trim.reads.survived.both, y = Lib.complexity.distinct.reads, color = original.o..resequenced.r., shape = original.o..resequenced.r.)) +
+  
+  geom_point(alpha = 0.5, aes(group = individual, size = coverage.mean)) + #add points with slight transparency
+  
+  theme(panel.grid.minor.x = element_blank(), panel.grid.minor.y = element_blank()) + #remove x/y-axis grid lines
+  
+  labs(x = "total surviving reads (Trimmomatic)", y = "distinct mapped reads", 
+       size = "coverage", color ="", shape = "")  #adjust axis and legend labels
+  
+  
+
+```
+
+
+plot  coverage and st.dv.
+
+```{r mt coverage}
+theme_set(theme_bw()) #set theme to black and white
+
+#plot coverage (y-axis) including st.dev for every sample (x-axis), color according to original run or resequencing
+ggplot(data_overview, aes(x = reorder(individual, coverage.mean), y = coverage.mean, color = original.o..resequenced.r., shape = original.o..resequenced.r.)) +
+  
+  geom_point(aes(y=coverage.mean), alpha = 0.9) +
+  
+  geom_errorbar(aes(ymin = coverage.mean - coverage.st.dev., ymax = coverage.mean + coverage.st.dev.)) +
+  
+  geom_hline(yintercept = 1, linetype = "dashed") + #include horizontal line to show coverage cutoff
+  
+  
+  labs(x = "sample", y = "coverage (mean+-sd)", 
+       color ="", shape = "") + #adjust axis and legend labels
+  
+  theme(axis.text.x = element_text(angle = 50, vjust = 1, hjust = 1, size = 8)) +
+  
+  scale_x_discrete(guide = guide_axis(n.dodge=2))  #avoid overlap of x-axis labels
+  
+  
+```
+
+### Relatedness data
+
+
+First load an overview of the analysed sequencing libraries. They are stored in the folder `pipeline` as *file_list.tsv*. 
+
+```{r load analysed seq libraries}
+seqlib_overview <- read.delim("vignettes/data/pipeline/file_list.tsv", header = TRUE,  as.is = TRUE)
+str(seqlib_overview)
+```
+
+The information about the sampled individual, which we will later need to assign the relatedness estimation to specific individuals, is available in the *file_name* column. We will extract this information and put it in an extra *ID* column.
+
+```{r create ID column in seqlib_overview}
+#first need to create a new column that includes the sample ID
+seqlib_overview$ID <- gsub("([[:alnum:]]{3}_[[:alnum:]]{6}-[[:digit:]])_([[:alnum:]]{5,7})_([[:alnum:]]{2,3}_[[:alnum:]]{2}_[[:graph:]]{12})", "\\2", seqlib_overview$file_name)
+
+str(seqlib_overview)
+```
+
+
+#### ngsRelate
+This is an assessment of the ngsRelate results produced by the Nextflow pipleine created by Ben Hume/SeqAna. The data is saved in the folder `pipeline` in `ngsrelate` as *relatedness.isec.0002.exMito.thinned.ngsrelate.w.sample.names.results*.
+
+```{r load ngsRelate results}
+ngsRelate_results <- read.delim("vignettes/data/pipeline/ngsrelate/relatedness.isec.0002.exMito.thinned.ngsrelate.w.sample.names.results", header = TRUE,  as.is = TRUE)
+str(ngsRelate_results)
+```
+
+Relatedness was estimated on an average of `r mean(ngsRelate_results$nSites)` sites and a mean coverage of `r mean(ngsRelate_results$coverage)`. On average, relatedness is `r mean(ngsRelate_results$rab)` with a range of `r range(ngsRelate_results$rab)`.
+
+We join together the relatedness estimates with the sample information, to know the identity of the dyads
+
+```{r join ngsrelat and ID information}
+#rename "ida" and "idb" to "RGSM_a" and "RGSM-b"
+ngsRelate_results <- rename(ngsRelate_results, "RGSM_a" = "ida")
+ngsRelate_results <- rename(ngsRelate_results, "RGSM_b" = "idb")
+
+#create a new column that includes RGSM_dyad
+ngsRelate_results$RGSM_dyad <- if_else(ngsRelate_results$RGSM_a < ngsRelate_results$RGSM_b, paste(ngsRelate_results$RGSM_a, ngsRelate_results$RGSM_b, sep = "-"), paste(ngsRelate_results$RGSM_b, ngsRelate_results$RGSM_a, sep = "-"))
+
+#first include ID of individual a
+ngsRelate_results_ID <- left_join(ngsRelate_results, seqlib_overview[6:7], by = c("RGSM_a" = "RGSM"))
+
+#rename "ID" to "ID_a"
+ngsRelate_results_ID <- rename(ngsRelate_results_ID, "ID_a" = "ID")
+
+#now include ID of individual b
+ngsRelate_results_ID <- left_join(ngsRelate_results_ID, seqlib_overview[6:7], by = c("RGSM_b" = "RGSM"))
+
+#rename "ID" to "ID_b"
+ngsRelate_results_ID <- rename(ngsRelate_results_ID, "ID_b" = "ID")
+
+#create a new column that includes the dyad
+ngsRelate_results_ID$dyad <- if_else(ngsRelate_results_ID$ID_a < ngsRelate_results_ID$ID_b, paste(ngsRelate_results_ID$ID_a, ngsRelate_results_ID$ID_b, sep = "-"), paste(ngsRelate_results_ID$ID_b, ngsRelate_results_ID$ID_a, sep = "-"))
+
+#remove duplicates ##maybe not necessary anymore
+
+ngsRelate_results_ID <- distinct(ngsRelate_results_ID)
+
+```
+
+We also include the group information
+
+```{r join ngsrelate and group information}
+#first include group of individual a
+ngsRelate_results_ID_group <- left_join(ngsRelate_results_ID, sampleID_group, by = c("ID_a" = "ID"))
+
+#rename "Group_ID" to "a_Group"
+ngsRelate_results_ID_group <- rename(ngsRelate_results_ID_group, "a_Group" = "Group_ID")
+
+#then include group of individual b
+ngsRelate_results_ID_group <- left_join(ngsRelate_results_ID_group, sampleID_group, by = c("ID_b" = "ID"))
+
+#rename "Group_ID" to "b_Group"
+ngsRelate_results_ID_group <- rename(ngsRelate_results_ID_group, "b_Group" = "Group_ID")
+```
+
+```{r include dyad group membership1}
+#which group IDs are there?
+sort(unique(ngsRelate_results_ID_group$a_Group))
+```
+
+
+```{r include dyad group membership2}
+sort(unique(ngsRelate_results_ID_group$b_Group))
+
+```
+
+```{r}
+#create new column that specifies if individuals are from same or different groups
+ngsRelate_results_ID_group <- ngsRelate_results_ID_group %>%
+  mutate(dyad_group = case_when(ID_a == ID_b ~ "identical",
+                                a_Group == b_Group ~ "intragroup",
+                                a_Group != b_Group ~ "intergroup"))
+
+unique(ngsRelate_results_ID_group$dyad_group)
+
+```
+
+
+Let's have a closer look at the samples that were sequenced twice
+
+```{r}
+#find samples that were sequenced twice
+duplicates <- filter(ngsRelate_results_ID_group, ID_a == ID_b)
+
+#average relatedness of these duplicted inidividuals
+mean(duplicates$rab)
+
+#range
+range(duplicates$rab)
+```
+
+
+Create subset with at least 250k SNPs
+
+```{r 250k sNP subset ngsrelate}
+ngsRelate_results_ID_group_250k <- filter(ngsRelate_results_ID_group, nSites >= 250000)
+
+unique(ngsRelate_results_ID_group_250k$dyad_group)
+```
+
+
+
+To get an overview of the distribution of relatedness coefficients, we plot pairwise relatedness for all dyads
+
+```{r figure dyadic relatedness (ngsrelate) distribution}
+
+theme_set(theme_classic())
+
+#plot relatedness rab (y-axis) for every dyad (x-axis), ordered from low to high relatedness and colored according to inter- or intragroup dyad
+
+ggplot(ngsRelate_results_ID_group, aes(x = reorder(dyad, rab), y = rab, color = dyad_group)) +
+  
+  geom_point(alpha = 0.1, aes(y = rab)) + #plot relatedness estimates as points 
+  
+  geom_hline(yintercept = c(0.125, 0.25, 0.5), linetype = "dashed") + #include horizontal line to show traditional kinship categories
+  
+  labs( x = "Dyad", y = "Relatedness (ngsRelate)") 
+
+
+```
+
+
+#### lcmlkin
+
+```{r load lcMLkin results}
+lcmlkin_results <- read.delim("vignettes/data/pipeline/lcmlkin/relatedness.isec.0002.exMito.thinned.lcmlkin.results", header = TRUE,  as.is = TRUE)
+str(lcmlkin_results)
+```
+
+We join together the relatedness estimates with the sample information, to know the identity of the dyads
+
+```{r join lcmlkin and ID information}
+#rename "ida" and "idb" to "RGSM_a" and "RGSM-b"
+lcmlkin_results <- rename(lcmlkin_results, "RGSM_a" = "Ind1")
+lcmlkin_results <- rename(lcmlkin_results, "RGSM_b" = "Ind2")
+
+#create a new column that includes RGSM_dyad
+lcmlkin_results$RGSM_dyad <- if_else(lcmlkin_results$RGSM_a < lcmlkin_results$RGSM_b, paste(lcmlkin_results$RGSM_a, lcmlkin_results$RGSM_b, sep = "-"), paste(lcmlkin_results$RGSM_b, lcmlkin_results$RGSM_a, sep = "-"))
+
+#first include ID of individual a
+lcmlkin_results_ID <- left_join(lcmlkin_results, seqlib_overview[6:7], by = c("RGSM_a" = "RGSM"))
+
+#rename "ID" to "ID_a"
+lcmlkin_results_ID <- rename(lcmlkin_results_ID, "ID_a" = "ID")
+
+#now include ID of individual b
+lcmlkin_results_ID <- left_join(lcmlkin_results_ID, seqlib_overview[6:7], by = c("RGSM_b" = "RGSM"))
+
+#rename "ID" to "ID_b"
+lcmlkin_results_ID <- rename(lcmlkin_results_ID, "ID_b" = "ID")
+
+#create a new column that includes the dyad
+lcmlkin_results_ID$dyad <- if_else(lcmlkin_results_ID$ID_a < lcmlkin_results_ID$ID_b, paste(lcmlkin_results_ID$ID_a, lcmlkin_results_ID$ID_b, sep = "-"), paste(lcmlkin_results_ID$ID_b, lcmlkin_results_ID$ID_a, sep = "-"))
+
+#remove duplicates ##maybe not necessary anymore
+
+lcmlkin_results_ID <- distinct(lcmlkin_results_ID)
+
+```
+
+We also include the group information
+
+```{r join lcmlkin and group information}
+#first include group of individual a
+lcmlkin_results_ID_group <- left_join(lcmlkin_results_ID, sampleID_group, by = c("ID_a" = "ID"))
+
+#rename "Group_ID" to "a_Group"
+lcmlkin_results_ID_group <- rename(lcmlkin_results_ID_group, "a_Group" = "Group_ID")
+
+#then include group of individual b
+lcmlkin_results_ID_group <- left_join(lcmlkin_results_ID_group, sampleID_group, by = c("ID_b" = "ID"))
+
+#rename "Group_ID" to "b_Group"
+lcmlkin_results_ID_group <- rename(lcmlkin_results_ID_group, "b_Group" = "Group_ID")
+
+```
+
+```{r lcmlkin column intra inter group}
+#create new column that specifies if individuals are from same or different groups
+lcmlkin_results_ID_group <- lcmlkin_results_ID_group %>%
+  mutate(dyad_group = if_else(a_Group == b_Group, "intra", "inter"))
+str(lcmlkin_results_ID_group)
+```
+
+Let's have a closer look at the samples that were sequenced twice
+
+```{r lcmlkin duplicates}
+#find samples that were sequenced twice
+duplicates_lcmlkin <- filter(lcmlkin_results_ID, ID_a == ID_b)
+
+#average relatedness of these duplicted inidividuals
+mean(duplicates_lcmlkin$pi_HAT)
+
+#range
+range(duplicates_lcmlkin$pi_HAT)
+```
+
+
+Create subset with at least 300k SNPs
+
+```{r 300k sNP subset lcmlkin}
+lcmlkin_results_ID_group_300k <- filter(lcmlkin_results_ID_group, nbSNP >= 300000)
+
+```
+
+```{r figure dyadic relatedness (lcmlkin) distribution}
+
+theme_set(theme_classic())
+
+#plot relatedness pi_HAT (y-axis) for every dyad (x-axis), ordered from low to high relatedness and colored according to inter- or intragroup dyad
+
+ggplot(lcmlkin_results_ID_group_300k, aes(x = reorder(dyad, pi_HAT), y = pi_HAT, color = dyad_group)) +
+  
+  geom_point(alpha = 0.1, aes(y = pi_HAT)) + #plot relatedness estimates as points 
+  
+  geom_hline(yintercept = c(0.125, 0.25, 0.5), linetype = "dashed") + #include horizontal line to show traditional kinship categories
+  
+  labs( x = "Dyad", y = "Relatedness (lcmlkin)") 
+
+
+```
+
+#### READ
+
+This is an assessment of the READ results produced by the Nextflow pipleine created by Ben Hume/SeqAna. The data is saved in the folder `pipeline` in `read` as *meansP0_AncientDNA_normalized*. The preprocessed data (categorizes unrelated, first- and second-order related) is sotred as *READ_results*.
+
+
+```{r load READ raw results}
+READ_rawresults <- read.delim("vignettes/data/pipeline/read/meansP0_AncientDNA_normalized", header = TRUE, sep = " ", as.is = TRUE)
+str(READ_rawresults)
+```
+
+```{r load READ kin results}
+READ_kinresults <- read.delim("vignettes/data/pipeline/read/READ_results", header = TRUE, sep = "\t", as.is = TRUE)
+str(READ_kinresults)
+```
+
+Merge these two result files
+
+```{r combine READ results}
+READ_results <- left_join(READ_rawresults, READ_kinresults, by = "PairIndividuals")
+str(READ_results)
+```
+
+Now we need to split the *PairIndividuals* into individual 1 and 2, identify these individuals and then create the dyads corresponding to the previous results.
+
+```{r create ID columns in READ}
+#Need to split PairIndividuals into 2 new columns
+READ_results$RGSM_a <- gsub("(RGID[[:alnum:]]{1}_S[[:alnum:]]{1,2})(RGID[[:alnum:]]{1}_S[[:alnum:]]{1,2})", "\\1", READ_results$PairIndividuals)
+
+READ_results$RGSM_b <- gsub("(RGID[[:alnum:]]{1}_S[[:alnum:]]{1,2})(RGID[[:alnum:]]{1}_S[[:alnum:]]{1,2})", "\\2", READ_results$PairIndividuals)
+
+#create a new column that includes RGSM_dyad
+READ_results$RGSM_dyad <- if_else(READ_results$RGSM_a < READ_results$RGSM_b, paste(READ_results$RGSM_a, READ_results$RGSM_b, sep = "-"), paste(READ_results$RGSM_b, READ_results$RGSM_a, sep = "-"))
+
+str(READ_results)
+```
+
+We join together the relatedness estimates with the sample information, to know the identity of the dyads
+
+```{r join READ and ID information}
+
+#first include ID of individual a
+READ_results_ID <- left_join(READ_results, seqlib_overview[6:7], by = c("RGSM_a" = "RGSM"))
+
+#rename "ID" to "ID_a"
+READ_results_ID <- rename(READ_results_ID, "ID_a" = "ID")
+
+#now include ID of individual b
+READ_results_ID <- left_join(READ_results_ID, seqlib_overview[6:7], by = c("RGSM_b" = "RGSM"))
+
+#rename "ID" to "ID_b"
+READ_results_ID <- rename(READ_results_ID, "ID_b" = "ID")
+
+#create a new column that includes the dyad
+READ_results_ID$dyad <- if_else(READ_results_ID$ID_a < READ_results_ID$ID_b, paste(READ_results_ID$ID_a, READ_results_ID$ID_b, sep = "-"), paste(READ_results_ID$ID_b, READ_results_ID$ID_a, sep = "-"))
+
+#remove duplicates ##maybe not necessary anymore
+
+READ_results_ID <- distinct(READ_results_ID)
+
+```
+
+Let's have a closer look at the samples that were sequenced twice
+
+```{r}
+#find samples that were sequenced twice
+duplicates <- filter(READ_results_ID, ID_a == ID_b)
+
+#average relatedness of these duplicted inidividuals
+mean(duplicates$NonNormalizedP0)
+
+#range
+range(duplicates$NonNormalizedP0)
+```
+
+
+```{r figure dyadic relatedness (READ) distribution}
+
+theme_set(theme_classic())
+
+#plot relatedness P0 (y-axis) for every dyad (x-axis), ordered from low to high relatedness and colored according to inter- or intragroup dyad
+
+ggplot(READ_results, aes(x = reorder(PairIndividuals, NonNormalizedP0), y = NonNormalizedP0, color = Relationship)) +
+  
+  geom_point(alpha = 0.1, aes(y = NonNormalizedP0)) + #plot relatedness estimates as points 
+  
+  labs( x = "Dyad", y = "Relatedness (READ)") 
+
+
+```
+
+#### Combined relatedness results
+
+
+
+merge ngsrelate and lcmlkin
+
+```{r}
+relate_results <- full_join(ngsRelate_results_ID_group, lcmlkin_results_ID_group, by = "RGSM_dyad")
+relate_results <- full_join(relate_results, READ_results_ID, by = "RGSM_dyad")
+```
+
+plot
+
+
+
+```{r figure dyadic relatedness distribution}
+
+theme_set(theme_classic())
+
+#plot relatedness pi_HAT and rab (y-axis) for every dyad (x-axis), ordered from low to high relatedness and colored according to inter- or intragroup dyad
+
+ggplot(filter(relate_results, coverage > 0.95), aes(x = reorder(dyad, pi_HAT))) +
+  
+  
+  geom_point(alpha = 0.1, aes(y = pi_HAT), color = "blue") + #plot lcmlkin relatedness estimates as points 
+  
+  geom_point(alpha = 0.1, aes(y = NonNormalizedP0), color = "red") + #plot READ estimate
+  
+  geom_point(alpha = 0.1, aes(y = rab), color = "black") + # plot ngsRelate estimates
+  
+  scale_y_continuous(
+    
+    name = "relatedness (lcmlkin)", #features of first axis
+    
+    sec.axis = sec_axis(~., name = "P0") #features of second axis
+  ) +
+  
+  ggtitle("Comparison of relatedness estimators (>0.95X)")
+
+
+```
+
+Compare correlation among the three estimators
+
+
+```{r correlation ngsrelate lcmlkin}
+ggplot(relate_results, aes(x = rab, y = pi_HAT, color = coverage, size = nSites, shape = dyad_group.x)) +
+  
+  scale_colour_viridis_c() +
+  
+  geom_point(alpha = 0.2) 
+  
+ 
+```
+
+```{r correlation ngsrelate READ}
+
+ggplot(relate_results, aes(x = rab, y = NonNormalizedP0, color = coverage, size = nSites, shape = dyad_group.x)) +
+  
+  scale_colour_viridis_c() +
+  
+  geom_point(alpha = 0.2) 
+```
+
+```{r correlation lcmlkin READ}
+
+ggplot(relate_results, aes(x = pi_HAT, y = NonNormalizedP0, color = coverage, size = nSites, shape = dyad_group.x)) +
+  
+  scale_colour_viridis_c() +
+  
+  geom_point(alpha = 0.2) 
+```
+
+
+
+For comparison of relatedness estimators check Yaka et al. 2021 Curr Biol.
+
+
+
+
+
+
+
+---

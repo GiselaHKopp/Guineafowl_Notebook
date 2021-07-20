@@ -1,0 +1,49 @@
+---
+title: "Analysis"
+output: html_notebook
+editor_options:
+  chunk_output_type: inline
+---
+
+# Analysis
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      comment = "#>",
+                      collapse = TRUE)
+knitr::opts_knit$set(root.dir = '../')
+```
+
+## Setup
+
+
+```{r load packages for data processing, hide=TRUE}
+library(tidyverse)
+library(ggplot2)
+library(ggthemes)
+library(ggforce)
+library(ggridges)
+library(ggsci)
+library(wesanderson)
+library(gghighlight)
+```
+
+
+## Data overview
+
+An overview of the samples as of 26th April 2021 is stored in *Guineafowl-lcWGS_DataOverview_20210426.csv*. This is needed to later assign the relatedness estimates to specific individuals
+
+```{r import data analysis overview}
+sample_overview <- read.csv("vignettes/data/Guineafowl-lcWGS_DataOverview_20210426.csv", header = TRUE, sep = ";", as.is = TRUE)
+str(sample_overview)
+
+```
+
+
+
+
+
+## Analysis 2
+
+
+---

@@ -1,0 +1,25 @@
+---
+title: "Project notes"
+output: html_notebook
+editor_options:
+  chunk_output_type: console
+---
+
+# Project notes
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      comment = "#>",
+                      collapse = TRUE)
+knitr::opts_knit$set(root.dir = '../')
+```
+
+Here I note ideas and papers read or must read.
+
+## Reading (notes)
+
+
+## Ideas to follow up on 
+
+
+---
