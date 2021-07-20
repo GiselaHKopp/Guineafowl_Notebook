@@ -293,7 +293,9 @@ ggplot(data_overview, aes(x = reorder(individual, coverage.mean), y = coverage.m
   
   geom_errorbar(aes(ymin = coverage.mean - coverage.st.dev., ymax = coverage.mean + coverage.st.dev.)) +
   
-  geom_hline(yintercept = 1, linetype = "dashed") + #include horizontal line to show coverage cutoff
+  geom_hline(yintercept = 1, linetype = "dashed") + #include horizontal line to show coverage cutoff at 1X
+  
+  geom_hline(yintercept = 0.75, linetype = "dotted") + #include horizontal line to show coverage cutoff 0.75X
   
   
   labs(x = "sample", y = "coverage (mean+-sd)", 
@@ -438,13 +440,15 @@ theme_set(theme_classic())
 
 #plot relatedness rab (y-axis) for every dyad (x-axis), ordered from low to high relatedness and colored according to inter- or intragroup dyad
 
-ggplot(ngsRelate_results_ID_group, aes(x = reorder(dyad, rab), y = rab, color = dyad_group)) +
+ggplot(ngsRelate_results_ID_group, aes(x = reorder(dyad, rab), y = rab, color = dyad_group, shape = dyad_group)) +
   
-  geom_point(alpha = 0.1, aes(y = rab)) + #plot relatedness estimates as points 
+  geom_point(alpha = 0.2, aes(y = rab)) + #plot relatedness estimates as points 
   
   geom_hline(yintercept = c(0.125, 0.25, 0.5), linetype = "dashed") + #include horizontal line to show traditional kinship categories
   
-  labs( x = "Dyad", y = "Relatedness (ngsRelate)") 
+  labs( x = "Dyad", y = "Relatedness (ngsRelate)") +
+  
+  ggtitle("distribution of relatedness (ngsrelate)")
 
 
 ```
@@ -539,13 +543,15 @@ theme_set(theme_classic())
 
 #plot relatedness pi_HAT (y-axis) for every dyad (x-axis), ordered from low to high relatedness and colored according to inter- or intragroup dyad
 
-ggplot(lcmlkin_results_ID_group_300k, aes(x = reorder(dyad, pi_HAT), y = pi_HAT, color = dyad_group)) +
+ggplot(lcmlkin_results_ID_group_300k, aes(x = reorder(dyad, pi_HAT), y = pi_HAT, color = dyad_group, shape = dyad_group)) +
   
   geom_point(alpha = 0.1, aes(y = pi_HAT)) + #plot relatedness estimates as points 
   
   geom_hline(yintercept = c(0.125, 0.25, 0.5), linetype = "dashed") + #include horizontal line to show traditional kinship categories
   
-  labs( x = "Dyad", y = "Relatedness (lcmlkin)") 
+  labs( x = "Dyad", y = "Relatedness (lcmlkin)") +
+
+ ggtitle("distribution of relatedness (lcmlkin) 300k SNPs")
 
 
 ```
