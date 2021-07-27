@@ -1,7 +1,7 @@
 ---
 title: "Guineafowl-lcWGS Notebook"
 author: "Gisela H. Kopp"
-date: "2021-07-20"
+date: "2021-07-27"
 bibliography: book.bib
 description: A diary-style notebook for this project
 documentclass: book

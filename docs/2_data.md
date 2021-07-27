@@ -16,12 +16,12 @@ Data compiled and used in this project
 
 ```r
 library(tidyverse)
-#> -- Attaching packages ------------------------------------------------------------------------------------------------------------------ tidyverse 1.3.0 --
+#> -- Attaching packages ------------------------------------------------------------------------------------------------------------------------- tidyverse 1.3.0 --
 #> v ggplot2 3.3.2     v purrr   0.3.4
 #> v tibble  3.0.3     v dplyr   1.0.2
 #> v tidyr   1.1.2     v stringr 1.4.0
 #> v readr   1.3.1     v forcats 0.5.0
-#> -- Conflicts --------------------------------------------------------------------------------------------------------------------- tidyverse_conflicts() --
+#> -- Conflicts ---------------------------------------------------------------------------------------------------------------------------- tidyverse_conflicts() --
 #> x dplyr::filter() masks stats::filter()
 #> x dplyr::lag()    masks stats::lag()
 library(ggplot2)
@@ -60,6 +60,32 @@ str(sampleID_group)
 #>  $ Group_ID: chr  "wing_tags" "wing_tags" "wing_tags" "wing_tags" ...
 #>  $ ID      : chr  "A1295" "A1296" "A1297" "A1298" ...
 ```
+
+Sex information is stored in *samples_sex.csv*. Sex was determined in the field and confirmed at least once with a molecular sexing method in the lab. For cases with mismatch between field and molecular sex we set the sex to undetermined. 
+
+
+```r
+sampleID_sex <- read.csv("vignettes/data/samples_sex.csv", header = TRUE, sep = ";", as.is = TRUE)
+str(sampleID_sex)
+#> 'data.frame':	133 obs. of  2 variables:
+#>  $ ID : chr  "A1295" "A1296" "A1297" "A1298" ...
+#>  $ sex: chr  "m" "f" "m" "m" ...
+```
+
+merge group and sex information
+
+
+```r
+
+sample_info <- full_join(sampleID_group, sampleID_sex, by = "ID")
+str(sample_info)
+#> 'data.frame':	133 obs. of  3 variables:
+#>  $ Group_ID: chr  "wing_tags" "wing_tags" "wing_tags" "wing_tags" ...
+#>  $ ID      : chr  "A1295" "A1296" "A1297" "A1298" ...
+#>  $ sex     : chr  "m" "f" "m" "m" ...
+```
+
+
 
 ## Data processing
 
@@ -357,7 +383,9 @@ ggplot(data_overview, aes(x = reorder(individual, coverage.mean), y = coverage.m
   
   geom_errorbar(aes(ymin = coverage.mean - coverage.st.dev., ymax = coverage.mean + coverage.st.dev.)) +
   
-  geom_hline(yintercept = 1, linetype = "dashed") + #include horizontal line to show coverage cutoff
+  geom_hline(yintercept = 1, linetype = "dashed") + #include horizontal line to show coverage cutoff at 1X
+  
+  geom_hline(yintercept = 0.75, linetype = "dotted") + #include horizontal line to show coverage cutoff 0.75X
   
   
   labs(x = "sample", y = "coverage (mean+-sd)", 
@@ -490,22 +518,24 @@ We also include the group information
 
 ```r
 #first include group of individual a
-ngsRelate_results_ID_group <- left_join(ngsRelate_results_ID, sampleID_group, by = c("ID_a" = "ID"))
+ngsRelate_results_sample_info <- left_join(ngsRelate_results_ID, sample_info, by = c("ID_a" = "ID"))
 
-#rename "Group_ID" to "a_Group"
-ngsRelate_results_ID_group <- rename(ngsRelate_results_ID_group, "a_Group" = "Group_ID")
+#rename "Group_ID" to "a_Group" and "sex" to "a_sex"
+ngsRelate_results_sample_info <- rename(ngsRelate_results_sample_info, "a_Group" = "Group_ID")
+ngsRelate_results_sample_info <- rename(ngsRelate_results_sample_info, "a_sex" = "sex")
 
 #then include group of individual b
-ngsRelate_results_ID_group <- left_join(ngsRelate_results_ID_group, sampleID_group, by = c("ID_b" = "ID"))
+ngsRelate_results_sample_info <- left_join(ngsRelate_results_sample_info, sample_info, by = c("ID_b" = "ID"))
 
-#rename "Group_ID" to "b_Group"
-ngsRelate_results_ID_group <- rename(ngsRelate_results_ID_group, "b_Group" = "Group_ID")
+#rename "Group_ID" to "b_Group" and "sex" to "b_sex"
+ngsRelate_results_sample_info <- rename(ngsRelate_results_sample_info, "b_Group" = "Group_ID")
+ngsRelate_results_sample_info <- rename(ngsRelate_results_sample_info, "b_sex" = "sex")
 ```
 
 
 ```r
 #which group IDs are there?
-sort(unique(ngsRelate_results_ID_group$a_Group))
+sort(unique(ngsRelate_results_sample_info$a_Group))
 #>  [1] "5509"         "5512"         "5931-5938"    "dump"         "mpala"       
 #>  [6] "mpala_chicks" "ROOP"         "RRWB"         "wing_tags"    "wt025"
 ```
@@ -513,7 +543,7 @@ sort(unique(ngsRelate_results_ID_group$a_Group))
 
 
 ```r
-sort(unique(ngsRelate_results_ID_group$b_Group))
+sort(unique(ngsRelate_results_sample_info$b_Group))
 #>  [1] "5509"         "5512"         "5931-5938"    "dump"         "mpala"       
 #>  [6] "mpala_chicks" "ROOP"         "RRWB"         "wing_tags"    "wt025"
 ```
@@ -521,13 +551,36 @@ sort(unique(ngsRelate_results_ID_group$b_Group))
 
 ```r
 #create new column that specifies if individuals are from same or different groups
-ngsRelate_results_ID_group <- ngsRelate_results_ID_group %>%
+ngsRelate_results_sample_info <- ngsRelate_results_sample_info %>%
   mutate(dyad_group = case_when(ID_a == ID_b ~ "identical",
                                 a_Group == b_Group ~ "intragroup",
                                 a_Group != b_Group ~ "intergroup"))
 
-unique(ngsRelate_results_ID_group$dyad_group)
+unique(ngsRelate_results_sample_info$dyad_group)
 #> [1] "intergroup" "intragroup" "identical"  NA
+```
+
+
+```r
+#create new column that specifies if individuals have same or different sex
+ngsRelate_results_sample_info <- ngsRelate_results_sample_info %>%
+  mutate(dyad_sex = case_when(ID_a == ID_b ~ "identical",
+                                a_sex == b_sex ~ "same sex",
+                                a_sex != b_sex ~ "male-female")) 
+
+#recode dyads for individuals with undetermined sex to NA
+ngsRelate_results_sample_info$dyad_sex[ngsRelate_results_sample_info$a_sex == "u"] <- NA
+ngsRelate_results_sample_info$dyad_sex[ngsRelate_results_sample_info$b_sex == "u"] <- NA
+
+#recode same sex dyads to male or female
+ngsRelate_results_sample_info$dyad_sex[ngsRelate_results_sample_info$dyad_sex == "same sex" & 
+                                         ngsRelate_results_sample_info$a_sex == "f"] <- "female"
+ngsRelate_results_sample_info$dyad_sex[ngsRelate_results_sample_info$dyad_sex == "same sex" & 
+                                         ngsRelate_results_sample_info$a_sex == "m"] <- "male"
+
+
+unique(ngsRelate_results_sample_info$dyad_sex)
+#> [1] "female"      "male-female" NA            "identical"   "male"
 ```
 
 
@@ -536,7 +589,7 @@ Let's have a closer look at the samples that were sequenced twice
 
 ```r
 #find samples that were sequenced twice
-duplicates <- filter(ngsRelate_results_ID_group, ID_a == ID_b)
+duplicates <- filter(ngsRelate_results_sample_info, ID_a == ID_b)
 
 #average relatedness of these duplicted inidividuals
 mean(duplicates$rab)
@@ -552,9 +605,9 @@ Create subset with at least 250k SNPs
 
 
 ```r
-ngsRelate_results_ID_group_250k <- filter(ngsRelate_results_ID_group, nSites >= 250000)
+ngsRelate_results_sample_info_250k <- filter(ngsRelate_results_sample_info, nSites >= 250000)
 
-unique(ngsRelate_results_ID_group_250k$dyad_group)
+unique(ngsRelate_results_sample_info_250k$dyad_group)
 #> [1] "intragroup" "intergroup" NA
 ```
 
@@ -569,16 +622,75 @@ theme_set(theme_classic())
 
 #plot relatedness rab (y-axis) for every dyad (x-axis), ordered from low to high relatedness and colored according to inter- or intragroup dyad
 
-ggplot(ngsRelate_results_ID_group, aes(x = reorder(dyad, rab), y = rab, color = dyad_group)) +
+ggplot(ngsRelate_results_sample_info_250k, aes(x = reorder(dyad, rab), y = rab, color = dyad_sex, shape = dyad_group)) +
   
-  geom_point(alpha = 0.1, aes(y = rab)) + #plot relatedness estimates as points 
+  geom_point(alpha = 0.2, aes(y = rab)) + #plot relatedness estimates as points 
   
   geom_hline(yintercept = c(0.125, 0.25, 0.5), linetype = "dashed") + #include horizontal line to show traditional kinship categories
   
-  labs( x = "Dyad", y = "Relatedness (ngsRelate)") 
+  labs( x = "Dyad", y = "Relatedness (ngsRelate)") +
+  
+  ggtitle("distribution of relatedness (ngsrelate) 250k")
+#> Warning: Removed 214 rows containing missing values (geom_point).
 ```
 
 <img src="2_data_files/figure-html/figure dyadic relatedness (ngsrelate) distribution-1.png" width="672" />
+
+check correlation between number of SNPs and sex
+
+
+```r
+theme_set(theme_classic())
+
+#plot nSites (y-axis) and for the different categories of sex of dyad (x-axis) colored according to coverage
+
+ggplot(ngsRelate_results_sample_info, aes(x = dyad_sex, y = nSites, color = coverage, shape = dyad_group)) +
+  
+  geom_point(alpha = 0.2) +
+  
+  geom_boxplot()
+#> Warning: Removed 351 rows containing missing values (geom_point).
+```
+
+<img src="2_data_files/figure-html/figure (ngsrelate) dyad_sex and nSites-1.png" width="672" />
+
+```r
+
+ ggtitle("nsites vs sex")
+#> $title
+#> [1] "nsites vs sex"
+#> 
+#> attr(,"class")
+#> [1] "labels"
+```
+
+Compare relatedness estimates according to group and sex
+
+
+```r
+theme_set(theme_classic())
+
+#plot relatedness rab (y-axis) for the different categories of sex of dyad (x-axis) colored according to group membership
+
+ggplot(ngsRelate_results_sample_info_250k, aes(x = dyad_sex, y = rab, color = dyad_group, shape = dyad_group)) +
+  
+  geom_point(alpha = 0.2) +
+  
+  geom_boxplot()
+#> Warning: Removed 214 rows containing missing values (geom_point).
+```
+
+<img src="2_data_files/figure-html/figure (ngsrelate) relatedness for group and sex-1.png" width="672" />
+
+```r
+
+ ggtitle("relatedness (ngsrelate) 250k")
+#> $title
+#> [1] "relatedness (ngsrelate) 250k"
+#> 
+#> attr(,"class")
+#> [1] "labels"
+```
 
 
 #### lcmlkin
@@ -633,25 +745,27 @@ We also include the group information
 
 ```r
 #first include group of individual a
-lcmlkin_results_ID_group <- left_join(lcmlkin_results_ID, sampleID_group, by = c("ID_a" = "ID"))
+lcmlkin_results_sample_info <- left_join(lcmlkin_results_ID, sample_info, by = c("ID_a" = "ID"))
 
 #rename "Group_ID" to "a_Group"
-lcmlkin_results_ID_group <- rename(lcmlkin_results_ID_group, "a_Group" = "Group_ID")
+lcmlkin_results_sample_info <- rename(lcmlkin_results_sample_info, "a_Group" = "Group_ID")
+lcmlkin_results_sample_info <- rename(lcmlkin_results_sample_info, "a_sex" = "sex")
 
 #then include group of individual b
-lcmlkin_results_ID_group <- left_join(lcmlkin_results_ID_group, sampleID_group, by = c("ID_b" = "ID"))
+lcmlkin_results_sample_info <- left_join(lcmlkin_results_sample_info, sample_info, by = c("ID_b" = "ID"))
+lcmlkin_results_sample_info <- rename(lcmlkin_results_sample_info, "b_sex" = "sex")
 
 #rename "Group_ID" to "b_Group"
-lcmlkin_results_ID_group <- rename(lcmlkin_results_ID_group, "b_Group" = "Group_ID")
+lcmlkin_results_sample_info <- rename(lcmlkin_results_sample_info, "b_Group" = "Group_ID")
 ```
 
 
 ```r
 #create new column that specifies if individuals are from same or different groups
-lcmlkin_results_ID_group <- lcmlkin_results_ID_group %>%
+lcmlkin_results_sample_info <- lcmlkin_results_sample_info %>%
   mutate(dyad_group = if_else(a_Group == b_Group, "intra", "inter"))
-str(lcmlkin_results_ID_group)
-#> 'data.frame':	7021 obs. of  14 variables:
+str(lcmlkin_results_sample_info)
+#> 'data.frame':	7021 obs. of  16 variables:
 #>  $ RGSM_a    : chr  "RGID1_S35" "RGID1_S35" "RGID1_S35" "RGID1_S35" ...
 #>  $ RGSM_b    : chr  "RGID1_S81" "RGID1_S18" "RGID1_S55" "RGID1_S4" ...
 #>  $ k0_hat    : num  0.775 0.776 0.88 0.856 0.866 0.856 0.863 0.865 0.749 0.859 ...
@@ -664,16 +778,42 @@ str(lcmlkin_results_ID_group)
 #>  $ ID_b      : chr  "WT00203" "W1376" "A1316" "W1502" ...
 #>  $ dyad      : chr  "W1673-WT00203" "W1376-W1673" "A1316-W1673" "W1502-W1673" ...
 #>  $ a_Group   : chr  "wt025" "wt025" "wt025" "wt025" ...
+#>  $ a_sex     : chr  "f" "f" "f" "f" ...
 #>  $ b_Group   : chr  "mpala_chicks" "dump" "wing_tags" "RRWB" ...
+#>  $ b_sex     : chr  "f" "f" "m" "m" ...
 #>  $ dyad_group: chr  "inter" "inter" "inter" "inter" ...
 ```
+
+
+```r
+#create new column that specifies if individuals have same or different sex
+lcmlkin_results_sample_info <- lcmlkin_results_sample_info %>%
+  mutate(dyad_sex = case_when(ID_a == ID_b ~ "identical",
+                                a_sex == b_sex ~ "same sex",
+                                a_sex != b_sex ~ "male-female")) 
+
+#recode dyads for individuals with undetermined sex to NA
+lcmlkin_results_sample_info$dyad_sex[lcmlkin_results_sample_info$a_sex == "u"] <- NA
+lcmlkin_results_sample_info$dyad_sex[lcmlkin_results_sample_info$b_sex == "u"] <- NA
+
+#recode same sex dyads to male or female
+lcmlkin_results_sample_info$dyad_sex[lcmlkin_results_sample_info$dyad_sex == "same sex" & 
+                                         lcmlkin_results_sample_info$a_sex == "f"] <- "female"
+lcmlkin_results_sample_info$dyad_sex[lcmlkin_results_sample_info$dyad_sex == "same sex" & 
+                                         lcmlkin_results_sample_info$a_sex == "m"] <- "male"
+
+
+unique(lcmlkin_results_sample_info$dyad_sex)
+#> [1] "female"      "male-female" NA            "identical"   "male"
+```
+
 
 Let's have a closer look at the samples that were sequenced twice
 
 
 ```r
 #find samples that were sequenced twice
-duplicates_lcmlkin <- filter(lcmlkin_results_ID, ID_a == ID_b)
+duplicates_lcmlkin <- filter(lcmlkin_results_sample_info, ID_a == ID_b)
 
 #average relatedness of these duplicted inidividuals
 mean(duplicates_lcmlkin$pi_HAT)
@@ -689,7 +829,7 @@ Create subset with at least 300k SNPs
 
 
 ```r
-lcmlkin_results_ID_group_300k <- filter(lcmlkin_results_ID_group, nbSNP >= 300000)
+lcmlkin_results_sample_info_300k <- filter(lcmlkin_results_sample_info, nbSNP >= 300000)
 ```
 
 
@@ -699,16 +839,89 @@ theme_set(theme_classic())
 
 #plot relatedness pi_HAT (y-axis) for every dyad (x-axis), ordered from low to high relatedness and colored according to inter- or intragroup dyad
 
-ggplot(lcmlkin_results_ID_group_300k, aes(x = reorder(dyad, pi_HAT), y = pi_HAT, color = dyad_group)) +
+ggplot(lcmlkin_results_sample_info_300k, aes(x = reorder(dyad, pi_HAT), y = pi_HAT, color = dyad_sex, shape = dyad_group)) +
   
   geom_point(alpha = 0.1, aes(y = pi_HAT)) + #plot relatedness estimates as points 
   
   geom_hline(yintercept = c(0.125, 0.25, 0.5), linetype = "dashed") + #include horizontal line to show traditional kinship categories
   
-  labs( x = "Dyad", y = "Relatedness (lcmlkin)") 
+  labs( x = "Dyad", y = "Relatedness (lcmlkin)") +
+
+ ggtitle("distribution of relatedness (lcmlkin) 300k SNPs")
+#> Warning: Removed 177 rows containing missing values (geom_point).
 ```
 
 <img src="2_data_files/figure-html/figure dyadic relatedness (lcmlkin) distribution-1.png" width="672" />
+
+
+```r
+
+theme_set(theme_classic())
+
+#plot relatedness pi_HAT (y-axis) and corresponding k0 (x-axis) colored according to nbSNP
+
+ggplot(lcmlkin_results_sample_info, aes(x = k0_hat, y = pi_HAT, color = nbSNP, shape = dyad_group)) +
+  
+  geom_point(alpha = 0.2) +
+
+ ggtitle("lcmlkin k0 vs phi")
+#> Warning: Removed 351 rows containing missing values (geom_point).
+```
+
+<img src="2_data_files/figure-html/figure dyadic relatedness (lcmlkin) distribution and k0-1.png" width="672" />
+
+check correlation between number of SNPs and sex
+
+
+```r
+theme_set(theme_classic())
+
+#plot nbSNPs (y-axis) and for the different categories of sex of dyad (x-axis) colored according to dyad_group
+
+ggplot(lcmlkin_results_sample_info, aes(x = dyad_sex, y = nbSNP, color = dyad_group, shape = dyad_group)) +
+  
+  geom_point(alpha = 0.2) +
+  
+  geom_boxplot()
+#> Warning: Removed 351 rows containing missing values (geom_point).
+```
+
+<img src="2_data_files/figure-html/figure (lcmlkin) dyad_sex and nbSNP-1.png" width="672" />
+
+```r
+
+ ggtitle("nbSNP vs sex of dyad")
+#> $title
+#> [1] "nbSNP vs sex of dyad"
+#> 
+#> attr(,"class")
+#> [1] "labels"
+```
+
+
+```r
+theme_set(theme_classic())
+
+#plot relatedness pi_HAT (y-axis) for the different categories of sex of dyad (x-axis) colored according to group membership
+
+ggplot(lcmlkin_results_sample_info_300k, aes(x = dyad_group, y = pi_HAT, color = dyad_sex)) +
+  
+  geom_point(alpha = 0.2) +
+  
+  geom_boxplot()
+```
+
+<img src="2_data_files/figure-html/figure (lcmlkin relatedness for group and sex-1.png" width="672" />
+
+```r
+
+ ggtitle("relatedness (lcmlkin) 300k")
+#> $title
+#> [1] "relatedness (lcmlkin) 300k"
+#> 
+#> attr(,"class")
+#> [1] "labels"
+```
 
 #### READ
 
@@ -824,6 +1037,60 @@ range(duplicates$NonNormalizedP0)
 ```
 
 
+We also include the group information
+
+
+```r
+#first include group of individual a
+READ_results_sample_info <- left_join(READ_results_ID, sample_info, by = c("ID_a" = "ID"))
+
+#rename "Group_ID" to "a_Group"
+READ_results_sample_info <- rename(READ_results_sample_info, "a_Group" = "Group_ID")
+READ_results_sample_info <- rename(READ_results_sample_info, "a_sex" = "sex")
+
+#then include group of individual b
+READ_results_sample_info <- left_join(READ_results_sample_info, sample_info, by = c("ID_b" = "ID"))
+READ_results_sample_info <- rename(READ_results_sample_info, "b_sex" = "sex")
+
+#rename "Group_ID" to "b_Group"
+READ_results_sample_info <- rename(READ_results_sample_info, "b_Group" = "Group_ID")
+```
+
+
+```r
+#create new column that specifies if individuals are from same or different groups
+READ_results_sample_info <- READ_results_sample_info %>%
+  mutate(dyad_group = case_when(ID_a == ID_b ~ "identical",
+                                a_Group == b_Group ~ "intragroup",
+                                a_Group != b_Group ~ "intergroup"))
+
+unique(READ_results_sample_info$dyad_group)
+#> [1] "intergroup" "intragroup" NA           "identical"
+```
+
+
+```r
+#create new column that specifies if individuals have same or different sex
+READ_results_sample_info <- READ_results_sample_info %>%
+  mutate(dyad_sex = case_when(ID_a == ID_b ~ "identical",
+                                a_sex == b_sex ~ "same sex",
+                                a_sex != b_sex ~ "male-female")) 
+
+#recode dyads for individuals with undetermined sex to NA
+READ_results_sample_info$dyad_sex[READ_results_sample_info$a_sex == "u"] <- NA
+READ_results_sample_info$dyad_sex[READ_results_sample_info$b_sex == "u"] <- NA
+
+#recode same sex dyads to male or female
+READ_results_sample_info$dyad_sex[READ_results_sample_info$dyad_sex == "same sex" & 
+                                         READ_results_sample_info$a_sex == "f"] <- "female"
+READ_results_sample_info$dyad_sex[READ_results_sample_info$dyad_sex == "same sex" & 
+                                         READ_results_sample_info$a_sex == "m"] <- "male"
+
+
+unique(READ_results_sample_info$dyad_sex)
+#> [1] NA            "male-female" "male"        "identical"   "female"
+```
+
 
 ```r
 
@@ -831,7 +1098,7 @@ theme_set(theme_classic())
 
 #plot relatedness P0 (y-axis) for every dyad (x-axis), ordered from low to high relatedness and colored according to inter- or intragroup dyad
 
-ggplot(READ_results, aes(x = reorder(PairIndividuals, NonNormalizedP0), y = NonNormalizedP0, color = Relationship)) +
+ggplot(READ_results_sample_info, aes(x = reorder(PairIndividuals, NonNormalizedP0), y = NonNormalizedP0, color = dyad_sex)) +
   
   geom_point(alpha = 0.1, aes(y = NonNormalizedP0)) + #plot relatedness estimates as points 
   
@@ -839,6 +1106,32 @@ ggplot(READ_results, aes(x = reorder(PairIndividuals, NonNormalizedP0), y = NonN
 ```
 
 <img src="2_data_files/figure-html/figure dyadic relatedness (READ) distribution-1.png" width="672" />
+
+
+```r
+theme_set(theme_classic())
+
+#plot relatedness pi_HAT (y-axis) for the different categories of sex of dyad (x-axis) colored according to group membership
+
+ggplot(READ_results_sample_info, aes(x = dyad_sex, y = NonNormalizedP0, color = dyad_group)) +
+  
+  geom_point(alpha = 0.2) +
+  
+  geom_boxplot()
+```
+
+<img src="2_data_files/figure-html/figure (READ) relatedness for group and sex-1.png" width="672" />
+
+```r
+
+ ggtitle("relatedness (READ)")
+#> $title
+#> [1] "relatedness (READ)"
+#> 
+#> attr(,"class")
+#> [1] "labels"
+```
+
 
 #### Combined relatedness results
 
@@ -848,8 +1141,8 @@ merge ngsrelate and lcmlkin
 
 
 ```r
-relate_results <- full_join(ngsRelate_results_ID_group, lcmlkin_results_ID_group, by = "RGSM_dyad")
-relate_results <- full_join(relate_results, READ_results_ID, by = "RGSM_dyad")
+relate_results <- full_join(ngsRelate_results_sample_info, lcmlkin_results_sample_info, by = "RGSM_dyad")
+relate_results <- full_join(relate_results, READ_results_sample_info, by = "RGSM_dyad")
 ```
 
 plot
@@ -863,14 +1156,14 @@ theme_set(theme_classic())
 
 #plot relatedness pi_HAT and rab (y-axis) for every dyad (x-axis), ordered from low to high relatedness and colored according to inter- or intragroup dyad
 
-ggplot(filter(relate_results, coverage > 0.95), aes(x = reorder(dyad, pi_HAT))) +
+ggplot(filter(relate_results, coverage > 0.95), aes(x = reorder(dyad, pi_HAT), color = dyad_sex)) +
   
   
-  geom_point(alpha = 0.1, aes(y = pi_HAT), color = "blue") + #plot lcmlkin relatedness estimates as points 
+  geom_point(alpha = 0.5, aes(y = pi_HAT), shape = 15) + #plot lcmlkin relatedness estimates as points 
   
-  geom_point(alpha = 0.1, aes(y = NonNormalizedP0), color = "red") + #plot READ estimate
+  geom_point(alpha = 0.5, aes(y = NonNormalizedP0), shape = 16) + #plot READ estimate
   
-  geom_point(alpha = 0.1, aes(y = rab), color = "black") + # plot ngsRelate estimates
+  geom_point(alpha = 0.5, aes(y = rab), shape = 17) + # plot ngsRelate estimates
   
   scale_y_continuous(
     
@@ -889,12 +1182,12 @@ Compare correlation among the three estimators
 
 
 ```r
-ggplot(relate_results, aes(x = rab, y = pi_HAT, color = coverage, size = nSites, shape = dyad_group.x)) +
+ggplot(relate_results, aes(x = rab, y = pi_HAT, color = dyad_sex, size = nSites, shape = dyad_group.x)) +
   
-  scale_colour_viridis_c() +
+  scale_colour_viridis_d() +
   
-  geom_point(alpha = 0.2) 
-#> Warning: Removed 351 rows containing missing values (geom_point).
+   geom_point(alpha = 0.2) 
+#> Warning: Removed 1026 rows containing missing values (geom_point).
 ```
 
 <img src="2_data_files/figure-html/correlation ngsrelate lcmlkin-1.png" width="672" />
@@ -902,12 +1195,12 @@ ggplot(relate_results, aes(x = rab, y = pi_HAT, color = coverage, size = nSites,
 
 ```r
 
-ggplot(relate_results, aes(x = rab, y = NonNormalizedP0, color = coverage, size = nSites, shape = dyad_group.x)) +
+ggplot(relate_results, aes(x = rab, y = NonNormalizedP0, color = dyad_sex, size = nSites, shape = dyad_group.x)) +
   
-  scale_colour_viridis_c() +
+  scale_colour_viridis_d() +
   
   geom_point(alpha = 0.2) 
-#> Warning: Removed 351 rows containing missing values (geom_point).
+#> Warning: Removed 1026 rows containing missing values (geom_point).
 ```
 
 <img src="2_data_files/figure-html/correlation ngsrelate READ-1.png" width="672" />
@@ -915,12 +1208,12 @@ ggplot(relate_results, aes(x = rab, y = NonNormalizedP0, color = coverage, size 
 
 ```r
 
-ggplot(relate_results, aes(x = pi_HAT, y = NonNormalizedP0, color = coverage, size = nSites, shape = dyad_group.x)) +
+ggplot(relate_results, aes(x = pi_HAT, y = NonNormalizedP0, color = dyad_sex, size = nSites, shape = dyad_group.x)) +
   
-  scale_colour_viridis_c() +
+  scale_colour_viridis_d() +
   
   geom_point(alpha = 0.2) 
-#> Warning: Removed 351 rows containing missing values (geom_point).
+#> Warning: Removed 1026 rows containing missing values (geom_point).
 ```
 
 <img src="2_data_files/figure-html/correlation lcmlkin READ-1.png" width="672" />
