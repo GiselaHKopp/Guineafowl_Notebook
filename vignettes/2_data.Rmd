@@ -70,13 +70,46 @@ str(sample_info)
 
 ### Sequencing data
 
-First we evaluate the quality of the data and the different sequencing approaches.
-An overview of the data as of 26th April 2021 is stored in *Guineafowl-lcWGS_DataOverview_20210426.csv*
+First, we load an overview of the analysed sequencing libraries. They are stored in the folder `pipeline` as *file_list.tsv*. 
+
+```{r load analysed seq libraries}
+seqlib_overview <- read.delim("vignettes/data/pipeline/file_list.tsv", header = TRUE,  as.is = TRUE)
+str(seqlib_overview)
+```
+
+The information about the sampled individual, which we will later need to assign the relatedness estimation to specific individuals, is available in the *file_name* column. We will extract this information and put it in an extra *ID* column.
+
+```{r create ID column in seqlib_overview}
+#first need to create a new column that includes the sample ID
+seqlib_overview$ID <- gsub("([[:alnum:]]{3}_[[:alnum:]]{6}-[[:digit:]])_([[:alnum:]]{5,7})_([[:alnum:]]{2,3}_[[:alnum:]]{2}_[[:graph:]]{12})", "\\2", seqlib_overview$file_name)
+
+str(seqlib_overview)
+```
+
+
+Next, we evaluate the quality of the data and the different sequencing approaches.
+An overview of the data as output from the Nextflow pipeline as of 29th July 2021 is stored in *preprocessing_overview.tsv*
 
 ```{r import seq data analysis overview}
-data_overview <- read.csv("vignettes/data/Guineafowl-lcWGS_DataOverview_20210426.csv", header = TRUE, sep = ";", as.is = TRUE)
+data_overview <- read.delim("vignettes/data/pipeline/preprocessing_overview.tsv", as.is = TRUE)
 str(data_overview)
 
+```
+
+```{r}
+#create new column that specifies if sequencing results are from original run or from resequencing
+data_overview <- data_overview %>%
+  mutate(original_reseq = case_when(RGID == "1" ~ "original",
+                                RGID == "2" ~ "reseq"))
+```
+
+
+
+```{r create ID column in data_overview}
+#first need to create a new column that includes the sample ID
+data_overview$ID <- gsub("([[:alnum:]]{3}_[[:alnum:]]{6}-[[:digit:]])_([[:alnum:]]{5,7})_([[:alnum:]]{2,3}_[[:alnum:]]{2}_[[:graph:]]{12})", "\\2", data_overview$filename_one)
+
+str(data_overview)
 ```
 
 save data overview
@@ -88,13 +121,13 @@ Calculate total and mean number of raw reads
 !!paired-end sequencing, so need to account for that
 ```{r raw reads}
 
-total_raw_reads <- sum(data_overview$total.reads)
+total_raw_reads <- sum(data_overview$reads_pre_trim_total)
 total_raw_reads
 
-mean_raw_reads <- mean(data_overview$total.reads)
+mean_raw_reads <- mean(data_overview$reads_pre_trim_total)
 mean_raw_reads
 
-sd_raw_reads <- sd(data_overview$total.reads)
+sd_raw_reads <- sd(data_overview$reads_pre_trim_total)
 sd_raw_reads
 
 ```
@@ -103,52 +136,52 @@ Calculate total and mean number of quality filtered reads
 
 ```{r quality filtered reads}
 
-total_filtered_reads <- sum(data_overview$trim.reads.survived.both)
+total_filtered_reads <- sum(data_overview$reads_post_trim_total)
 total_filtered_reads
 
-percent_filtered_reads <- total_filtered_reads/(0.5*total_raw_reads) #account for paired reads by 
+percent_filtered_reads <- total_filtered_reads/total_raw_reads  
 percent_filtered_reads
 
-mean_filtered_reads <- mean(data_overview$trim.reads.survived.both)
+mean_filtered_reads <- mean(data_overview$reads_post_trim_total)
 mean_filtered_reads
 
-percent_mean_filtered_reads <- mean_filtered_reads/(0.5*mean_raw_reads)
+percent_mean_filtered_reads <- mean_filtered_reads/mean_raw_reads
 percent_mean_filtered_reads
 
-sd_filtered_reads <- sd(data_overview$trim.reads.survived.both)
+sd_filtered_reads <- sd(data_overview$reads_post_trim_total)
 sd_filtered_reads
 
 
-median_Trimmomatic_dropped <- median(data_overview$trim.reads.dropped...., na.rm = TRUE)
+median_Trimmomatic_dropped <- median(data_overview$reads_trimmed_lost_total, na.rm = TRUE)
 median_Trimmomatic_dropped
 
-IQR_Trimmomatic_dropped <- IQR(data_overview$trim.reads.dropped...., na.rm = TRUE)
+IQR_Trimmomatic_dropped <- IQR(data_overview$reads_trimmed_lost_total, na.rm = TRUE)
 IQR_Trimmomatic_dropped
 
-range_Trimmomatic_dropped <- range(data_overview$trim.reads.dropped...., na.rm = TRUE)
+range_Trimmomatic_dropped <- range(data_overview$reads_trimmed_lost_total, na.rm = TRUE)
 range_Trimmomatic_dropped
 
 ```
 
 Calculate mapped reads
 ```{r mapped reads}
-median_mapped_reads <- median(data_overview$mapped.reads, na.rm = TRUE)
+median_mapped_reads <- median(data_overview$reads_mapped)
 median_mapped_reads
 
-IQR_mapped_reads <- IQR(data_overview$mapped.reads, na.rm = TRUE)
+IQR_mapped_reads <- IQR(data_overview$reads_mapped)
 IQR_mapped_reads
 
-range_mapped_reads <- range(data_overview$mapped.reads, na.rm = TRUE)
+range_mapped_reads <- range(data_overview$reads_mapped)
 range_mapped_reads
 
 ```
 
 Calculate duplicates
 ```{r duplicates}
-median_duplicates <- median(data_overview$Duplicates...., na.rm = TRUE)
+median_duplicates <- median(data_overview$percent_duplication)
 median_duplicates
 
-range_duplicates <- range(data_overview$Duplicates...., na.rm = TRUE)
+range_duplicates <- range(data_overview$percent_duplication)
 range_duplicates
 
 ```
@@ -156,35 +189,35 @@ range_duplicates
 
 Calculate final coverage
 ```{r final coverage}
-median_final_coverage <- median(data_overview$coverage.mean, na.rm = TRUE)
+median_final_coverage <- median(data_overview$average_coverage)
 median_final_coverage
 
-IQR_final_coverage <- IQR(data_overview$coverage.mean, na.rm = TRUE)
+IQR_final_coverage <- IQR(data_overview$average_coverage)
 IQR_final_coverage
 
-range_final_coverage <- range(data_overview$coverage.mean, na.rm = TRUE)
+range_final_coverage <- range(data_overview$average_coverage)
 range_final_coverage
 
 ```
 
 
-For the sequencing success, we compare the reads that passed Quality control (FastCQ and Trimmotaic) depending on original run and resequencing.
+For the sequencing success, we compare the reads that passed Quality control (FastCQ and Trimmotaic) depending on original run (RGID = 1) and resequencing (RGID = 2).
 ```{r figure compare amount of reads per sequencing strategy}
 theme_set(theme_bw()) #set theme to black and white
 
 #compare reads (y-axis) between original vs. resequenced (x-axis, sorted to have original first) and color according to library prep (shotgun vs. capture)
-ggplot(data_overview, aes(x = factor(original.o..resequenced.r., level = c("o", "r")), y = trim.reads.survived.both, color = original.o..resequenced.r., shape = original.o..resequenced.r.)) + 
+ggplot(data_overview, aes(x = factor(RGID, level = c("1", "2")), y = reads_post_trim_total, color = original_reseq, shape = original_reseq)) + 
   
-  # scale_color_manual(values = wes_palette("Zissou1", n = 2)) +
+   scale_color_viridis_d(end = 0.5) +
 
-  geom_point(size = 2, alpha = 0.6, aes(group = individual), position = position_dodge(0.5)) + #make points, transparent, and group samples
+  geom_point(size = 2, alpha = 0.6, aes(group = ID), position = position_dodge(0.5)) + #make points, transparent, and group samples
   
   geom_boxplot(alpha = 0.4, outlier.shape = NA) + #add boxplots but do not show them in legend
   
   #geom_violin(alpha = 0.5) + #or add violin plots
   
   
-  geom_line(aes(group = individual), color = "grey", position = position_dodge(0.5), show.legend = FALSE) + #add line to connect samples present in both library approaches
+  geom_line(aes(group = ID), color = "grey", position = position_dodge(0.5), show.legend = FALSE) + #add line to connect samples present in both sequencing runs
   
   #stat_summary(fun = median, geom = "point", size = 5, alpha = 0.3, position = position_dodge(0.5)) +
   
@@ -199,24 +232,24 @@ ggplot(data_overview, aes(x = factor(original.o..resequenced.r., level = c("o", 
 
 
 
-Maybe more informative about the success of the approaches is to compare for the different library approaches (shotgun and capture enrichment, respectively), % reads that mapped in BWA.
+Maybe more informative about the success of the approaches is to compare % reads that mapped.
 
 ```{r figure mapped reads per sequencing strategy}
 theme_set(theme_bw()) #set theme to black and white
 
-#compare mapped reads (y-axis) between sequencing (x-axis, sorted to have original first) and color according to library prep (shotgun vs. capture)
-ggplot(data_overview, aes(x = factor(original.o..resequenced.r., level = c("o", "r")), y = mapped.reads, color = original.o..resequenced.r., shape = original.o..resequenced.r.)) + 
+#compare mapped reads (y-axis) between sequencing (x-axis, sorted to have original first) and color according to sequencing run
+ggplot(data_overview, aes(x = factor(RGID, level = c("1", "2")), y = reads_mapped_and_paired, color = original_reseq, shape = original_reseq)) + 
   
-  # scale_color_manual(values = wes_palette("Zissou1", n = 2)) +
+  scale_color_viridis_d(end = 0.5) +
 
-  geom_point(size = 2, alpha = 0.6, aes(group = individual), position = position_dodge(0.5)) + #make points, transparent, and group samples
+  geom_point(size = 2, alpha = 0.6, aes(group = ID), position = position_dodge(0.5)) + #make points, transparent, and group samples
   
   geom_boxplot(alpha = 0.4, outlier.shape = NA) + #add boxplots but do not show them in legend
   
   #geom_violin(alpha = 0.5) + #or add violin plots
   
   
-  geom_line(aes(group = individual), color = "grey", position = position_dodge(0.5), show.legend = FALSE) + #add line to connect samples present in both library approaches
+  geom_line(aes(group = ID), color = "grey", position = position_dodge(0.5), show.legend = FALSE) + #add line to connect samples present in both sequencing approaches
   
   #stat_summary(fun = median, geom = "point", size = 5, alpha = 0.3, position = position_dodge(0.5)) +
   
@@ -237,12 +270,14 @@ Finally, let's have a look at the coverage
 
 theme_set(theme_bw()) #set theme to black and white
 
-#relate number of reads (y-axis) to final coverage (x-axis), color according to sequencing (shotgun vs. capture) and sample type, shape according to original run or resequencing
-ggplot(data_overview, aes(x = coverage.mean, y = trim.reads.survived.both, color = original.o..resequenced.r., shape = original.o..resequenced.r.)) +
+#relate number of reads (y-axis) to final coverage (x-axis), color according to sequencing run (original vs. resequenced) and sample type, shape according to original run or resequencing
+ggplot(data_overview, aes(x = average_coverage, y = reads_post_trim_total, color = original_reseq, shape = original_reseq)) +
   
-  geom_line(aes(group = individual), color = "lightgrey", show.legend = FALSE) + #connect same samples
+  scale_color_viridis_d(end = 0.5) +
   
-  geom_point(alpha = 0.5, aes(group = individual, size = mapped.reads....)) + #add points with slight transparency
+  geom_line(aes(group = ID), color = "lightgrey", show.legend = FALSE) + #connect same samples
+  
+  geom_point(alpha = 0.5, aes(size = reads_mapped_and_paired, group = ID)) + #add points with slight transparency
   
   geom_vline(xintercept = 1, linetype = "dashed") + #include vertical line to show coverage cutoff
   
@@ -264,18 +299,18 @@ C-Curve
 theme_set(theme_bw()) #set theme to black and white
 
 #relate number of distinct reads (y-axis) to total reads (x-axis), color and shape according to original run or resequencing
-ggplot(data_overview, aes(x = Lib.complexity.total.reads, y = Lib.complexity.distinct.reads, color = original.o..resequenced.r., shape = original.o..resequenced.r.)) +
+ggplot(data_overview, aes(x = unpaired_reads_examined_for_deduplication, y = sequenced_library_complexity, color = original_reseq, shape = original_reseq)) +
   
-  #geom_line(aes(group = individual), color = "lightgrey", show.legend = FALSE) + #connect same samples
+  geom_line(aes(group = ID), color = "lightgrey", show.legend = FALSE) + #connect same samples
   
-  geom_point(alpha = 0.5, aes(group = individual, size = coverage.mean)) + #add points with slight transparency
+  geom_point(alpha = 0.5, aes(size = average_coverage, group = ID)) + #add points with slight transparency
   
   theme(panel.grid.minor.x = element_blank(), panel.grid.minor.y = element_blank()) + #remove x/y-axis grid lines
   
-  labs(x = "total mapped reads", y = "distinct mapped reads", 
-       size = "coverage", color ="", shape = "")  #adjust axis and legend labels
+  labs(x = "total unpaired reads", y = "sequenced library complexity", 
+       size = "coverage", color ="", shape = "") + #adjust axis and legend labels
   
-   #scale_color_manual(values = wes_palette("Zissou1", n = 5))
+   scale_color_viridis_d(end = 0.5)
   
 ```
 
@@ -285,13 +320,15 @@ comparison to total surviving reads from Trimmomatic to distinct mapped reads
 theme_set(theme_bw()) #set theme to black and white
 
 #relate number of distinct reads (y-axis) to total surviving reads (x-axis), color  and sample type, shape according to original run or resequencing
-ggplot(data_overview, aes(x =  trim.reads.survived.both, y = Lib.complexity.distinct.reads, color = original.o..resequenced.r., shape = original.o..resequenced.r.)) +
+ggplot(data_overview, aes(x =  reads_post_trim_total, y = sequenced_library_complexity, color = original_reseq, shape = original_reseq)) +
   
-  geom_point(alpha = 0.5, aes(group = individual, size = coverage.mean)) + #add points with slight transparency
+  scale_color_viridis_d(end = 0.5) +
+  
+  geom_point(alpha = 0.5, aes(size = average_coverage, group = ID)) + #add points with slight transparency
   
   theme(panel.grid.minor.x = element_blank(), panel.grid.minor.y = element_blank()) + #remove x/y-axis grid lines
   
-  labs(x = "total surviving reads (Trimmomatic)", y = "distinct mapped reads", 
+  labs(x = "total surviving reads (Trimmomatic)", y = "sequenced library complexity", 
        size = "coverage", color ="", shape = "")  #adjust axis and legend labels
   
   
@@ -305,16 +342,25 @@ plot  coverage and st.dv.
 theme_set(theme_bw()) #set theme to black and white
 
 #plot coverage (y-axis) including st.dev for every sample (x-axis), color according to original run or resequencing
-ggplot(data_overview, aes(x = reorder(individual, coverage.mean), y = coverage.mean, color = original.o..resequenced.r., shape = original.o..resequenced.r.)) +
+ggplot(filter(data_overview, original_reseq == "original"), aes(x = reorder(ID, average_coverage), y = average_coverage, color = original_reseq, shape = original_reseq)) +
   
-  geom_point(aes(y=coverage.mean), alpha = 0.9) +
+  scale_color_viridis_d(end = 0.5) +
   
-  geom_errorbar(aes(ymin = coverage.mean - coverage.st.dev., ymax = coverage.mean + coverage.st.dev.)) +
+  geom_point(aes(y=average_coverage), alpha = 0.8) +
+  
+  geom_point(data = filter(data_overview, original_reseq == "reseq"), aes(y=average_coverage), alpha = 0.8) +
+  
+  geom_errorbar(data = filter(data_overview, original_reseq == "reseq"), aes(ymin = average_coverage - average_coverarge_stdev, ymax = average_coverage + average_coverarge_stdev), alpha = 0.8) +
+  
+  geom_errorbar(aes(ymin = average_coverage - average_coverarge_stdev, ymax = average_coverage + average_coverarge_stdev), alpha = 0.8) +
   
   geom_hline(yintercept = 1, linetype = "dashed") + #include horizontal line to show coverage cutoff at 1X
   
-  geom_hline(yintercept = 0.75, linetype = "dotted") + #include horizontal line to show coverage cutoff 0.75X
+  geom_hline(yintercept = median_final_coverage, linetype = "dotted") +
   
+  coord_cartesian(ylim = c(0, 10)) + #adjust y axis
+  
+  scale_y_continuous(breaks = c(0, 2, 4, 6, 8, 10)) + 
   
   labs(x = "sample", y = "coverage (mean+-sd)", 
        color ="", shape = "") + #adjust axis and legend labels
@@ -327,23 +373,6 @@ ggplot(data_overview, aes(x = reorder(individual, coverage.mean), y = coverage.m
 ```
 
 ### Relatedness data
-
-
-First load an overview of the analysed sequencing libraries. They are stored in the folder `pipeline` as *file_list.tsv*. 
-
-```{r load analysed seq libraries}
-seqlib_overview <- read.delim("vignettes/data/pipeline/file_list.tsv", header = TRUE,  as.is = TRUE)
-str(seqlib_overview)
-```
-
-The information about the sampled individual, which we will later need to assign the relatedness estimation to specific individuals, is available in the *file_name* column. We will extract this information and put it in an extra *ID* column.
-
-```{r create ID column in seqlib_overview}
-#first need to create a new column that includes the sample ID
-seqlib_overview$ID <- gsub("([[:alnum:]]{3}_[[:alnum:]]{6}-[[:digit:]])_([[:alnum:]]{5,7})_([[:alnum:]]{2,3}_[[:alnum:]]{2}_[[:graph:]]{12})", "\\2", seqlib_overview$file_name)
-
-str(seqlib_overview)
-```
 
 
 #### ngsRelate
