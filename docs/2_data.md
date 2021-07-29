@@ -16,12 +16,12 @@ Data compiled and used in this project
 
 ```r
 library(tidyverse)
-#> -- Attaching packages ------------------------------------------------------------------------------------------------------------------------- tidyverse 1.3.0 --
+#> -- Attaching packages ------------------------------------------------------------------------------ tidyverse 1.3.0 --
 #> v ggplot2 3.3.2     v purrr   0.3.4
 #> v tibble  3.0.3     v dplyr   1.0.2
 #> v tidyr   1.1.2     v stringr 1.4.0
 #> v readr   1.3.1     v forcats 0.5.0
-#> -- Conflicts ---------------------------------------------------------------------------------------------------------------------------- tidyverse_conflicts() --
+#> -- Conflicts --------------------------------------------------------------------------------- tidyverse_conflicts() --
 #> x dplyr::filter() masks stats::filter()
 #> x dplyr::lag()    masks stats::lag()
 library(ggplot2)
@@ -91,317 +91,7 @@ str(sample_info)
 
 ### Sequencing data
 
-First we evaluate the quality of the data and the different sequencing approaches.
-An overview of the data as of 26th April 2021 is stored in *Guineafowl-lcWGS_DataOverview_20210426.csv*
-
-
-```r
-data_overview <- read.csv("vignettes/data/Guineafowl-lcWGS_DataOverview_20210426.csv", header = TRUE, sep = ";", as.is = TRUE)
-str(data_overview)
-#> 'data.frame':	119 obs. of  17 variables:
-#>  $ individual                   : chr  "W1398" "W1429" "W1429" "W1502" ...
-#>  $ library                      : chr  "L16926" "L16927" "L16927" "L16928" ...
-#>  $ run                          : chr  "S2" "S1" "S3" "S4" ...
-#>  $ original.o..resequenced.r.   : chr  "o" "r" "o" "o" ...
-#>  $ readGroupID                  : int  4 5 4 4 4 5 4 4 4 4 ...
-#>  $ total.reads                  : int  6720264 21332072 6069840 13390576 12081324 11995744 5684766 7759668 12174890 11373232 ...
-#>  $ trim.input.reads             : int  3360132 10666036 3034920 6695288 6040662 5997872 2842383 3879834 6087445 5686616 ...
-#>  $ trim.reads.survived.both     : int  2544284 9427764 2360036 5279275 4602830 5309238 2225803 2852960 4754568 4400910 ...
-#>  $ trim.reads.dropped....       : num  0.24 0.12 0.22 0.21 0.24 0.11 0.22 0.26 0.22 0.23 ...
-#>  $ mapped.reads                 : int  4987783 18494700 4631339 10376967 9021788 10412331 4367512 5598370 9342782 8636957 ...
-#>  $ mapped.reads....             : num  98 98.1 98.1 98.3 98 ...
-#>  $ coverage.mean                : num  0.56 2.06 0.52 1.14 0.97 1.14 0.48 0.63 1.05 0.98 ...
-#>  $ coverage.st.dev.             : num  2.48 4.96 2.58 2.8 3.81 3.56 2.18 2.43 2.58 3.13 ...
-#>  $ Duplicates....               : num  5.07 8.13 4.92 5.2 5.09 9.35 5.56 4.54 4.59 4.84 ...
-#>  $ Lib.complexity.total.reads   : int  2250000 8750000 2250000 5000000 4250000 4750000 2000000 2750000 4500000 4250000 ...
-#>  $ Lib.complexity.distinct.reads: int  2224740 8608220 2221360 4963340 4181270 4688400 1979850 2722780 4466910 4203570 ...
-#>  $ number.of.snps               : logi  NA NA NA NA NA NA ...
-```
-
-save data overview
-
-```r
-save(data_overview, file = "data_overview.RData")
-```
-
-Calculate total and mean number of raw reads
-!!paired-end sequencing, so need to account for that
-
-```r
-
-total_raw_reads <- sum(data_overview$total.reads)
-total_raw_reads
-#> [1] 1393934732
-
-mean_raw_reads <- mean(data_overview$total.reads)
-mean_raw_reads
-#> [1] 11713737
-
-sd_raw_reads <- sd(data_overview$total.reads)
-sd_raw_reads
-#> [1] 5979400
-```
-
-Calculate total and mean number of quality filtered reads
-
-
-```r
-
-total_filtered_reads <- sum(data_overview$trim.reads.survived.both)
-total_filtered_reads
-#> [1] 558670307
-
-percent_filtered_reads <- total_filtered_reads/(0.5*total_raw_reads) #account for paired reads by 
-percent_filtered_reads
-#> [1] 0.8015731
-
-mean_filtered_reads <- mean(data_overview$trim.reads.survived.both)
-mean_filtered_reads
-#> [1] 4694708
-
-percent_mean_filtered_reads <- mean_filtered_reads/(0.5*mean_raw_reads)
-percent_mean_filtered_reads
-#> [1] 0.8015731
-
-sd_filtered_reads <- sd(data_overview$trim.reads.survived.both)
-sd_filtered_reads
-#> [1] 2573996
-
-
-median_Trimmomatic_dropped <- median(data_overview$trim.reads.dropped...., na.rm = TRUE)
-median_Trimmomatic_dropped
-#> [1] 0.22
-
-IQR_Trimmomatic_dropped <- IQR(data_overview$trim.reads.dropped...., na.rm = TRUE)
-IQR_Trimmomatic_dropped
-#> [1] 0.035
-
-range_Trimmomatic_dropped <- range(data_overview$trim.reads.dropped...., na.rm = TRUE)
-range_Trimmomatic_dropped
-#> [1] 0.10 0.31
-```
-
-Calculate mapped reads
-
-```r
-median_mapped_reads <- median(data_overview$mapped.reads, na.rm = TRUE)
-median_mapped_reads
-#> [1] 8102554
-
-IQR_mapped_reads <- IQR(data_overview$mapped.reads, na.rm = TRUE)
-IQR_mapped_reads
-#> [1] 5980470
-
-range_mapped_reads <- range(data_overview$mapped.reads, na.rm = TRUE)
-range_mapped_reads
-#> [1]  1564428 31252553
-```
-
-Calculate duplicates
-
-```r
-median_duplicates <- median(data_overview$Duplicates...., na.rm = TRUE)
-median_duplicates
-#> [1] 4.92
-
-range_duplicates <- range(data_overview$Duplicates...., na.rm = TRUE)
-range_duplicates
-#> [1]  3.39 10.02
-```
-
-
-Calculate final coverage
-
-```r
-median_final_coverage <- median(data_overview$coverage.mean, na.rm = TRUE)
-median_final_coverage
-#> [1] 0.91
-
-IQR_final_coverage <- IQR(data_overview$coverage.mean, na.rm = TRUE)
-IQR_final_coverage
-#> [1] 0.665
-
-range_final_coverage <- range(data_overview$coverage.mean, na.rm = TRUE)
-range_final_coverage
-#> [1] 0.17 3.46
-```
-
-
-For the sequencing success, we compare the reads that passed Quality control (FastCQ and Trimmotaic) depending on original run and resequencing.
-
-```r
-theme_set(theme_bw()) #set theme to black and white
-
-#compare reads (y-axis) between original vs. resequenced (x-axis, sorted to have original first) and color according to library prep (shotgun vs. capture)
-ggplot(data_overview, aes(x = factor(original.o..resequenced.r., level = c("o", "r")), y = trim.reads.survived.both, color = original.o..resequenced.r., shape = original.o..resequenced.r.)) + 
-  
-  # scale_color_manual(values = wes_palette("Zissou1", n = 2)) +
-
-  geom_point(size = 2, alpha = 0.6, aes(group = individual), position = position_dodge(0.5)) + #make points, transparent, and group samples
-  
-  geom_boxplot(alpha = 0.4, outlier.shape = NA) + #add boxplots but do not show them in legend
-  
-  #geom_violin(alpha = 0.5) + #or add violin plots
-  
-  
-  geom_line(aes(group = individual), color = "grey", position = position_dodge(0.5), show.legend = FALSE) + #add line to connect samples present in both library approaches
-  
-  #stat_summary(fun = median, geom = "point", size = 5, alpha = 0.3, position = position_dodge(0.5)) +
-  
-  labs(x = "sequencing run", y = "reads after quality filtering") + #adjust axis labels
-  
- 
-  theme(legend.title = element_blank()) + #remove legend title
-  
-  theme(panel.grid.major.x = element_blank())  #remove x-axis grid lines
-```
-
-<img src="2_data_files/figure-html/figure compare amount of reads per sequencing strategy-1.png" width="672" />
-
-
-
-Maybe more informative about the success of the approaches is to compare for the different library approaches (shotgun and capture enrichment, respectively), % reads that mapped in BWA.
-
-
-```r
-theme_set(theme_bw()) #set theme to black and white
-
-#compare mapped reads (y-axis) between sequencing (x-axis, sorted to have original first) and color according to library prep (shotgun vs. capture)
-ggplot(data_overview, aes(x = factor(original.o..resequenced.r., level = c("o", "r")), y = mapped.reads, color = original.o..resequenced.r., shape = original.o..resequenced.r.)) + 
-  
-  # scale_color_manual(values = wes_palette("Zissou1", n = 2)) +
-
-  geom_point(size = 2, alpha = 0.6, aes(group = individual), position = position_dodge(0.5)) + #make points, transparent, and group samples
-  
-  geom_boxplot(alpha = 0.4, outlier.shape = NA) + #add boxplots but do not show them in legend
-  
-  #geom_violin(alpha = 0.5) + #or add violin plots
-  
-  
-  geom_line(aes(group = individual), color = "grey", position = position_dodge(0.5), show.legend = FALSE) + #add line to connect samples present in both library approaches
-  
-  #stat_summary(fun = median, geom = "point", size = 5, alpha = 0.3, position = position_dodge(0.5)) +
-  
-  labs(x = "sequencing run", y = "mapped reads") + #adjust axis labels
-  
- 
-  theme(legend.title = element_blank()) + #remove legend title
-  
-  theme(panel.grid.major.x = element_blank())  #remove x-axis grid lines
-```
-
-<img src="2_data_files/figure-html/figure mapped reads per sequencing strategy-1.png" width="672" />
-
-
-
-Finally, let's have a look at the coverage
-
-
-```r
-
-theme_set(theme_bw()) #set theme to black and white
-
-#relate number of reads (y-axis) to final coverage (x-axis), color according to sequencing (shotgun vs. capture) and sample type, shape according to original run or resequencing
-ggplot(data_overview, aes(x = coverage.mean, y = trim.reads.survived.both, color = original.o..resequenced.r., shape = original.o..resequenced.r.)) +
-  
-  geom_line(aes(group = individual), color = "lightgrey", show.legend = FALSE) + #connect same samples
-  
-  geom_point(alpha = 0.5, aes(group = individual, size = mapped.reads....)) + #add points with slight transparency
-  
-  geom_vline(xintercept = 1, linetype = "dashed") + #include vertical line to show coverage cutoff
-  
-    #scale_y_log10(breaks = scales::trans_breaks("log10", function(x) 10^x), labels = scales::trans_format("log10", scales::math_format(10^.x))) + #make y-axis logarithmic
-  
-  #scale_x_log10() + #make x-axis logarithmic
-  
-  #annotation_logticks() +
-  
-  labs(x = "coverage", y = "reads (after quality filtering)", 
-       size = "% reads mapped", color ="", shape = "") 
-```
-
-<img src="2_data_files/figure-html/figure number of reads and final coverage-1.png" width="672" />
-
-
-C-Curve
-
-
-```r
-theme_set(theme_bw()) #set theme to black and white
-
-#relate number of distinct reads (y-axis) to total reads (x-axis), color and shape according to original run or resequencing
-ggplot(data_overview, aes(x = Lib.complexity.total.reads, y = Lib.complexity.distinct.reads, color = original.o..resequenced.r., shape = original.o..resequenced.r.)) +
-  
-  #geom_line(aes(group = individual), color = "lightgrey", show.legend = FALSE) + #connect same samples
-  
-  geom_point(alpha = 0.5, aes(group = individual, size = coverage.mean)) + #add points with slight transparency
-  
-  theme(panel.grid.minor.x = element_blank(), panel.grid.minor.y = element_blank()) + #remove x/y-axis grid lines
-  
-  labs(x = "total mapped reads", y = "distinct mapped reads", 
-       size = "coverage", color ="", shape = "")  #adjust axis and legend labels
-```
-
-<img src="2_data_files/figure-html/figure c-curve-1.png" width="672" />
-
-```r
-  
-   #scale_color_manual(values = wes_palette("Zissou1", n = 5))
-  
-```
-
-comparison to total surviving reads from Trimmomatic to distinct mapped reads
-
-
-```r
-theme_set(theme_bw()) #set theme to black and white
-
-#relate number of distinct reads (y-axis) to total surviving reads (x-axis), color  and sample type, shape according to original run or resequencing
-ggplot(data_overview, aes(x =  trim.reads.survived.both, y = Lib.complexity.distinct.reads, color = original.o..resequenced.r., shape = original.o..resequenced.r.)) +
-  
-  geom_point(alpha = 0.5, aes(group = individual, size = coverage.mean)) + #add points with slight transparency
-  
-  theme(panel.grid.minor.x = element_blank(), panel.grid.minor.y = element_blank()) + #remove x/y-axis grid lines
-  
-  labs(x = "total surviving reads (Trimmomatic)", y = "distinct mapped reads", 
-       size = "coverage", color ="", shape = "")  #adjust axis and legend labels
-```
-
-<img src="2_data_files/figure-html/figure total surving reads to distinct mapped reads-1.png" width="672" />
-
-
-plot  coverage and st.dv.
-
-
-```r
-theme_set(theme_bw()) #set theme to black and white
-
-#plot coverage (y-axis) including st.dev for every sample (x-axis), color according to original run or resequencing
-ggplot(data_overview, aes(x = reorder(individual, coverage.mean), y = coverage.mean, color = original.o..resequenced.r., shape = original.o..resequenced.r.)) +
-  
-  geom_point(aes(y=coverage.mean), alpha = 0.9) +
-  
-  geom_errorbar(aes(ymin = coverage.mean - coverage.st.dev., ymax = coverage.mean + coverage.st.dev.)) +
-  
-  geom_hline(yintercept = 1, linetype = "dashed") + #include horizontal line to show coverage cutoff at 1X
-  
-  geom_hline(yintercept = 0.75, linetype = "dotted") + #include horizontal line to show coverage cutoff 0.75X
-  
-  
-  labs(x = "sample", y = "coverage (mean+-sd)", 
-       color ="", shape = "") + #adjust axis and legend labels
-  
-  theme(axis.text.x = element_text(angle = 50, vjust = 1, hjust = 1, size = 8)) +
-  
-  scale_x_discrete(guide = guide_axis(n.dodge=2))  #avoid overlap of x-axis labels
-```
-
-<img src="2_data_files/figure-html/mt coverage-1.png" width="672" />
-
-### Relatedness data
-
-
-First load an overview of the analysed sequencing libraries. They are stored in the folder `pipeline` as *file_list.tsv*. 
+First, we load an overview of the analysed sequencing libraries. They are stored in the folder `pipeline` as *file_list.tsv*. 
 
 
 ```r
@@ -433,6 +123,391 @@ str(seqlib_overview)
 #>  $ RGSM     : chr  "RGID1_S1" "RGID1_S1" "RGID1_S2" "RGID1_S2" ...
 #>  $ ID       : chr  "W1350" "W1350" "W1398" "W1398" ...
 ```
+
+
+Next, we evaluate the quality of the data and the different sequencing approaches.
+An overview of the data as output from the Nextflow pipeline as of 29th July 2021 is stored in *preprocessing_overview.tsv*
+
+
+```r
+data_overview <- read.delim("vignettes/data/pipeline/preprocessing_overview.tsv", as.is = TRUE)
+str(data_overview)
+#> 'data.frame':	119 obs. of  31 variables:
+#>  $ RGSM                                     : chr  "RGID1_S1" "RGID1_S2" "RGID1_S3" "RGID1_S4" ...
+#>  $ RGID                                     : int  1 1 1 1 1 1 1 1 1 1 ...
+#>  $ RGLB                                     : chr  "lib1" "lib1" "lib1" "lib1" ...
+#>  $ RGPL                                     : chr  "ILLUMINA" "ILLUMINA" "ILLUMINA" "ILLUMINA" ...
+#>  $ RGPU                                     : chr  "unit1" "unit1" "unit1" "unit1" ...
+#>  $ filename_one                             : chr  "mpg_L16936-1_W1350_S1_R1_001.fastq.gz" "mpg_L16926-1_W1398_S2_R1_001.fastq.gz" "mpg_L16927-1_W1429_S3_R1_001.fastq.gz" "mpg_L16928-1_W1502_S4_R1_001.fastq.gz" ...
+#>  $ filename_two                             : chr  "mpg_L16936-1_W1350_S1_R2_001.fastq.gz" "mpg_L16926-1_W1398_S2_R2_001.fastq.gz" "mpg_L16927-1_W1429_S3_R2_001.fastq.gz" "mpg_L16928-1_W1502_S4_R2_001.fastq.gz" ...
+#>  $ reads_pre_trim_one                       : int  3844063 3360132 3034920 6695288 6040662 2842383 3879834 6087445 5686616 4107154 ...
+#>  $ reads_pre_trim_two                       : int  3844063 3360132 3034920 6695288 6040662 2842383 3879834 6087445 5686616 4107154 ...
+#>  $ reads_pre_trim_total                     : int  7688126 6720264 6069840 13390576 12081324 5684766 7759668 12174890 11373232 8214308 ...
+#>  $ reads_post_trim_one                      : int  3334957 3057420 2775271 6144973 5496263 2618095 3544978 5592586 5206646 3740830 ...
+#>  $ reads_post_trim_two                      : int  3317567 2622060 2444309 5472149 4763684 2298940 2933104 4916336 4551423 3252219 ...
+#>  $ reads_post_trim_total                    : int  6652524 5679480 5219580 11617122 10259947 4917035 6478082 10508922 9758069 6993049 ...
+#>  $ reads_trimmed_lost_one                   : int  509106 302712 259649 550315 544399 224288 334856 494859 479970 366324 ...
+#>  $ reads_trimmed_lost_two                   : int  526496 738072 590611 1223139 1276978 543443 946730 1171109 1135193 854935 ...
+#>  $ reads_trimmed_lost_total                 : int  1035602 1040784 850260 1773454 1821377 767731 1281586 1665968 1615163 1221259 ...
+#>  $ reads_trimmed_lost_total_percent         : num  0.135 0.155 0.14 0.132 0.151 ...
+#>  $ reads_mapped                             : int  6448222 5897151 5344556 11948516 10542799 5052562 6862719 10880329 10069374 7213292 ...
+#>  $ reads_mapped_and_paired                  : int  6124942 4910684 4546908 10259622 8836944 4295176 5524338 9244878 8510126 6063336 ...
+#>  $ reads_unmapped                           : int  158628 176787 170192 251546 386867 143020 186719 234815 276382 223486 ...
+#>  $ reads_mapped_percent                     : num  0.975 0.97 0.968 0.979 0.963 ...
+#>  $ average_coverage                         : num  1.6 1.63 1.58 2.16 2.07 ...
+#>  $ average_coverarge_stdev                  : num  2.67 2.8 2.62 2.98 3.64 ...
+#>  $ unpaired_reads_examined_for_deduplication: int  323280 986467 797648 1688894 1705855 757386 1338381 1635451 1559248 1149956 ...
+#>  $ paired_reads_examined_for_deduplication  : int  3094003 2475793 2291351 5174753 4449902 2167892 2782428 4657453 4288831 3054109 ...
+#>  $ unpaired_read_duplicated                 : int  66109 106320 78976 195164 185282 87774 136509 172933 169988 118239 ...
+#>  $ paired_read_duplicates                   : int  221442 119369 103005 260460 197926 115543 120104 206962 194659 133521 ...
+#>  $ percent_duplication                      : num  0.0782 0.0581 0.053 0.0595 0.0548 ...
+#>  $ sequenced_library_complexity             : int  6090385 5720981 5222642 11474365 10330774 4870312 6664743 10519461 9774928 7042018 ...
+#>  $ estimated_library_complexity             : int  23660823 29649178 29602264 59328308 57146455 23492191 37280729 60581428 54839066 40354282 ...
+#>  $ percent_library_sequenced                : num  0.257 0.193 0.176 0.193 0.181 ...
+```
+
+
+```r
+#create new column that specifies if sequencing results are from original run or from resequencing
+data_overview <- data_overview %>%
+  mutate(original_reseq = case_when(RGID == "1" ~ "original",
+                                RGID == "2" ~ "reseq"))
+```
+
+
+
+
+```r
+#first need to create a new column that includes the sample ID
+data_overview$ID <- gsub("([[:alnum:]]{3}_[[:alnum:]]{6}-[[:digit:]])_([[:alnum:]]{5,7})_([[:alnum:]]{2,3}_[[:alnum:]]{2}_[[:graph:]]{12})", "\\2", data_overview$filename_one)
+
+str(data_overview)
+#> 'data.frame':	119 obs. of  33 variables:
+#>  $ RGSM                                     : chr  "RGID1_S1" "RGID1_S2" "RGID1_S3" "RGID1_S4" ...
+#>  $ RGID                                     : int  1 1 1 1 1 1 1 1 1 1 ...
+#>  $ RGLB                                     : chr  "lib1" "lib1" "lib1" "lib1" ...
+#>  $ RGPL                                     : chr  "ILLUMINA" "ILLUMINA" "ILLUMINA" "ILLUMINA" ...
+#>  $ RGPU                                     : chr  "unit1" "unit1" "unit1" "unit1" ...
+#>  $ filename_one                             : chr  "mpg_L16936-1_W1350_S1_R1_001.fastq.gz" "mpg_L16926-1_W1398_S2_R1_001.fastq.gz" "mpg_L16927-1_W1429_S3_R1_001.fastq.gz" "mpg_L16928-1_W1502_S4_R1_001.fastq.gz" ...
+#>  $ filename_two                             : chr  "mpg_L16936-1_W1350_S1_R2_001.fastq.gz" "mpg_L16926-1_W1398_S2_R2_001.fastq.gz" "mpg_L16927-1_W1429_S3_R2_001.fastq.gz" "mpg_L16928-1_W1502_S4_R2_001.fastq.gz" ...
+#>  $ reads_pre_trim_one                       : int  3844063 3360132 3034920 6695288 6040662 2842383 3879834 6087445 5686616 4107154 ...
+#>  $ reads_pre_trim_two                       : int  3844063 3360132 3034920 6695288 6040662 2842383 3879834 6087445 5686616 4107154 ...
+#>  $ reads_pre_trim_total                     : int  7688126 6720264 6069840 13390576 12081324 5684766 7759668 12174890 11373232 8214308 ...
+#>  $ reads_post_trim_one                      : int  3334957 3057420 2775271 6144973 5496263 2618095 3544978 5592586 5206646 3740830 ...
+#>  $ reads_post_trim_two                      : int  3317567 2622060 2444309 5472149 4763684 2298940 2933104 4916336 4551423 3252219 ...
+#>  $ reads_post_trim_total                    : int  6652524 5679480 5219580 11617122 10259947 4917035 6478082 10508922 9758069 6993049 ...
+#>  $ reads_trimmed_lost_one                   : int  509106 302712 259649 550315 544399 224288 334856 494859 479970 366324 ...
+#>  $ reads_trimmed_lost_two                   : int  526496 738072 590611 1223139 1276978 543443 946730 1171109 1135193 854935 ...
+#>  $ reads_trimmed_lost_total                 : int  1035602 1040784 850260 1773454 1821377 767731 1281586 1665968 1615163 1221259 ...
+#>  $ reads_trimmed_lost_total_percent         : num  0.135 0.155 0.14 0.132 0.151 ...
+#>  $ reads_mapped                             : int  6448222 5897151 5344556 11948516 10542799 5052562 6862719 10880329 10069374 7213292 ...
+#>  $ reads_mapped_and_paired                  : int  6124942 4910684 4546908 10259622 8836944 4295176 5524338 9244878 8510126 6063336 ...
+#>  $ reads_unmapped                           : int  158628 176787 170192 251546 386867 143020 186719 234815 276382 223486 ...
+#>  $ reads_mapped_percent                     : num  0.975 0.97 0.968 0.979 0.963 ...
+#>  $ average_coverage                         : num  1.6 1.63 1.58 2.16 2.07 ...
+#>  $ average_coverarge_stdev                  : num  2.67 2.8 2.62 2.98 3.64 ...
+#>  $ unpaired_reads_examined_for_deduplication: int  323280 986467 797648 1688894 1705855 757386 1338381 1635451 1559248 1149956 ...
+#>  $ paired_reads_examined_for_deduplication  : int  3094003 2475793 2291351 5174753 4449902 2167892 2782428 4657453 4288831 3054109 ...
+#>  $ unpaired_read_duplicated                 : int  66109 106320 78976 195164 185282 87774 136509 172933 169988 118239 ...
+#>  $ paired_read_duplicates                   : int  221442 119369 103005 260460 197926 115543 120104 206962 194659 133521 ...
+#>  $ percent_duplication                      : num  0.0782 0.0581 0.053 0.0595 0.0548 ...
+#>  $ sequenced_library_complexity             : int  6090385 5720981 5222642 11474365 10330774 4870312 6664743 10519461 9774928 7042018 ...
+#>  $ estimated_library_complexity             : int  23660823 29649178 29602264 59328308 57146455 23492191 37280729 60581428 54839066 40354282 ...
+#>  $ percent_library_sequenced                : num  0.257 0.193 0.176 0.193 0.181 ...
+#>  $ original_reseq                           : chr  "original" "original" "original" "original" ...
+#>  $ ID                                       : chr  "W1350" "W1398" "W1429" "W1502" ...
+```
+
+save data overview
+
+```r
+save(data_overview, file = "data_overview.RData")
+```
+
+Calculate total and mean number of raw reads
+!!paired-end sequencing, so need to account for that
+
+```r
+
+total_raw_reads <- sum(data_overview$reads_pre_trim_total)
+total_raw_reads
+#> [1] 1393934732
+
+mean_raw_reads <- mean(data_overview$reads_pre_trim_total)
+mean_raw_reads
+#> [1] 11713737
+
+sd_raw_reads <- sd(data_overview$reads_pre_trim_total)
+sd_raw_reads
+#> [1] 5979400
+```
+
+Calculate total and mean number of quality filtered reads
+
+
+```r
+
+total_filtered_reads <- sum(data_overview$reads_post_trim_total)
+total_filtered_reads
+#> [1] 1218247416
+
+percent_filtered_reads <- total_filtered_reads/total_raw_reads  
+percent_filtered_reads
+#> [1] 0.873963
+
+mean_filtered_reads <- mean(data_overview$reads_post_trim_total)
+mean_filtered_reads
+#> [1] 10237373
+
+percent_mean_filtered_reads <- mean_filtered_reads/mean_raw_reads
+percent_mean_filtered_reads
+#> [1] 0.873963
+
+sd_filtered_reads <- sd(data_overview$reads_post_trim_total)
+sd_filtered_reads
+#> [1] 5426886
+
+
+median_Trimmomatic_dropped <- median(data_overview$reads_trimmed_lost_total, na.rm = TRUE)
+median_Trimmomatic_dropped
+#> [1] 1310301
+
+IQR_Trimmomatic_dropped <- IQR(data_overview$reads_trimmed_lost_total, na.rm = TRUE)
+IQR_Trimmomatic_dropped
+#> [1] 749127
+
+range_Trimmomatic_dropped <- range(data_overview$reads_trimmed_lost_total, na.rm = TRUE)
+range_Trimmomatic_dropped
+#> [1]  323232 4158669
+```
+
+Calculate mapped reads
+
+```r
+median_mapped_reads <- median(data_overview$reads_mapped)
+median_mapped_reads
+#> [1] 9498515
+
+IQR_mapped_reads <- IQR(data_overview$reads_mapped)
+IQR_mapped_reads
+#> [1] 6902176
+
+range_mapped_reads <- range(data_overview$reads_mapped)
+range_mapped_reads
+#> [1]  1843218 32346499
+```
+
+Calculate duplicates
+
+```r
+median_duplicates <- median(data_overview$percent_duplication)
+median_duplicates
+#> [1] 0.056526
+
+range_duplicates <- range(data_overview$percent_duplication)
+range_duplicates
+#> [1] 0.039762 0.100763
+```
+
+
+Calculate final coverage
+
+```r
+median_final_coverage <- median(data_overview$average_coverage)
+median_final_coverage
+#> [1] 1.91596
+
+IQR_final_coverage <- IQR(data_overview$average_coverage)
+IQR_final_coverage
+#> [1] 0.601805
+
+range_final_coverage <- range(data_overview$average_coverage)
+range_final_coverage
+#> [1] 1.33748 4.31431
+```
+
+
+For the sequencing success, we compare the reads that passed Quality control (FastCQ and Trimmotaic) depending on original run (RGID = 1) and resequencing (RGID = 2).
+
+```r
+theme_set(theme_bw()) #set theme to black and white
+
+#compare reads (y-axis) between original vs. resequenced (x-axis, sorted to have original first) and color according to library prep (shotgun vs. capture)
+ggplot(data_overview, aes(x = factor(RGID, level = c("1", "2")), y = reads_post_trim_total, color = original_reseq, shape = original_reseq)) + 
+  
+   scale_color_viridis_d(end = 0.5) +
+
+  geom_point(size = 2, alpha = 0.6, aes(group = ID), position = position_dodge(0.5)) + #make points, transparent, and group samples
+  
+  geom_boxplot(alpha = 0.4, outlier.shape = NA) + #add boxplots but do not show them in legend
+  
+  #geom_violin(alpha = 0.5) + #or add violin plots
+  
+  
+  geom_line(aes(group = ID), color = "grey", position = position_dodge(0.5), show.legend = FALSE) + #add line to connect samples present in both sequencing runs
+  
+  #stat_summary(fun = median, geom = "point", size = 5, alpha = 0.3, position = position_dodge(0.5)) +
+  
+  labs(x = "sequencing run", y = "reads after quality filtering") + #adjust axis labels
+  
+ 
+  theme(legend.title = element_blank()) + #remove legend title
+  
+  theme(panel.grid.major.x = element_blank())  #remove x-axis grid lines
+```
+
+<img src="2_data_files/figure-html/figure compare amount of reads per sequencing strategy-1.png" width="672" />
+
+
+
+Maybe more informative about the success of the approaches is to compare % reads that mapped.
+
+
+```r
+theme_set(theme_bw()) #set theme to black and white
+
+#compare mapped reads (y-axis) between sequencing (x-axis, sorted to have original first) and color according to sequencing run
+ggplot(data_overview, aes(x = factor(RGID, level = c("1", "2")), y = reads_mapped_and_paired, color = original_reseq, shape = original_reseq)) + 
+  
+  scale_color_viridis_d(end = 0.5) +
+
+  geom_point(size = 2, alpha = 0.6, aes(group = ID), position = position_dodge(0.5)) + #make points, transparent, and group samples
+  
+  geom_boxplot(alpha = 0.4, outlier.shape = NA) + #add boxplots but do not show them in legend
+  
+  #geom_violin(alpha = 0.5) + #or add violin plots
+  
+  
+  geom_line(aes(group = ID), color = "grey", position = position_dodge(0.5), show.legend = FALSE) + #add line to connect samples present in both sequencing approaches
+  
+  #stat_summary(fun = median, geom = "point", size = 5, alpha = 0.3, position = position_dodge(0.5)) +
+  
+  labs(x = "sequencing run", y = "mapped reads") + #adjust axis labels
+  
+ 
+  theme(legend.title = element_blank()) + #remove legend title
+  
+  theme(panel.grid.major.x = element_blank())  #remove x-axis grid lines
+```
+
+<img src="2_data_files/figure-html/figure mapped reads per sequencing strategy-1.png" width="672" />
+
+
+
+Finally, let's have a look at the coverage
+
+
+```r
+
+theme_set(theme_bw()) #set theme to black and white
+
+#relate number of reads (y-axis) to final coverage (x-axis), color according to sequencing run (original vs. resequenced) and sample type, shape according to original run or resequencing
+ggplot(data_overview, aes(x = average_coverage, y = reads_post_trim_total, color = original_reseq, shape = original_reseq)) +
+  
+  scale_color_viridis_d(end = 0.5) +
+  
+  geom_line(aes(group = ID), color = "lightgrey", show.legend = FALSE) + #connect same samples
+  
+  geom_point(alpha = 0.5, aes(size = reads_mapped_and_paired, group = ID)) + #add points with slight transparency
+  
+  geom_vline(xintercept = 1, linetype = "dashed") + #include vertical line to show coverage cutoff
+  
+    #scale_y_log10(breaks = scales::trans_breaks("log10", function(x) 10^x), labels = scales::trans_format("log10", scales::math_format(10^.x))) + #make y-axis logarithmic
+  
+  #scale_x_log10() + #make x-axis logarithmic
+  
+  #annotation_logticks() +
+  
+  labs(x = "coverage", y = "reads (after quality filtering)", 
+       size = "% reads mapped", color ="", shape = "") 
+```
+
+<img src="2_data_files/figure-html/figure number of reads and final coverage-1.png" width="672" />
+
+
+C-Curve
+
+
+```r
+theme_set(theme_bw()) #set theme to black and white
+
+#relate number of distinct reads (y-axis) to total reads (x-axis), color and shape according to original run or resequencing
+ggplot(data_overview, aes(x = unpaired_reads_examined_for_deduplication, y = sequenced_library_complexity, color = original_reseq, shape = original_reseq)) +
+  
+  geom_line(aes(group = ID), color = "lightgrey", show.legend = FALSE) + #connect same samples
+  
+  geom_point(alpha = 0.5, aes(size = average_coverage, group = ID)) + #add points with slight transparency
+  
+  theme(panel.grid.minor.x = element_blank(), panel.grid.minor.y = element_blank()) + #remove x/y-axis grid lines
+  
+  labs(x = "total unpaired reads", y = "sequenced library complexity", 
+       size = "coverage", color ="", shape = "") + #adjust axis and legend labels
+  
+   scale_color_viridis_d(end = 0.5)
+```
+
+<img src="2_data_files/figure-html/figure c-curve-1.png" width="672" />
+
+comparison to total surviving reads from Trimmomatic to distinct mapped reads
+
+
+```r
+theme_set(theme_bw()) #set theme to black and white
+
+#relate number of distinct reads (y-axis) to total surviving reads (x-axis), color  and sample type, shape according to original run or resequencing
+ggplot(data_overview, aes(x =  reads_post_trim_total, y = sequenced_library_complexity, color = original_reseq, shape = original_reseq)) +
+  
+  scale_color_viridis_d(end = 0.5) +
+  
+  geom_point(alpha = 0.5, aes(size = average_coverage, group = ID)) + #add points with slight transparency
+  
+  theme(panel.grid.minor.x = element_blank(), panel.grid.minor.y = element_blank()) + #remove x/y-axis grid lines
+  
+  labs(x = "total surviving reads (Trimmomatic)", y = "sequenced library complexity", 
+       size = "coverage", color ="", shape = "")  #adjust axis and legend labels
+```
+
+<img src="2_data_files/figure-html/figure total surving reads to distinct mapped reads-1.png" width="672" />
+
+
+plot  coverage and st.dv.
+
+
+```r
+theme_set(theme_bw()) #set theme to black and white
+
+#plot coverage (y-axis) including st.dev for every sample (x-axis), color according to original run or resequencing
+ggplot(filter(data_overview, original_reseq == "original"), aes(x = reorder(ID, average_coverage), y = average_coverage, color = original_reseq, shape = original_reseq)) +
+  
+  scale_color_viridis_d(end = 0.5) +
+  
+  geom_point(aes(y=average_coverage), alpha = 0.8) +
+  
+  geom_point(data = filter(data_overview, original_reseq == "reseq"), aes(y=average_coverage), alpha = 0.8) +
+  
+  geom_errorbar(data = filter(data_overview, original_reseq == "reseq"), aes(ymin = average_coverage - average_coverarge_stdev, ymax = average_coverage + average_coverarge_stdev), alpha = 0.8) +
+  
+  geom_errorbar(aes(ymin = average_coverage - average_coverarge_stdev, ymax = average_coverage + average_coverarge_stdev), alpha = 0.8) +
+  
+  geom_hline(yintercept = 1, linetype = "dashed") + #include horizontal line to show coverage cutoff at 1X
+  
+  geom_hline(yintercept = median_final_coverage, linetype = "dotted") +
+  
+  coord_cartesian(ylim = c(0, 10)) + #adjust y axis
+  
+  scale_y_continuous(breaks = c(0, 2, 4, 6, 8, 10)) + 
+  
+  labs(x = "sample", y = "coverage (mean+-sd)", 
+       color ="", shape = "") + #adjust axis and legend labels
+  
+  theme(axis.text.x = element_text(angle = 50, vjust = 1, hjust = 1, size = 8)) +
+  
+  scale_x_discrete(guide = guide_axis(n.dodge=2))  #avoid overlap of x-axis labels
+```
+
+<img src="2_data_files/figure-html/mt coverage-1.png" width="672" />
+
+### Relatedness data
 
 
 #### ngsRelate
