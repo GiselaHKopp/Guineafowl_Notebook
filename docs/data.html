@@ -990,7 +990,10 @@ An overview of the data as output from the Nextflow pipeline as of 29th July 202
 <a class="sourceLine" id="cb19-21" title="21"><span class="st"> </span></a>
 <a class="sourceLine" id="cb19-22" title="22"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.title =</span> <span class="kw">element_blank</span>()) <span class="op">+</span><span class="st"> </span><span class="co">#remove legend title</span></a>
 <a class="sourceLine" id="cb19-23" title="23"><span class="st">  </span></a>
-<a class="sourceLine" id="cb19-24" title="24"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">panel.grid.major.x =</span> <span class="kw">element_blank</span>())  <span class="co">#remove x-axis grid lines</span></a></code></pre></div>
+<a class="sourceLine" id="cb19-24" title="24"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">panel.grid.major.x =</span> <span class="kw">element_blank</span>()) <span class="op">+</span><span class="st"> </span><span class="co">#remove x-axis grid lines</span></a>
+<a class="sourceLine" id="cb19-25" title="25"><span class="st">  </span></a>
+<a class="sourceLine" id="cb19-26" title="26"><span class="st">   </span></a>
+<a class="sourceLine" id="cb19-27" title="27"><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Increase of reads for resequenced samples&quot;</span>)</a></code></pre></div>
 <p><img src="2_data_files/figure-html/figure%20compare%20amount%20of%20reads%20per%20sequencing%20strategy-1.png" width="672" /></p>
 <p>Maybe more informative about the success of the approaches is to compare % reads that mapped.</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" title="1"><span class="kw">theme_set</span>(<span class="kw">theme_bw</span>()) <span class="co">#set theme to black and white</span></a>
@@ -1016,7 +1019,10 @@ An overview of the data as output from the Nextflow pipeline as of 29th July 202
 <a class="sourceLine" id="cb20-21" title="21"><span class="st"> </span></a>
 <a class="sourceLine" id="cb20-22" title="22"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.title =</span> <span class="kw">element_blank</span>()) <span class="op">+</span><span class="st"> </span><span class="co">#remove legend title</span></a>
 <a class="sourceLine" id="cb20-23" title="23"><span class="st">  </span></a>
-<a class="sourceLine" id="cb20-24" title="24"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">panel.grid.major.x =</span> <span class="kw">element_blank</span>())  <span class="co">#remove x-axis grid lines</span></a></code></pre></div>
+<a class="sourceLine" id="cb20-24" title="24"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">panel.grid.major.x =</span> <span class="kw">element_blank</span>()) <span class="op">+</span><span class="st"> </span><span class="co">#remove x-axis grid lines</span></a>
+<a class="sourceLine" id="cb20-25" title="25"></a>
+<a class="sourceLine" id="cb20-26" title="26"><span class="st">  </span></a>
+<a class="sourceLine" id="cb20-27" title="27"><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Increase of mapped reads for resequenced samples&quot;</span>)</a></code></pre></div>
 <p><img src="2_data_files/figure-html/figure%20mapped%20reads%20per%20sequencing%20strategy-1.png" width="672" /></p>
 <p>Finally, let’s have a look at the coverage</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" title="1"></a>
@@ -1040,7 +1046,9 @@ An overview of the data as output from the Nextflow pipeline as of 29th July 202
 <a class="sourceLine" id="cb21-19" title="19"><span class="st">  </span><span class="co">#annotation_logticks() +</span></a>
 <a class="sourceLine" id="cb21-20" title="20"><span class="st">  </span></a>
 <a class="sourceLine" id="cb21-21" title="21"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;coverage&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;reads (after quality filtering)&quot;</span>, </a>
-<a class="sourceLine" id="cb21-22" title="22">       <span class="dt">size =</span> <span class="st">&quot;% reads mapped&quot;</span>, <span class="dt">color =</span><span class="st">&quot;&quot;</span>, <span class="dt">shape =</span> <span class="st">&quot;&quot;</span>) </a></code></pre></div>
+<a class="sourceLine" id="cb21-22" title="22">       <span class="dt">size =</span> <span class="st">&quot;% reads mapped&quot;</span>, <span class="dt">color =</span><span class="st">&quot;&quot;</span>, <span class="dt">shape =</span> <span class="st">&quot;&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb21-23" title="23"><span class="st">  </span></a>
+<a class="sourceLine" id="cb21-24" title="24"><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Higher coverage with increasing number of reads&quot;</span>)</a></code></pre></div>
 <p><img src="2_data_files/figure-html/figure%20number%20of%20reads%20and%20final%20coverage-1.png" width="672" /></p>
 <p>C-Curve</p>
 <div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" title="1"><span class="kw">theme_set</span>(<span class="kw">theme_bw</span>()) <span class="co">#set theme to black and white</span></a>
@@ -1057,7 +1065,9 @@ An overview of the data as output from the Nextflow pipeline as of 29th July 202
 <a class="sourceLine" id="cb22-12" title="12"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;total unpaired reads&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;sequenced library complexity&quot;</span>, </a>
 <a class="sourceLine" id="cb22-13" title="13">       <span class="dt">size =</span> <span class="st">&quot;coverage&quot;</span>, <span class="dt">color =</span><span class="st">&quot;&quot;</span>, <span class="dt">shape =</span> <span class="st">&quot;&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="co">#adjust axis and legend labels</span></a>
 <a class="sourceLine" id="cb22-14" title="14"><span class="st">  </span></a>
-<a class="sourceLine" id="cb22-15" title="15"><span class="st">   </span><span class="kw">scale_color_viridis_d</span>(<span class="dt">end =</span> <span class="fl">0.5</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb22-15" title="15"><span class="st">   </span><span class="kw">scale_color_viridis_d</span>(<span class="dt">end =</span> <span class="fl">0.5</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb22-16" title="16"><span class="st">  </span></a>
+<a class="sourceLine" id="cb22-17" title="17"><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;c-curve (total unpaired reads)&quot;</span>)</a></code></pre></div>
 <p><img src="2_data_files/figure-html/figure%20c-curve-1.png" width="672" /></p>
 <p>comparison to total surviving reads from Trimmomatic to distinct mapped reads</p>
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" title="1"><span class="kw">theme_set</span>(<span class="kw">theme_bw</span>()) <span class="co">#set theme to black and white</span></a>
@@ -1072,7 +1082,9 @@ An overview of the data as output from the Nextflow pipeline as of 29th July 202
 <a class="sourceLine" id="cb23-10" title="10"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">panel.grid.minor.x =</span> <span class="kw">element_blank</span>(), <span class="dt">panel.grid.minor.y =</span> <span class="kw">element_blank</span>()) <span class="op">+</span><span class="st"> </span><span class="co">#remove x/y-axis grid lines</span></a>
 <a class="sourceLine" id="cb23-11" title="11"><span class="st">  </span></a>
 <a class="sourceLine" id="cb23-12" title="12"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;total surviving reads (Trimmomatic)&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;sequenced library complexity&quot;</span>, </a>
-<a class="sourceLine" id="cb23-13" title="13">       <span class="dt">size =</span> <span class="st">&quot;coverage&quot;</span>, <span class="dt">color =</span><span class="st">&quot;&quot;</span>, <span class="dt">shape =</span> <span class="st">&quot;&quot;</span>)  <span class="co">#adjust axis and legend labels</span></a></code></pre></div>
+<a class="sourceLine" id="cb23-13" title="13">       <span class="dt">size =</span> <span class="st">&quot;coverage&quot;</span>, <span class="dt">color =</span><span class="st">&quot;&quot;</span>, <span class="dt">shape =</span> <span class="st">&quot;&quot;</span>) <span class="op">+</span><span class="st">  </span><span class="co">#adjust axis and legend labels</span></a>
+<a class="sourceLine" id="cb23-14" title="14"><span class="st">  </span></a>
+<a class="sourceLine" id="cb23-15" title="15"><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;c-curve (total surviving reads)&quot;</span>)</a></code></pre></div>
 <p><img src="2_data_files/figure-html/figure%20total%20surving%20reads%20to%20distinct%20mapped%20reads-1.png" width="672" /></p>
 <p>plot coverage and st.dv.</p>
 <div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" title="1"><span class="kw">theme_set</span>(<span class="kw">theme_bw</span>()) <span class="co">#set theme to black and white</span></a>
@@ -1103,8 +1115,10 @@ An overview of the data as output from the Nextflow pipeline as of 29th July 202
 <a class="sourceLine" id="cb24-26" title="26"><span class="st">  </span></a>
 <a class="sourceLine" id="cb24-27" title="27"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">50</span>, <span class="dt">vjust =</span> <span class="dv">1</span>, <span class="dt">hjust =</span> <span class="dv">1</span>, <span class="dt">size =</span> <span class="dv">8</span>)) <span class="op">+</span></a>
 <a class="sourceLine" id="cb24-28" title="28"><span class="st">  </span></a>
-<a class="sourceLine" id="cb24-29" title="29"><span class="st">  </span><span class="kw">scale_x_discrete</span>(<span class="dt">guide =</span> <span class="kw">guide_axis</span>(<span class="dt">n.dodge=</span><span class="dv">2</span>))  <span class="co">#avoid overlap of x-axis labels</span></a></code></pre></div>
-<p><img src="2_data_files/figure-html/mt%20coverage-1.png" width="672" /></p>
+<a class="sourceLine" id="cb24-29" title="29"><span class="st">  </span><span class="kw">scale_x_discrete</span>(<span class="dt">guide =</span> <span class="kw">guide_axis</span>(<span class="dt">n.dodge=</span><span class="dv">2</span>)) <span class="op">+</span><span class="st">  </span><span class="co">#avoid overlap of x-axis labels</span></a>
+<a class="sourceLine" id="cb24-30" title="30"></a>
+<a class="sourceLine" id="cb24-31" title="31"><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;coverage per sample&quot;</span>)</a></code></pre></div>
+<p><img src="2_data_files/figure-html/coverage-1.png" width="672" /></p>
 </div>
 <div id="relatedness-data" class="section level3">
 <h3><span class="header-section-number">4.3.2</span> Relatedness data</h3>
@@ -1250,13 +1264,15 @@ An overview of the data as output from the Nextflow pipeline as of 29th July 202
 <a class="sourceLine" id="cb34-5" title="5"></a>
 <a class="sourceLine" id="cb34-6" title="6"><span class="kw">ggplot</span>(ngsRelate_results_sample_info_250k, <span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">reorder</span>(dyad, rab), <span class="dt">y =</span> rab, <span class="dt">color =</span> dyad_sex, <span class="dt">shape =</span> dyad_group)) <span class="op">+</span></a>
 <a class="sourceLine" id="cb34-7" title="7"><span class="st">  </span></a>
-<a class="sourceLine" id="cb34-8" title="8"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.2</span>, <span class="kw">aes</span>(<span class="dt">y =</span> rab)) <span class="op">+</span><span class="st"> </span><span class="co">#plot relatedness estimates as points </span></a>
+<a class="sourceLine" id="cb34-8" title="8"><span class="st">  </span><span class="kw">scale_colour_viridis_d</span>(<span class="dt">na.value =</span> <span class="dv">1</span>) <span class="op">+</span></a>
 <a class="sourceLine" id="cb34-9" title="9"><span class="st">  </span></a>
-<a class="sourceLine" id="cb34-10" title="10"><span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="kw">c</span>(<span class="fl">0.125</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>), <span class="dt">linetype =</span> <span class="st">&quot;dashed&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="co">#include horizontal line to show traditional kinship categories</span></a>
+<a class="sourceLine" id="cb34-10" title="10"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.2</span>, <span class="kw">aes</span>(<span class="dt">y =</span> rab)) <span class="op">+</span><span class="st"> </span><span class="co">#plot relatedness estimates as points </span></a>
 <a class="sourceLine" id="cb34-11" title="11"><span class="st">  </span></a>
-<a class="sourceLine" id="cb34-12" title="12"><span class="st">  </span><span class="kw">labs</span>( <span class="dt">x =</span> <span class="st">&quot;Dyad&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Relatedness (ngsRelate)&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb34-12" title="12"><span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="kw">c</span>(<span class="fl">0.125</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>), <span class="dt">linetype =</span> <span class="st">&quot;dashed&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="co">#include horizontal line to show traditional kinship categories</span></a>
 <a class="sourceLine" id="cb34-13" title="13"><span class="st">  </span></a>
-<a class="sourceLine" id="cb34-14" title="14"><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;distribution of relatedness (ngsrelate) 250k&quot;</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb34-14" title="14"><span class="st">  </span><span class="kw">labs</span>( <span class="dt">x =</span> <span class="st">&quot;Dyad&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Relatedness (ngsRelate)&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb34-15" title="15"><span class="st">  </span></a>
+<a class="sourceLine" id="cb34-16" title="16"><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;distribution of relatedness (ngsrelate) 250k SNPs&quot;</span>)</a></code></pre></div>
 <p><img src="2_data_files/figure-html/figure%20dyadic%20relatedness%20(ngsrelate)%20distribution-1.png" width="672" /></p>
 <p>check correlation between number of SNPs and sex</p>
 <div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" title="1"><span class="kw">theme_set</span>(<span class="kw">theme_classic</span>())</a>
@@ -1265,432 +1281,486 @@ An overview of the data as output from the Nextflow pipeline as of 29th July 202
 <a class="sourceLine" id="cb35-4" title="4"></a>
 <a class="sourceLine" id="cb35-5" title="5"><span class="kw">ggplot</span>(ngsRelate_results_sample_info, <span class="kw">aes</span>(<span class="dt">x =</span> dyad_sex, <span class="dt">y =</span> nSites, <span class="dt">color =</span> coverage, <span class="dt">shape =</span> dyad_group)) <span class="op">+</span></a>
 <a class="sourceLine" id="cb35-6" title="6"><span class="st">  </span></a>
-<a class="sourceLine" id="cb35-7" title="7"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.2</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb35-7" title="7"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>, <span class="dt">position =</span> <span class="kw">position_dodge</span>(<span class="fl">0.7</span>)) <span class="op">+</span></a>
 <a class="sourceLine" id="cb35-8" title="8"><span class="st">  </span></a>
-<a class="sourceLine" id="cb35-9" title="9"><span class="st">  </span><span class="kw">geom_boxplot</span>()</a></code></pre></div>
+<a class="sourceLine" id="cb35-9" title="9"><span class="st">  </span><span class="kw">scale_colour_viridis_c</span>(<span class="dt">na.value =</span> <span class="dv">1</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb35-10" title="10"><span class="st">  </span></a>
+<a class="sourceLine" id="cb35-11" title="11"><span class="st">  </span><span class="kw">geom_boxplot</span>(<span class="dt">alpha =</span> <span class="fl">0.4</span>, <span class="dt">outlier.shape =</span> <span class="ot">NA</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb35-12" title="12"></a>
+<a class="sourceLine" id="cb35-13" title="13"><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;ngsRelate: number of sites per sex&quot;</span>)</a></code></pre></div>
 <p><img src="2_data_files/figure-html/figure%20(ngsrelate)%20dyad_sex%20and%20nSites-1.png" width="672" /></p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" title="1"></a>
-<a class="sourceLine" id="cb36-2" title="2"> <span class="kw">ggtitle</span>(<span class="st">&quot;nsites vs sex&quot;</span>)</a>
-<a class="sourceLine" id="cb36-3" title="3"><span class="co">#&gt; $title</span></a>
-<a class="sourceLine" id="cb36-4" title="4"><span class="co">#&gt; [1] &quot;nsites vs sex&quot;</span></a>
-<a class="sourceLine" id="cb36-5" title="5"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb36-6" title="6"><span class="co">#&gt; attr(,&quot;class&quot;)</span></a>
-<a class="sourceLine" id="cb36-7" title="7"><span class="co">#&gt; [1] &quot;labels&quot;</span></a></code></pre></div>
 <p>Compare relatedness estimates according to group and sex</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" title="1"><span class="kw">theme_set</span>(<span class="kw">theme_classic</span>())</a>
+<a class="sourceLine" id="cb36-2" title="2"></a>
+<a class="sourceLine" id="cb36-3" title="3"><span class="co">#plot relatedness rab (y-axis) for the different categories of sex of dyad (x-axis) colored according to group membership</span></a>
+<a class="sourceLine" id="cb36-4" title="4"></a>
+<a class="sourceLine" id="cb36-5" title="5"><span class="kw">ggplot</span>(ngsRelate_results_sample_info_250k, <span class="kw">aes</span>(<span class="dt">x =</span> dyad_sex, <span class="dt">y =</span> rab, <span class="dt">color =</span> dyad_group, <span class="dt">shape =</span> dyad_group)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb36-6" title="6"><span class="st">  </span></a>
+<a class="sourceLine" id="cb36-7" title="7"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.2</span>, <span class="dt">position =</span> <span class="kw">position_dodge</span>(<span class="fl">0.7</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb36-8" title="8"><span class="st">  </span></a>
+<a class="sourceLine" id="cb36-9" title="9"><span class="st">  </span><span class="kw">geom_boxplot</span>(<span class="dt">alpha =</span> <span class="fl">0.4</span>, <span class="dt">outlier.shape =</span> <span class="ot">NA</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb36-10" title="10"><span class="st">  </span></a>
+<a class="sourceLine" id="cb36-11" title="11"><span class="st">  </span><span class="kw">scale_colour_viridis_d</span>(<span class="dt">end =</span> <span class="fl">0.5</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb36-12" title="12"></a>
+<a class="sourceLine" id="cb36-13" title="13"><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;relatedness (ngsrelate) 250k SNPs&quot;</span>)</a></code></pre></div>
+<p><img src="2_data_files/figure-html/figure%20(ngsrelate)%20relatedness%20for%20group%20and%20sex-1.png" width="672" /></p>
 <div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" title="1"><span class="kw">theme_set</span>(<span class="kw">theme_classic</span>())</a>
 <a class="sourceLine" id="cb37-2" title="2"></a>
 <a class="sourceLine" id="cb37-3" title="3"><span class="co">#plot relatedness rab (y-axis) for the different categories of sex of dyad (x-axis) colored according to group membership</span></a>
 <a class="sourceLine" id="cb37-4" title="4"></a>
-<a class="sourceLine" id="cb37-5" title="5"><span class="kw">ggplot</span>(ngsRelate_results_sample_info_250k, <span class="kw">aes</span>(<span class="dt">x =</span> dyad_sex, <span class="dt">y =</span> rab, <span class="dt">color =</span> dyad_group, <span class="dt">shape =</span> dyad_group)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb37-5" title="5"><span class="kw">ggplot</span>(ngsRelate_results_sample_info_250k, <span class="kw">aes</span>(<span class="dt">x =</span> dyad_group, <span class="dt">y =</span> rab, <span class="dt">color =</span> dyad_sex)) <span class="op">+</span></a>
 <a class="sourceLine" id="cb37-6" title="6"><span class="st">  </span></a>
-<a class="sourceLine" id="cb37-7" title="7"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.2</span>, <span class="dt">position =</span> <span class="kw">position_dodge</span>(<span class="fl">0.5</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb37-7" title="7"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.2</span>, <span class="dt">position =</span> <span class="kw">position_dodge</span>(<span class="fl">0.75</span>)) <span class="op">+</span></a>
 <a class="sourceLine" id="cb37-8" title="8"><span class="st">  </span></a>
-<a class="sourceLine" id="cb37-9" title="9"><span class="st">  </span><span class="kw">geom_boxplot</span>(<span class="dt">alpha =</span> <span class="fl">0.4</span>, <span class="dt">outlier.shape =</span> <span class="ot">NA</span>)</a></code></pre></div>
-<p><img src="2_data_files/figure-html/figure%20(ngsrelate)%20relatedness%20for%20group%20and%20sex-1.png" width="672" /></p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb38-1" title="1"></a>
-<a class="sourceLine" id="cb38-2" title="2"> <span class="kw">ggtitle</span>(<span class="st">&quot;relatedness (ngsrelate) 250k&quot;</span>)</a>
-<a class="sourceLine" id="cb38-3" title="3"><span class="co">#&gt; $title</span></a>
-<a class="sourceLine" id="cb38-4" title="4"><span class="co">#&gt; [1] &quot;relatedness (ngsrelate) 250k&quot;</span></a>
-<a class="sourceLine" id="cb38-5" title="5"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb38-6" title="6"><span class="co">#&gt; attr(,&quot;class&quot;)</span></a>
-<a class="sourceLine" id="cb38-7" title="7"><span class="co">#&gt; [1] &quot;labels&quot;</span></a></code></pre></div>
+<a class="sourceLine" id="cb37-9" title="9"><span class="st">  </span><span class="kw">geom_boxplot</span>(<span class="dt">alpha =</span> <span class="fl">0.4</span>, <span class="dt">outlier.shape =</span> <span class="ot">NA</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb37-10" title="10"><span class="st">  </span></a>
+<a class="sourceLine" id="cb37-11" title="11"><span class="st">  </span><span class="kw">scale_colour_viridis_d</span>(<span class="dt">na.value =</span> <span class="dv">1</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb37-12" title="12"></a>
+<a class="sourceLine" id="cb37-13" title="13"><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;relatedness (ngsRelate) 250k SNPs&quot;</span>)</a></code></pre></div>
+<p><img src="2_data_files/figure-html/figure%20(ngsrelate)%20relatedness%20for%20sex%20and%20group-1.png" width="672" /></p>
 </div>
 <div id="lcmlkin" class="section level4">
 <h4><span class="header-section-number">4.3.2.2</span> lcmlkin</h4>
 <p>We now use the results excluding replicated samples, which are stored in <code>pipeline/no_repeats_relatedness_results/nf_results/lcmlkin</code></p>
-<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" title="1">lcmlkin_results &lt;-<span class="st"> </span><span class="kw">read.delim</span>(<span class="st">&quot;vignettes/data/pipeline/no_repeats_relatedness_results/nf_results/lcmlkin/relatedness.isec.0002.exMito.thinned.lcmlkin.results&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>,  <span class="dt">as.is =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb39-2" title="2"><span class="kw">str</span>(lcmlkin_results)</a>
-<a class="sourceLine" id="cb39-3" title="3"><span class="co">#&gt; &#39;data.frame&#39;:    4560 obs. of  7 variables:</span></a>
-<a class="sourceLine" id="cb39-4" title="4"><span class="co">#&gt;  $ Ind1  : chr  &quot;RGID1_S83&quot; &quot;RGID1_S83&quot; &quot;RGID1_S83&quot; &quot;RGID1_S83&quot; ...</span></a>
-<a class="sourceLine" id="cb39-5" title="5"><span class="co">#&gt;  $ Ind2  : chr  &quot;RGID1_S49&quot; &quot;RGID2_S13&quot; &quot;RGID1_S89&quot; &quot;RGID2_S11&quot; ...</span></a>
-<a class="sourceLine" id="cb39-6" title="6"><span class="co">#&gt;  $ k0_hat: num  0.911 0.878 0.835 0.815 0.863 0.904 0.814 0.816 0.877 0.903 ...</span></a>
-<a class="sourceLine" id="cb39-7" title="7"><span class="co">#&gt;  $ k1_hat: num  0 0.002 0.004 0.003 0.002 0.003 0.005 0.003 0.002 0.003 ...</span></a>
-<a class="sourceLine" id="cb39-8" title="8"><span class="co">#&gt;  $ k2_hat: num  0.089 0.12 0.162 0.182 0.134 0.093 0.182 0.18 0.121 0.094 ...</span></a>
-<a class="sourceLine" id="cb39-9" title="9"><span class="co">#&gt;  $ pi_HAT: num  0.089 0.121 0.164 0.183 0.136 0.094 0.184 0.182 0.122 0.096 ...</span></a>
-<a class="sourceLine" id="cb39-10" title="10"><span class="co">#&gt;  $ nbSNP : int  617110 729018 615902 622500 713042 579737 518643 623265 704472 603659 ...</span></a></code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb38-1" title="1">lcmlkin_results &lt;-<span class="st"> </span><span class="kw">read.delim</span>(<span class="st">&quot;vignettes/data/pipeline/no_repeats_relatedness_results/nf_results/lcmlkin/relatedness.isec.0002.exMito.thinned.lcmlkin.results&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>,  <span class="dt">as.is =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb38-2" title="2"><span class="kw">str</span>(lcmlkin_results)</a>
+<a class="sourceLine" id="cb38-3" title="3"><span class="co">#&gt; &#39;data.frame&#39;:    4560 obs. of  7 variables:</span></a>
+<a class="sourceLine" id="cb38-4" title="4"><span class="co">#&gt;  $ Ind1  : chr  &quot;RGID1_S83&quot; &quot;RGID1_S83&quot; &quot;RGID1_S83&quot; &quot;RGID1_S83&quot; ...</span></a>
+<a class="sourceLine" id="cb38-5" title="5"><span class="co">#&gt;  $ Ind2  : chr  &quot;RGID1_S49&quot; &quot;RGID2_S13&quot; &quot;RGID1_S89&quot; &quot;RGID2_S11&quot; ...</span></a>
+<a class="sourceLine" id="cb38-6" title="6"><span class="co">#&gt;  $ k0_hat: num  0.911 0.878 0.835 0.815 0.863 0.904 0.814 0.816 0.877 0.903 ...</span></a>
+<a class="sourceLine" id="cb38-7" title="7"><span class="co">#&gt;  $ k1_hat: num  0 0.002 0.004 0.003 0.002 0.003 0.005 0.003 0.002 0.003 ...</span></a>
+<a class="sourceLine" id="cb38-8" title="8"><span class="co">#&gt;  $ k2_hat: num  0.089 0.12 0.162 0.182 0.134 0.093 0.182 0.18 0.121 0.094 ...</span></a>
+<a class="sourceLine" id="cb38-9" title="9"><span class="co">#&gt;  $ pi_HAT: num  0.089 0.121 0.164 0.183 0.136 0.094 0.184 0.182 0.122 0.096 ...</span></a>
+<a class="sourceLine" id="cb38-10" title="10"><span class="co">#&gt;  $ nbSNP : int  617110 729018 615902 622500 713042 579737 518643 623265 704472 603659 ...</span></a></code></pre></div>
 <p>We join together the relatedness estimates with the sample information, to know the identity of the dyads</p>
-<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" title="1"><span class="co">#rename &quot;ida&quot; and &quot;idb&quot; to &quot;RGSM_a&quot; and &quot;RGSM-b&quot;</span></a>
-<a class="sourceLine" id="cb40-2" title="2">lcmlkin_results &lt;-<span class="st"> </span><span class="kw">rename</span>(lcmlkin_results, <span class="st">&quot;RGSM_a&quot;</span> =<span class="st"> &quot;Ind1&quot;</span>)</a>
-<a class="sourceLine" id="cb40-3" title="3">lcmlkin_results &lt;-<span class="st"> </span><span class="kw">rename</span>(lcmlkin_results, <span class="st">&quot;RGSM_b&quot;</span> =<span class="st"> &quot;Ind2&quot;</span>)</a>
-<a class="sourceLine" id="cb40-4" title="4"></a>
-<a class="sourceLine" id="cb40-5" title="5"><span class="co">#create a new column that includes RGSM_dyad</span></a>
-<a class="sourceLine" id="cb40-6" title="6">lcmlkin_results<span class="op">$</span>RGSM_dyad &lt;-<span class="st"> </span><span class="kw">if_else</span>(lcmlkin_results<span class="op">$</span>RGSM_a <span class="op">&lt;</span><span class="st"> </span>lcmlkin_results<span class="op">$</span>RGSM_b, <span class="kw">paste</span>(lcmlkin_results<span class="op">$</span>RGSM_a, lcmlkin_results<span class="op">$</span>RGSM_b, <span class="dt">sep =</span> <span class="st">&quot;-&quot;</span>), <span class="kw">paste</span>(lcmlkin_results<span class="op">$</span>RGSM_b, lcmlkin_results<span class="op">$</span>RGSM_a, <span class="dt">sep =</span> <span class="st">&quot;-&quot;</span>))</a>
-<a class="sourceLine" id="cb40-7" title="7"></a>
-<a class="sourceLine" id="cb40-8" title="8"><span class="co">#first include ID of individual a</span></a>
-<a class="sourceLine" id="cb40-9" title="9">lcmlkin_results_ID &lt;-<span class="st"> </span><span class="kw">left_join</span>(lcmlkin_results, seqlib_overview[<span class="dv">6</span><span class="op">:</span><span class="dv">7</span>], <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;RGSM_a&quot;</span> =<span class="st"> &quot;RGSM&quot;</span>))</a>
-<a class="sourceLine" id="cb40-10" title="10"></a>
-<a class="sourceLine" id="cb40-11" title="11"><span class="co">#rename &quot;ID&quot; to &quot;ID_a&quot;</span></a>
-<a class="sourceLine" id="cb40-12" title="12">lcmlkin_results_ID &lt;-<span class="st"> </span><span class="kw">rename</span>(lcmlkin_results_ID, <span class="st">&quot;ID_a&quot;</span> =<span class="st"> &quot;ID&quot;</span>)</a>
-<a class="sourceLine" id="cb40-13" title="13"></a>
-<a class="sourceLine" id="cb40-14" title="14"><span class="co">#now include ID of individual b</span></a>
-<a class="sourceLine" id="cb40-15" title="15">lcmlkin_results_ID &lt;-<span class="st"> </span><span class="kw">left_join</span>(lcmlkin_results_ID, seqlib_overview[<span class="dv">6</span><span class="op">:</span><span class="dv">7</span>], <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;RGSM_b&quot;</span> =<span class="st"> &quot;RGSM&quot;</span>))</a>
-<a class="sourceLine" id="cb40-16" title="16"></a>
-<a class="sourceLine" id="cb40-17" title="17"><span class="co">#rename &quot;ID&quot; to &quot;ID_b&quot;</span></a>
-<a class="sourceLine" id="cb40-18" title="18">lcmlkin_results_ID &lt;-<span class="st"> </span><span class="kw">rename</span>(lcmlkin_results_ID, <span class="st">&quot;ID_b&quot;</span> =<span class="st"> &quot;ID&quot;</span>)</a>
-<a class="sourceLine" id="cb40-19" title="19"></a>
-<a class="sourceLine" id="cb40-20" title="20"><span class="co">#create a new column that includes the dyad</span></a>
-<a class="sourceLine" id="cb40-21" title="21">lcmlkin_results_ID<span class="op">$</span>dyad &lt;-<span class="st"> </span><span class="kw">if_else</span>(lcmlkin_results_ID<span class="op">$</span>ID_a <span class="op">&lt;</span><span class="st"> </span>lcmlkin_results_ID<span class="op">$</span>ID_b, <span class="kw">paste</span>(lcmlkin_results_ID<span class="op">$</span>ID_a, lcmlkin_results_ID<span class="op">$</span>ID_b, <span class="dt">sep =</span> <span class="st">&quot;-&quot;</span>), <span class="kw">paste</span>(lcmlkin_results_ID<span class="op">$</span>ID_b, lcmlkin_results_ID<span class="op">$</span>ID_a, <span class="dt">sep =</span> <span class="st">&quot;-&quot;</span>))</a>
-<a class="sourceLine" id="cb40-22" title="22"></a>
-<a class="sourceLine" id="cb40-23" title="23"><span class="co">#remove duplicates ##maybe not necessary anymore</span></a>
-<a class="sourceLine" id="cb40-24" title="24"></a>
-<a class="sourceLine" id="cb40-25" title="25">lcmlkin_results_ID &lt;-<span class="st"> </span><span class="kw">distinct</span>(lcmlkin_results_ID)</a></code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" title="1"><span class="co">#rename &quot;ida&quot; and &quot;idb&quot; to &quot;RGSM_a&quot; and &quot;RGSM-b&quot;</span></a>
+<a class="sourceLine" id="cb39-2" title="2">lcmlkin_results &lt;-<span class="st"> </span><span class="kw">rename</span>(lcmlkin_results, <span class="st">&quot;RGSM_a&quot;</span> =<span class="st"> &quot;Ind1&quot;</span>)</a>
+<a class="sourceLine" id="cb39-3" title="3">lcmlkin_results &lt;-<span class="st"> </span><span class="kw">rename</span>(lcmlkin_results, <span class="st">&quot;RGSM_b&quot;</span> =<span class="st"> &quot;Ind2&quot;</span>)</a>
+<a class="sourceLine" id="cb39-4" title="4"></a>
+<a class="sourceLine" id="cb39-5" title="5"><span class="co">#create a new column that includes RGSM_dyad</span></a>
+<a class="sourceLine" id="cb39-6" title="6">lcmlkin_results<span class="op">$</span>RGSM_dyad &lt;-<span class="st"> </span><span class="kw">if_else</span>(lcmlkin_results<span class="op">$</span>RGSM_a <span class="op">&lt;</span><span class="st"> </span>lcmlkin_results<span class="op">$</span>RGSM_b, <span class="kw">paste</span>(lcmlkin_results<span class="op">$</span>RGSM_a, lcmlkin_results<span class="op">$</span>RGSM_b, <span class="dt">sep =</span> <span class="st">&quot;-&quot;</span>), <span class="kw">paste</span>(lcmlkin_results<span class="op">$</span>RGSM_b, lcmlkin_results<span class="op">$</span>RGSM_a, <span class="dt">sep =</span> <span class="st">&quot;-&quot;</span>))</a>
+<a class="sourceLine" id="cb39-7" title="7"></a>
+<a class="sourceLine" id="cb39-8" title="8"><span class="co">#first include ID of individual a</span></a>
+<a class="sourceLine" id="cb39-9" title="9">lcmlkin_results_ID &lt;-<span class="st"> </span><span class="kw">left_join</span>(lcmlkin_results, seqlib_overview[<span class="dv">6</span><span class="op">:</span><span class="dv">7</span>], <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;RGSM_a&quot;</span> =<span class="st"> &quot;RGSM&quot;</span>))</a>
+<a class="sourceLine" id="cb39-10" title="10"></a>
+<a class="sourceLine" id="cb39-11" title="11"><span class="co">#rename &quot;ID&quot; to &quot;ID_a&quot;</span></a>
+<a class="sourceLine" id="cb39-12" title="12">lcmlkin_results_ID &lt;-<span class="st"> </span><span class="kw">rename</span>(lcmlkin_results_ID, <span class="st">&quot;ID_a&quot;</span> =<span class="st"> &quot;ID&quot;</span>)</a>
+<a class="sourceLine" id="cb39-13" title="13"></a>
+<a class="sourceLine" id="cb39-14" title="14"><span class="co">#now include ID of individual b</span></a>
+<a class="sourceLine" id="cb39-15" title="15">lcmlkin_results_ID &lt;-<span class="st"> </span><span class="kw">left_join</span>(lcmlkin_results_ID, seqlib_overview[<span class="dv">6</span><span class="op">:</span><span class="dv">7</span>], <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;RGSM_b&quot;</span> =<span class="st"> &quot;RGSM&quot;</span>))</a>
+<a class="sourceLine" id="cb39-16" title="16"></a>
+<a class="sourceLine" id="cb39-17" title="17"><span class="co">#rename &quot;ID&quot; to &quot;ID_b&quot;</span></a>
+<a class="sourceLine" id="cb39-18" title="18">lcmlkin_results_ID &lt;-<span class="st"> </span><span class="kw">rename</span>(lcmlkin_results_ID, <span class="st">&quot;ID_b&quot;</span> =<span class="st"> &quot;ID&quot;</span>)</a>
+<a class="sourceLine" id="cb39-19" title="19"></a>
+<a class="sourceLine" id="cb39-20" title="20"><span class="co">#create a new column that includes the dyad</span></a>
+<a class="sourceLine" id="cb39-21" title="21">lcmlkin_results_ID<span class="op">$</span>dyad &lt;-<span class="st"> </span><span class="kw">if_else</span>(lcmlkin_results_ID<span class="op">$</span>ID_a <span class="op">&lt;</span><span class="st"> </span>lcmlkin_results_ID<span class="op">$</span>ID_b, <span class="kw">paste</span>(lcmlkin_results_ID<span class="op">$</span>ID_a, lcmlkin_results_ID<span class="op">$</span>ID_b, <span class="dt">sep =</span> <span class="st">&quot;-&quot;</span>), <span class="kw">paste</span>(lcmlkin_results_ID<span class="op">$</span>ID_b, lcmlkin_results_ID<span class="op">$</span>ID_a, <span class="dt">sep =</span> <span class="st">&quot;-&quot;</span>))</a>
+<a class="sourceLine" id="cb39-22" title="22"></a>
+<a class="sourceLine" id="cb39-23" title="23"><span class="co">#remove duplicates ##maybe not necessary anymore</span></a>
+<a class="sourceLine" id="cb39-24" title="24"></a>
+<a class="sourceLine" id="cb39-25" title="25">lcmlkin_results_ID &lt;-<span class="st"> </span><span class="kw">distinct</span>(lcmlkin_results_ID)</a></code></pre></div>
 <p>We also include the group information</p>
-<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb41-1" title="1"><span class="co">#first include group of individual a</span></a>
-<a class="sourceLine" id="cb41-2" title="2">lcmlkin_results_sample_info &lt;-<span class="st"> </span><span class="kw">left_join</span>(lcmlkin_results_ID, sample_info, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;ID_a&quot;</span> =<span class="st"> &quot;ID&quot;</span>))</a>
-<a class="sourceLine" id="cb41-3" title="3"></a>
-<a class="sourceLine" id="cb41-4" title="4"><span class="co">#rename &quot;Group_ID&quot; to &quot;a_Group&quot;</span></a>
-<a class="sourceLine" id="cb41-5" title="5">lcmlkin_results_sample_info &lt;-<span class="st"> </span><span class="kw">rename</span>(lcmlkin_results_sample_info, <span class="st">&quot;a_Group&quot;</span> =<span class="st"> &quot;Group_ID&quot;</span>)</a>
-<a class="sourceLine" id="cb41-6" title="6">lcmlkin_results_sample_info &lt;-<span class="st"> </span><span class="kw">rename</span>(lcmlkin_results_sample_info, <span class="st">&quot;a_sex&quot;</span> =<span class="st"> &quot;sex&quot;</span>)</a>
-<a class="sourceLine" id="cb41-7" title="7"></a>
-<a class="sourceLine" id="cb41-8" title="8"><span class="co">#then include group of individual b</span></a>
-<a class="sourceLine" id="cb41-9" title="9">lcmlkin_results_sample_info &lt;-<span class="st"> </span><span class="kw">left_join</span>(lcmlkin_results_sample_info, sample_info, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;ID_b&quot;</span> =<span class="st"> &quot;ID&quot;</span>))</a>
-<a class="sourceLine" id="cb41-10" title="10">lcmlkin_results_sample_info &lt;-<span class="st"> </span><span class="kw">rename</span>(lcmlkin_results_sample_info, <span class="st">&quot;b_sex&quot;</span> =<span class="st"> &quot;sex&quot;</span>)</a>
-<a class="sourceLine" id="cb41-11" title="11"></a>
-<a class="sourceLine" id="cb41-12" title="12"><span class="co">#rename &quot;Group_ID&quot; to &quot;b_Group&quot;</span></a>
-<a class="sourceLine" id="cb41-13" title="13">lcmlkin_results_sample_info &lt;-<span class="st"> </span><span class="kw">rename</span>(lcmlkin_results_sample_info, <span class="st">&quot;b_Group&quot;</span> =<span class="st"> &quot;Group_ID&quot;</span>)</a></code></pre></div>
-<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb42-1" title="1"><span class="co">#create new column that specifies if individuals are from same or different groups</span></a>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" title="1"><span class="co">#first include group of individual a</span></a>
+<a class="sourceLine" id="cb40-2" title="2">lcmlkin_results_sample_info &lt;-<span class="st"> </span><span class="kw">left_join</span>(lcmlkin_results_ID, sample_info, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;ID_a&quot;</span> =<span class="st"> &quot;ID&quot;</span>))</a>
+<a class="sourceLine" id="cb40-3" title="3"></a>
+<a class="sourceLine" id="cb40-4" title="4"><span class="co">#rename &quot;Group_ID&quot; to &quot;a_Group&quot;</span></a>
+<a class="sourceLine" id="cb40-5" title="5">lcmlkin_results_sample_info &lt;-<span class="st"> </span><span class="kw">rename</span>(lcmlkin_results_sample_info, <span class="st">&quot;a_Group&quot;</span> =<span class="st"> &quot;Group_ID&quot;</span>)</a>
+<a class="sourceLine" id="cb40-6" title="6">lcmlkin_results_sample_info &lt;-<span class="st"> </span><span class="kw">rename</span>(lcmlkin_results_sample_info, <span class="st">&quot;a_sex&quot;</span> =<span class="st"> &quot;sex&quot;</span>)</a>
+<a class="sourceLine" id="cb40-7" title="7"></a>
+<a class="sourceLine" id="cb40-8" title="8"><span class="co">#then include group of individual b</span></a>
+<a class="sourceLine" id="cb40-9" title="9">lcmlkin_results_sample_info &lt;-<span class="st"> </span><span class="kw">left_join</span>(lcmlkin_results_sample_info, sample_info, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;ID_b&quot;</span> =<span class="st"> &quot;ID&quot;</span>))</a>
+<a class="sourceLine" id="cb40-10" title="10">lcmlkin_results_sample_info &lt;-<span class="st"> </span><span class="kw">rename</span>(lcmlkin_results_sample_info, <span class="st">&quot;b_sex&quot;</span> =<span class="st"> &quot;sex&quot;</span>)</a>
+<a class="sourceLine" id="cb40-11" title="11"></a>
+<a class="sourceLine" id="cb40-12" title="12"><span class="co">#rename &quot;Group_ID&quot; to &quot;b_Group&quot;</span></a>
+<a class="sourceLine" id="cb40-13" title="13">lcmlkin_results_sample_info &lt;-<span class="st"> </span><span class="kw">rename</span>(lcmlkin_results_sample_info, <span class="st">&quot;b_Group&quot;</span> =<span class="st"> &quot;Group_ID&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb41-1" title="1"><span class="co">#create new column that specifies if individuals are from same or different groups</span></a>
+<a class="sourceLine" id="cb41-2" title="2">lcmlkin_results_sample_info &lt;-<span class="st"> </span>lcmlkin_results_sample_info <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb41-3" title="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">dyad_group =</span> <span class="kw">if_else</span>(a_Group <span class="op">==</span><span class="st"> </span>b_Group, <span class="st">&quot;intra&quot;</span>, <span class="st">&quot;inter&quot;</span>))</a>
+<a class="sourceLine" id="cb41-4" title="4"><span class="kw">str</span>(lcmlkin_results_sample_info)</a>
+<a class="sourceLine" id="cb41-5" title="5"><span class="co">#&gt; &#39;data.frame&#39;:    4560 obs. of  16 variables:</span></a>
+<a class="sourceLine" id="cb41-6" title="6"><span class="co">#&gt;  $ RGSM_a    : chr  &quot;RGID1_S83&quot; &quot;RGID1_S83&quot; &quot;RGID1_S83&quot; &quot;RGID1_S83&quot; ...</span></a>
+<a class="sourceLine" id="cb41-7" title="7"><span class="co">#&gt;  $ RGSM_b    : chr  &quot;RGID1_S49&quot; &quot;RGID2_S13&quot; &quot;RGID1_S89&quot; &quot;RGID2_S11&quot; ...</span></a>
+<a class="sourceLine" id="cb41-8" title="8"><span class="co">#&gt;  $ k0_hat    : num  0.911 0.878 0.835 0.815 0.863 0.904 0.814 0.816 0.877 0.903 ...</span></a>
+<a class="sourceLine" id="cb41-9" title="9"><span class="co">#&gt;  $ k1_hat    : num  0 0.002 0.004 0.003 0.002 0.003 0.005 0.003 0.002 0.003 ...</span></a>
+<a class="sourceLine" id="cb41-10" title="10"><span class="co">#&gt;  $ k2_hat    : num  0.089 0.12 0.162 0.182 0.134 0.093 0.182 0.18 0.121 0.094 ...</span></a>
+<a class="sourceLine" id="cb41-11" title="11"><span class="co">#&gt;  $ pi_HAT    : num  0.089 0.121 0.164 0.183 0.136 0.094 0.184 0.182 0.122 0.096 ...</span></a>
+<a class="sourceLine" id="cb41-12" title="12"><span class="co">#&gt;  $ nbSNP     : int  617110 729018 615902 622500 713042 579737 518643 623265 704472 603659 ...</span></a>
+<a class="sourceLine" id="cb41-13" title="13"><span class="co">#&gt;  $ RGSM_dyad : chr  &quot;RGID1_S49-RGID1_S83&quot; &quot;RGID1_S83-RGID2_S13&quot; &quot;RGID1_S83-RGID1_S89&quot; &quot;RGID1_S83-RGID2_S11&quot; ...</span></a>
+<a class="sourceLine" id="cb41-14" title="14"><span class="co">#&gt;  $ ID_a      : chr  &quot;WT00386&quot; &quot;WT00386&quot; &quot;WT00386&quot; &quot;WT00386&quot; ...</span></a>
+<a class="sourceLine" id="cb41-15" title="15"><span class="co">#&gt;  $ ID_b      : chr  &quot;A1307&quot; &quot;A1312&quot; &quot;W1671&quot; &quot;W1673&quot; ...</span></a>
+<a class="sourceLine" id="cb41-16" title="16"><span class="co">#&gt;  $ dyad      : chr  &quot;A1307-WT00386&quot; &quot;A1312-WT00386&quot; &quot;W1671-WT00386&quot; &quot;W1673-WT00386&quot; ...</span></a>
+<a class="sourceLine" id="cb41-17" title="17"><span class="co">#&gt;  $ a_Group   : chr  &quot;mpala_chicks&quot; &quot;mpala_chicks&quot; &quot;mpala_chicks&quot; &quot;mpala_chicks&quot; ...</span></a>
+<a class="sourceLine" id="cb41-18" title="18"><span class="co">#&gt;  $ a_sex     : chr  &quot;f&quot; &quot;f&quot; &quot;f&quot; &quot;f&quot; ...</span></a>
+<a class="sourceLine" id="cb41-19" title="19"><span class="co">#&gt;  $ b_Group   : chr  &quot;wing_tags&quot; &quot;wing_tags&quot; &quot;wt025&quot; &quot;wt025&quot; ...</span></a>
+<a class="sourceLine" id="cb41-20" title="20"><span class="co">#&gt;  $ b_sex     : chr  &quot;m&quot; &quot;m&quot; &quot;f&quot; &quot;f&quot; ...</span></a>
+<a class="sourceLine" id="cb41-21" title="21"><span class="co">#&gt;  $ dyad_group: chr  &quot;inter&quot; &quot;inter&quot; &quot;inter&quot; &quot;inter&quot; ...</span></a></code></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb42-1" title="1"><span class="co">#create new column that specifies if individuals have same or different sex</span></a>
 <a class="sourceLine" id="cb42-2" title="2">lcmlkin_results_sample_info &lt;-<span class="st"> </span>lcmlkin_results_sample_info <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb42-3" title="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">dyad_group =</span> <span class="kw">if_else</span>(a_Group <span class="op">==</span><span class="st"> </span>b_Group, <span class="st">&quot;intra&quot;</span>, <span class="st">&quot;inter&quot;</span>))</a>
-<a class="sourceLine" id="cb42-4" title="4"><span class="kw">str</span>(lcmlkin_results_sample_info)</a>
-<a class="sourceLine" id="cb42-5" title="5"><span class="co">#&gt; &#39;data.frame&#39;:    4560 obs. of  16 variables:</span></a>
-<a class="sourceLine" id="cb42-6" title="6"><span class="co">#&gt;  $ RGSM_a    : chr  &quot;RGID1_S83&quot; &quot;RGID1_S83&quot; &quot;RGID1_S83&quot; &quot;RGID1_S83&quot; ...</span></a>
-<a class="sourceLine" id="cb42-7" title="7"><span class="co">#&gt;  $ RGSM_b    : chr  &quot;RGID1_S49&quot; &quot;RGID2_S13&quot; &quot;RGID1_S89&quot; &quot;RGID2_S11&quot; ...</span></a>
-<a class="sourceLine" id="cb42-8" title="8"><span class="co">#&gt;  $ k0_hat    : num  0.911 0.878 0.835 0.815 0.863 0.904 0.814 0.816 0.877 0.903 ...</span></a>
-<a class="sourceLine" id="cb42-9" title="9"><span class="co">#&gt;  $ k1_hat    : num  0 0.002 0.004 0.003 0.002 0.003 0.005 0.003 0.002 0.003 ...</span></a>
-<a class="sourceLine" id="cb42-10" title="10"><span class="co">#&gt;  $ k2_hat    : num  0.089 0.12 0.162 0.182 0.134 0.093 0.182 0.18 0.121 0.094 ...</span></a>
-<a class="sourceLine" id="cb42-11" title="11"><span class="co">#&gt;  $ pi_HAT    : num  0.089 0.121 0.164 0.183 0.136 0.094 0.184 0.182 0.122 0.096 ...</span></a>
-<a class="sourceLine" id="cb42-12" title="12"><span class="co">#&gt;  $ nbSNP     : int  617110 729018 615902 622500 713042 579737 518643 623265 704472 603659 ...</span></a>
-<a class="sourceLine" id="cb42-13" title="13"><span class="co">#&gt;  $ RGSM_dyad : chr  &quot;RGID1_S49-RGID1_S83&quot; &quot;RGID1_S83-RGID2_S13&quot; &quot;RGID1_S83-RGID1_S89&quot; &quot;RGID1_S83-RGID2_S11&quot; ...</span></a>
-<a class="sourceLine" id="cb42-14" title="14"><span class="co">#&gt;  $ ID_a      : chr  &quot;WT00386&quot; &quot;WT00386&quot; &quot;WT00386&quot; &quot;WT00386&quot; ...</span></a>
-<a class="sourceLine" id="cb42-15" title="15"><span class="co">#&gt;  $ ID_b      : chr  &quot;A1307&quot; &quot;A1312&quot; &quot;W1671&quot; &quot;W1673&quot; ...</span></a>
-<a class="sourceLine" id="cb42-16" title="16"><span class="co">#&gt;  $ dyad      : chr  &quot;A1307-WT00386&quot; &quot;A1312-WT00386&quot; &quot;W1671-WT00386&quot; &quot;W1673-WT00386&quot; ...</span></a>
-<a class="sourceLine" id="cb42-17" title="17"><span class="co">#&gt;  $ a_Group   : chr  &quot;mpala_chicks&quot; &quot;mpala_chicks&quot; &quot;mpala_chicks&quot; &quot;mpala_chicks&quot; ...</span></a>
-<a class="sourceLine" id="cb42-18" title="18"><span class="co">#&gt;  $ a_sex     : chr  &quot;f&quot; &quot;f&quot; &quot;f&quot; &quot;f&quot; ...</span></a>
-<a class="sourceLine" id="cb42-19" title="19"><span class="co">#&gt;  $ b_Group   : chr  &quot;wing_tags&quot; &quot;wing_tags&quot; &quot;wt025&quot; &quot;wt025&quot; ...</span></a>
-<a class="sourceLine" id="cb42-20" title="20"><span class="co">#&gt;  $ b_sex     : chr  &quot;m&quot; &quot;m&quot; &quot;f&quot; &quot;f&quot; ...</span></a>
-<a class="sourceLine" id="cb42-21" title="21"><span class="co">#&gt;  $ dyad_group: chr  &quot;inter&quot; &quot;inter&quot; &quot;inter&quot; &quot;inter&quot; ...</span></a></code></pre></div>
-<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" title="1"><span class="co">#create new column that specifies if individuals have same or different sex</span></a>
-<a class="sourceLine" id="cb43-2" title="2">lcmlkin_results_sample_info &lt;-<span class="st"> </span>lcmlkin_results_sample_info <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb43-3" title="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">dyad_sex =</span> <span class="kw">case_when</span>(ID_a <span class="op">==</span><span class="st"> </span>ID_b <span class="op">~</span><span class="st"> &quot;identical&quot;</span>,</a>
-<a class="sourceLine" id="cb43-4" title="4">                                a_sex <span class="op">==</span><span class="st"> </span>b_sex <span class="op">~</span><span class="st"> &quot;same sex&quot;</span>,</a>
-<a class="sourceLine" id="cb43-5" title="5">                                a_sex <span class="op">!=</span><span class="st"> </span>b_sex <span class="op">~</span><span class="st"> &quot;male-female&quot;</span>)) </a>
-<a class="sourceLine" id="cb43-6" title="6"></a>
-<a class="sourceLine" id="cb43-7" title="7"><span class="co">#recode dyads for individuals with undetermined sex to NA</span></a>
-<a class="sourceLine" id="cb43-8" title="8">lcmlkin_results_sample_info<span class="op">$</span>dyad_sex[lcmlkin_results_sample_info<span class="op">$</span>a_sex <span class="op">==</span><span class="st"> &quot;u&quot;</span>] &lt;-<span class="st"> </span><span class="ot">NA</span></a>
-<a class="sourceLine" id="cb43-9" title="9">lcmlkin_results_sample_info<span class="op">$</span>dyad_sex[lcmlkin_results_sample_info<span class="op">$</span>b_sex <span class="op">==</span><span class="st"> &quot;u&quot;</span>] &lt;-<span class="st"> </span><span class="ot">NA</span></a>
-<a class="sourceLine" id="cb43-10" title="10"></a>
-<a class="sourceLine" id="cb43-11" title="11"><span class="co">#recode same sex dyads to male or female</span></a>
-<a class="sourceLine" id="cb43-12" title="12">lcmlkin_results_sample_info<span class="op">$</span>dyad_sex[lcmlkin_results_sample_info<span class="op">$</span>dyad_sex <span class="op">==</span><span class="st"> &quot;same sex&quot;</span> <span class="op">&amp;</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb43-13" title="13"><span class="st">                                         </span>lcmlkin_results_sample_info<span class="op">$</span>a_sex <span class="op">==</span><span class="st"> &quot;f&quot;</span>] &lt;-<span class="st"> &quot;female&quot;</span></a>
-<a class="sourceLine" id="cb43-14" title="14">lcmlkin_results_sample_info<span class="op">$</span>dyad_sex[lcmlkin_results_sample_info<span class="op">$</span>dyad_sex <span class="op">==</span><span class="st"> &quot;same sex&quot;</span> <span class="op">&amp;</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb43-15" title="15"><span class="st">                                         </span>lcmlkin_results_sample_info<span class="op">$</span>a_sex <span class="op">==</span><span class="st"> &quot;m&quot;</span>] &lt;-<span class="st"> &quot;male&quot;</span></a>
-<a class="sourceLine" id="cb43-16" title="16"></a>
-<a class="sourceLine" id="cb43-17" title="17"></a>
-<a class="sourceLine" id="cb43-18" title="18"><span class="kw">unique</span>(lcmlkin_results_sample_info<span class="op">$</span>dyad_sex)</a>
-<a class="sourceLine" id="cb43-19" title="19"><span class="co">#&gt; [1] &quot;male-female&quot; &quot;female&quot;      NA            &quot;male&quot;</span></a></code></pre></div>
+<a class="sourceLine" id="cb42-3" title="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">dyad_sex =</span> <span class="kw">case_when</span>(ID_a <span class="op">==</span><span class="st"> </span>ID_b <span class="op">~</span><span class="st"> &quot;identical&quot;</span>,</a>
+<a class="sourceLine" id="cb42-4" title="4">                                a_sex <span class="op">==</span><span class="st"> </span>b_sex <span class="op">~</span><span class="st"> &quot;same sex&quot;</span>,</a>
+<a class="sourceLine" id="cb42-5" title="5">                                a_sex <span class="op">!=</span><span class="st"> </span>b_sex <span class="op">~</span><span class="st"> &quot;male-female&quot;</span>)) </a>
+<a class="sourceLine" id="cb42-6" title="6"></a>
+<a class="sourceLine" id="cb42-7" title="7"><span class="co">#recode dyads for individuals with undetermined sex to NA</span></a>
+<a class="sourceLine" id="cb42-8" title="8">lcmlkin_results_sample_info<span class="op">$</span>dyad_sex[lcmlkin_results_sample_info<span class="op">$</span>a_sex <span class="op">==</span><span class="st"> &quot;u&quot;</span>] &lt;-<span class="st"> </span><span class="ot">NA</span></a>
+<a class="sourceLine" id="cb42-9" title="9">lcmlkin_results_sample_info<span class="op">$</span>dyad_sex[lcmlkin_results_sample_info<span class="op">$</span>b_sex <span class="op">==</span><span class="st"> &quot;u&quot;</span>] &lt;-<span class="st"> </span><span class="ot">NA</span></a>
+<a class="sourceLine" id="cb42-10" title="10"></a>
+<a class="sourceLine" id="cb42-11" title="11"><span class="co">#recode same sex dyads to male or female</span></a>
+<a class="sourceLine" id="cb42-12" title="12">lcmlkin_results_sample_info<span class="op">$</span>dyad_sex[lcmlkin_results_sample_info<span class="op">$</span>dyad_sex <span class="op">==</span><span class="st"> &quot;same sex&quot;</span> <span class="op">&amp;</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb42-13" title="13"><span class="st">                                         </span>lcmlkin_results_sample_info<span class="op">$</span>a_sex <span class="op">==</span><span class="st"> &quot;f&quot;</span>] &lt;-<span class="st"> &quot;female&quot;</span></a>
+<a class="sourceLine" id="cb42-14" title="14">lcmlkin_results_sample_info<span class="op">$</span>dyad_sex[lcmlkin_results_sample_info<span class="op">$</span>dyad_sex <span class="op">==</span><span class="st"> &quot;same sex&quot;</span> <span class="op">&amp;</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb42-15" title="15"><span class="st">                                         </span>lcmlkin_results_sample_info<span class="op">$</span>a_sex <span class="op">==</span><span class="st"> &quot;m&quot;</span>] &lt;-<span class="st"> &quot;male&quot;</span></a>
+<a class="sourceLine" id="cb42-16" title="16"></a>
+<a class="sourceLine" id="cb42-17" title="17"></a>
+<a class="sourceLine" id="cb42-18" title="18"><span class="kw">unique</span>(lcmlkin_results_sample_info<span class="op">$</span>dyad_sex)</a>
+<a class="sourceLine" id="cb42-19" title="19"><span class="co">#&gt; [1] &quot;male-female&quot; &quot;female&quot;      NA            &quot;male&quot;</span></a></code></pre></div>
 <p>Let’s have a closer look at the samples that were sequenced twice</p>
-<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" title="1"><span class="co">#find samples that were sequenced twice</span></a>
-<a class="sourceLine" id="cb44-2" title="2">duplicates_lcmlkin &lt;-<span class="st"> </span><span class="kw">filter</span>(lcmlkin_results_sample_info, ID_a <span class="op">==</span><span class="st"> </span>ID_b)</a>
-<a class="sourceLine" id="cb44-3" title="3"></a>
-<a class="sourceLine" id="cb44-4" title="4"><span class="co">#average relatedness of these duplicted inidividuals</span></a>
-<a class="sourceLine" id="cb44-5" title="5"><span class="kw">mean</span>(duplicates_lcmlkin<span class="op">$</span>pi_HAT)</a>
-<a class="sourceLine" id="cb44-6" title="6"><span class="co">#&gt; [1] NaN</span></a>
-<a class="sourceLine" id="cb44-7" title="7"></a>
-<a class="sourceLine" id="cb44-8" title="8"><span class="co">#range</span></a>
-<a class="sourceLine" id="cb44-9" title="9"><span class="kw">range</span>(duplicates_lcmlkin<span class="op">$</span>pi_HAT)</a>
-<a class="sourceLine" id="cb44-10" title="10"><span class="co">#&gt; Warning in min(x): kein nicht-fehlendes Argument für min; gebe Inf zurück</span></a>
-<a class="sourceLine" id="cb44-11" title="11"><span class="co">#&gt; Warning in max(x): kein nicht-fehlendes Argument für max; gebe -Inf zurück</span></a>
-<a class="sourceLine" id="cb44-12" title="12"><span class="co">#&gt; [1]  Inf -Inf</span></a></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" title="1"><span class="co">#find samples that were sequenced twice</span></a>
+<a class="sourceLine" id="cb43-2" title="2">duplicates_lcmlkin &lt;-<span class="st"> </span><span class="kw">filter</span>(lcmlkin_results_sample_info, ID_a <span class="op">==</span><span class="st"> </span>ID_b)</a>
+<a class="sourceLine" id="cb43-3" title="3"></a>
+<a class="sourceLine" id="cb43-4" title="4"><span class="co">#average relatedness of these duplicted inidividuals</span></a>
+<a class="sourceLine" id="cb43-5" title="5"><span class="kw">mean</span>(duplicates_lcmlkin<span class="op">$</span>pi_HAT)</a>
+<a class="sourceLine" id="cb43-6" title="6"><span class="co">#&gt; [1] NaN</span></a>
+<a class="sourceLine" id="cb43-7" title="7"></a>
+<a class="sourceLine" id="cb43-8" title="8"><span class="co">#range</span></a>
+<a class="sourceLine" id="cb43-9" title="9"><span class="kw">range</span>(duplicates_lcmlkin<span class="op">$</span>pi_HAT)</a>
+<a class="sourceLine" id="cb43-10" title="10"><span class="co">#&gt; Warning in min(x): kein nicht-fehlendes Argument für min; gebe Inf zurück</span></a>
+<a class="sourceLine" id="cb43-11" title="11"><span class="co">#&gt; Warning in max(x): kein nicht-fehlendes Argument für max; gebe -Inf zurück</span></a>
+<a class="sourceLine" id="cb43-12" title="12"><span class="co">#&gt; [1]  Inf -Inf</span></a></code></pre></div>
 <p>Create subset with at least 300k SNPs</p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" title="1">lcmlkin_results_sample_info_300k &lt;-<span class="st"> </span><span class="kw">filter</span>(lcmlkin_results_sample_info, nbSNP <span class="op">&gt;=</span><span class="st"> </span><span class="dv">300000</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" title="1">lcmlkin_results_sample_info_300k &lt;-<span class="st"> </span><span class="kw">filter</span>(lcmlkin_results_sample_info, nbSNP <span class="op">&gt;=</span><span class="st"> </span><span class="dv">300000</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" title="1"></a>
+<a class="sourceLine" id="cb45-2" title="2"><span class="kw">theme_set</span>(<span class="kw">theme_classic</span>())</a>
+<a class="sourceLine" id="cb45-3" title="3"></a>
+<a class="sourceLine" id="cb45-4" title="4"><span class="co">#plot relatedness pi_HAT (y-axis) for every dyad (x-axis), ordered from low to high relatedness and colored according to inter- or intragroup dyad</span></a>
+<a class="sourceLine" id="cb45-5" title="5"></a>
+<a class="sourceLine" id="cb45-6" title="6"><span class="kw">ggplot</span>(lcmlkin_results_sample_info_300k, <span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">reorder</span>(dyad, pi_HAT), <span class="dt">y =</span> pi_HAT, <span class="dt">color =</span> dyad_sex, <span class="dt">shape =</span> dyad_group)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb45-7" title="7"><span class="st">  </span></a>
+<a class="sourceLine" id="cb45-8" title="8"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.1</span>, <span class="kw">aes</span>(<span class="dt">y =</span> pi_HAT)) <span class="op">+</span><span class="st"> </span><span class="co">#plot relatedness estimates as points </span></a>
+<a class="sourceLine" id="cb45-9" title="9"><span class="st">  </span></a>
+<a class="sourceLine" id="cb45-10" title="10"><span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="kw">c</span>(<span class="fl">0.125</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>), <span class="dt">linetype =</span> <span class="st">&quot;dashed&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="co">#include horizontal line to show traditional kinship categories</span></a>
+<a class="sourceLine" id="cb45-11" title="11"><span class="st">  </span></a>
+<a class="sourceLine" id="cb45-12" title="12"><span class="st">  </span><span class="kw">labs</span>( <span class="dt">x =</span> <span class="st">&quot;Dyad&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Relatedness (lcmlkin)&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb45-13" title="13"><span class="st">  </span></a>
+<a class="sourceLine" id="cb45-14" title="14"><span class="st">  </span><span class="kw">scale_colour_viridis_d</span>(<span class="dt">na.value =</span> <span class="dv">1</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb45-15" title="15"></a>
+<a class="sourceLine" id="cb45-16" title="16"><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;distribution of relatedness (lcmlkin) 300k SNPs&quot;</span>)</a></code></pre></div>
+<p><img src="2_data_files/figure-html/figure%20dyadic%20relatedness%20(lcmlkin)%20distribution-1.png" width="672" /></p>
 <div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" title="1"></a>
 <a class="sourceLine" id="cb46-2" title="2"><span class="kw">theme_set</span>(<span class="kw">theme_classic</span>())</a>
 <a class="sourceLine" id="cb46-3" title="3"></a>
-<a class="sourceLine" id="cb46-4" title="4"><span class="co">#plot relatedness pi_HAT (y-axis) for every dyad (x-axis), ordered from low to high relatedness and colored according to inter- or intragroup dyad</span></a>
+<a class="sourceLine" id="cb46-4" title="4"><span class="co">#plot relatedness pi_HAT (y-axis) and corresponding k0 (x-axis) colored according to nbSNP</span></a>
 <a class="sourceLine" id="cb46-5" title="5"></a>
-<a class="sourceLine" id="cb46-6" title="6"><span class="kw">ggplot</span>(lcmlkin_results_sample_info_300k, <span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">reorder</span>(dyad, pi_HAT), <span class="dt">y =</span> pi_HAT, <span class="dt">color =</span> dyad_sex, <span class="dt">shape =</span> dyad_group)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb46-6" title="6"><span class="kw">ggplot</span>(lcmlkin_results_sample_info, <span class="kw">aes</span>(<span class="dt">x =</span> k0_hat, <span class="dt">y =</span> pi_HAT, <span class="dt">color =</span> nbSNP, <span class="dt">shape =</span> dyad_group)) <span class="op">+</span></a>
 <a class="sourceLine" id="cb46-7" title="7"><span class="st">  </span></a>
-<a class="sourceLine" id="cb46-8" title="8"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.1</span>, <span class="kw">aes</span>(<span class="dt">y =</span> pi_HAT)) <span class="op">+</span><span class="st"> </span><span class="co">#plot relatedness estimates as points </span></a>
+<a class="sourceLine" id="cb46-8" title="8"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.2</span>) <span class="op">+</span></a>
 <a class="sourceLine" id="cb46-9" title="9"><span class="st">  </span></a>
-<a class="sourceLine" id="cb46-10" title="10"><span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="kw">c</span>(<span class="fl">0.125</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>), <span class="dt">linetype =</span> <span class="st">&quot;dashed&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="co">#include horizontal line to show traditional kinship categories</span></a>
-<a class="sourceLine" id="cb46-11" title="11"><span class="st">  </span></a>
-<a class="sourceLine" id="cb46-12" title="12"><span class="st">  </span><span class="kw">labs</span>( <span class="dt">x =</span> <span class="st">&quot;Dyad&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Relatedness (lcmlkin)&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb46-13" title="13"></a>
-<a class="sourceLine" id="cb46-14" title="14"><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;distribution of relatedness (lcmlkin) 300k SNPs&quot;</span>)</a></code></pre></div>
-<p><img src="2_data_files/figure-html/figure%20dyadic%20relatedness%20(lcmlkin)%20distribution-1.png" width="672" /></p>
-<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" title="1"></a>
-<a class="sourceLine" id="cb47-2" title="2"><span class="kw">theme_set</span>(<span class="kw">theme_classic</span>())</a>
-<a class="sourceLine" id="cb47-3" title="3"></a>
-<a class="sourceLine" id="cb47-4" title="4"><span class="co">#plot relatedness pi_HAT (y-axis) and corresponding k0 (x-axis) colored according to nbSNP</span></a>
-<a class="sourceLine" id="cb47-5" title="5"></a>
-<a class="sourceLine" id="cb47-6" title="6"><span class="kw">ggplot</span>(lcmlkin_results_sample_info, <span class="kw">aes</span>(<span class="dt">x =</span> k0_hat, <span class="dt">y =</span> pi_HAT, <span class="dt">color =</span> nbSNP, <span class="dt">shape =</span> dyad_group)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb47-7" title="7"><span class="st">  </span></a>
-<a class="sourceLine" id="cb47-8" title="8"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.2</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb47-9" title="9"></a>
-<a class="sourceLine" id="cb47-10" title="10"><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;lcmlkin k0 vs phi&quot;</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb46-10" title="10"><span class="st">  </span><span class="kw">scale_colour_viridis_c</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb46-11" title="11"></a>
+<a class="sourceLine" id="cb46-12" title="12"><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;lcmlkin k0 vs phi&quot;</span>)</a></code></pre></div>
 <p><img src="2_data_files/figure-html/figure%20dyadic%20relatedness%20(lcmlkin)%20distribution%20and%20k0-1.png" width="672" /></p>
 <p>check correlation between number of SNPs and sex</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" title="1"><span class="kw">theme_set</span>(<span class="kw">theme_classic</span>())</a>
+<a class="sourceLine" id="cb47-2" title="2"></a>
+<a class="sourceLine" id="cb47-3" title="3"><span class="co">#plot nbSNPs (y-axis) and for the different categories of sex of dyad (x-axis) colored according to dyad_group</span></a>
+<a class="sourceLine" id="cb47-4" title="4"></a>
+<a class="sourceLine" id="cb47-5" title="5"><span class="kw">ggplot</span>(lcmlkin_results_sample_info, <span class="kw">aes</span>(<span class="dt">x =</span> dyad_sex, <span class="dt">y =</span> nbSNP, <span class="dt">color =</span> dyad_group, <span class="dt">shape =</span> dyad_group)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb47-6" title="6"><span class="st">  </span></a>
+<a class="sourceLine" id="cb47-7" title="7"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.2</span>, <span class="dt">position =</span> <span class="kw">position_dodge</span>(<span class="fl">0.7</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb47-8" title="8"><span class="st">  </span></a>
+<a class="sourceLine" id="cb47-9" title="9"><span class="st">  </span><span class="kw">geom_boxplot</span>(<span class="dt">alpha =</span> <span class="fl">0.4</span>, <span class="dt">outlier.shape =</span> <span class="ot">NA</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb47-10" title="10"><span class="st">  </span></a>
+<a class="sourceLine" id="cb47-11" title="11"><span class="st">  </span><span class="kw">scale_colour_viridis_d</span>(<span class="dt">end =</span> <span class="fl">0.5</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb47-12" title="12"></a>
+<a class="sourceLine" id="cb47-13" title="13"><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;lcmlkin: number of sites per sex of dyad&quot;</span>)</a></code></pre></div>
+<p><img src="2_data_files/figure-html/figure%20(lcmlkin)%20dyad_sex%20and%20nbSNP-1.png" width="672" /></p>
 <div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb48-1" title="1"><span class="kw">theme_set</span>(<span class="kw">theme_classic</span>())</a>
 <a class="sourceLine" id="cb48-2" title="2"></a>
-<a class="sourceLine" id="cb48-3" title="3"><span class="co">#plot nbSNPs (y-axis) and for the different categories of sex of dyad (x-axis) colored according to dyad_group</span></a>
+<a class="sourceLine" id="cb48-3" title="3"><span class="co">#plot relatedness pi_HAT (y-axis) for the different categories of sex of dyad (x-axis) colored according to group membership</span></a>
 <a class="sourceLine" id="cb48-4" title="4"></a>
-<a class="sourceLine" id="cb48-5" title="5"><span class="kw">ggplot</span>(lcmlkin_results_sample_info, <span class="kw">aes</span>(<span class="dt">x =</span> dyad_sex, <span class="dt">y =</span> nbSNP, <span class="dt">color =</span> dyad_group, <span class="dt">shape =</span> dyad_group)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb48-5" title="5"><span class="kw">ggplot</span>(lcmlkin_results_sample_info_300k, <span class="kw">aes</span>(<span class="dt">x =</span> dyad_group, <span class="dt">y =</span> pi_HAT, <span class="dt">color =</span> dyad_sex)) <span class="op">+</span></a>
 <a class="sourceLine" id="cb48-6" title="6"><span class="st">  </span></a>
-<a class="sourceLine" id="cb48-7" title="7"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.2</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb48-7" title="7"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.2</span>, <span class="dt">position =</span> <span class="kw">position_dodge</span>(<span class="fl">0.75</span>)) <span class="op">+</span></a>
 <a class="sourceLine" id="cb48-8" title="8"><span class="st">  </span></a>
-<a class="sourceLine" id="cb48-9" title="9"><span class="st">  </span><span class="kw">geom_boxplot</span>()</a></code></pre></div>
-<p><img src="2_data_files/figure-html/figure%20(lcmlkin)%20dyad_sex%20and%20nbSNP-1.png" width="672" /></p>
-<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb49-1" title="1"></a>
-<a class="sourceLine" id="cb49-2" title="2"> <span class="kw">ggtitle</span>(<span class="st">&quot;nbSNP vs sex of dyad&quot;</span>)</a>
-<a class="sourceLine" id="cb49-3" title="3"><span class="co">#&gt; $title</span></a>
-<a class="sourceLine" id="cb49-4" title="4"><span class="co">#&gt; [1] &quot;nbSNP vs sex of dyad&quot;</span></a>
-<a class="sourceLine" id="cb49-5" title="5"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb49-6" title="6"><span class="co">#&gt; attr(,&quot;class&quot;)</span></a>
-<a class="sourceLine" id="cb49-7" title="7"><span class="co">#&gt; [1] &quot;labels&quot;</span></a></code></pre></div>
-<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" title="1"><span class="kw">theme_set</span>(<span class="kw">theme_classic</span>())</a>
-<a class="sourceLine" id="cb50-2" title="2"></a>
-<a class="sourceLine" id="cb50-3" title="3"><span class="co">#plot relatedness pi_HAT (y-axis) for the different categories of sex of dyad (x-axis) colored according to group membership</span></a>
-<a class="sourceLine" id="cb50-4" title="4"></a>
-<a class="sourceLine" id="cb50-5" title="5"><span class="kw">ggplot</span>(lcmlkin_results_sample_info_300k, <span class="kw">aes</span>(<span class="dt">x =</span> dyad_group, <span class="dt">y =</span> pi_HAT, <span class="dt">color =</span> dyad_sex)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb50-6" title="6"><span class="st">  </span></a>
-<a class="sourceLine" id="cb50-7" title="7"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.2</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb50-8" title="8"><span class="st">  </span></a>
-<a class="sourceLine" id="cb50-9" title="9"><span class="st">  </span><span class="kw">geom_boxplot</span>()</a></code></pre></div>
+<a class="sourceLine" id="cb48-9" title="9"><span class="st">  </span><span class="kw">geom_boxplot</span>(<span class="dt">alpha =</span> <span class="fl">0.4</span>, <span class="dt">outlier.shape =</span> <span class="ot">NA</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb48-10" title="10"><span class="st">  </span></a>
+<a class="sourceLine" id="cb48-11" title="11"><span class="st">  </span><span class="kw">scale_colour_viridis_d</span>(<span class="dt">na.value =</span> <span class="dv">1</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb48-12" title="12"></a>
+<a class="sourceLine" id="cb48-13" title="13"><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;relatedness (lcmlkin) 300k SNPs&quot;</span>)</a></code></pre></div>
 <p><img src="2_data_files/figure-html/figure%20(lcmlkin%20relatedness%20for%20group%20and%20sex-1.png" width="672" /></p>
-<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb51-1" title="1"></a>
-<a class="sourceLine" id="cb51-2" title="2"> <span class="kw">ggtitle</span>(<span class="st">&quot;relatedness (lcmlkin) 300k&quot;</span>)</a>
-<a class="sourceLine" id="cb51-3" title="3"><span class="co">#&gt; $title</span></a>
-<a class="sourceLine" id="cb51-4" title="4"><span class="co">#&gt; [1] &quot;relatedness (lcmlkin) 300k&quot;</span></a>
-<a class="sourceLine" id="cb51-5" title="5"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb51-6" title="6"><span class="co">#&gt; attr(,&quot;class&quot;)</span></a>
-<a class="sourceLine" id="cb51-7" title="7"><span class="co">#&gt; [1] &quot;labels&quot;</span></a></code></pre></div>
 </div>
 <div id="read" class="section level4">
 <h4><span class="header-section-number">4.3.2.3</span> READ</h4>
 <p>This is an assessment of the READ results produced by the Nextflow pipleine created by Ben Hume/SeqAna. The data is saved in the folder <code>pipeline</code> in <code>read</code> as <em>meansP0_AncientDNA_normalized</em>. The preprocessed data (categorizes unrelated, first- and second-order related) is sotred as <em>READ_results</em>.</p>
-<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb52-1" title="1">READ_rawresults &lt;-<span class="st"> </span><span class="kw">read.delim</span>(<span class="st">&quot;vignettes/data/pipeline/no_repeats_relatedness_results/nf_results/read/meansP0_AncientDNA_normalized&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">&quot; &quot;</span>, <span class="dt">as.is =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb52-2" title="2"><span class="kw">str</span>(READ_rawresults)</a>
-<a class="sourceLine" id="cb52-3" title="3"><span class="co">#&gt; &#39;data.frame&#39;:    4560 obs. of  5 variables:</span></a>
-<a class="sourceLine" id="cb52-4" title="4"><span class="co">#&gt;  $ PairIndividuals            : chr  &quot;RGID1_S10RGID1_S11&quot; &quot;RGID1_S10RGID1_S26&quot; &quot;RGID1_S10RGID1_S36&quot; &quot;RGID1_S10RGID1_S39&quot; ...</span></a>
-<a class="sourceLine" id="cb52-5" title="5"><span class="co">#&gt;  $ Normalized2AlleleDifference: num  0.954 0.968 0.931 0.972 0.985 ...</span></a>
-<a class="sourceLine" id="cb52-6" title="6"><span class="co">#&gt;  $ StandardError              : num  0.00477 0.00498 0.00534 0.00472 0.00489 ...</span></a>
-<a class="sourceLine" id="cb52-7" title="7"><span class="co">#&gt;  $ NonNormalizedP0            : num  0.341 0.346 0.333 0.347 0.352 ...</span></a>
-<a class="sourceLine" id="cb52-8" title="8"><span class="co">#&gt;  $ NonNormalizedStandardError : num  0.0017 0.00178 0.00191 0.00169 0.00175 ...</span></a></code></pre></div>
-<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb53-1" title="1">READ_kinresults &lt;-<span class="st"> </span><span class="kw">read.delim</span>(<span class="st">&quot;vignettes/data/pipeline/no_repeats_relatedness_results/nf_results/read/READ_results&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>, <span class="dt">as.is =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb53-2" title="2"><span class="kw">str</span>(READ_kinresults)</a>
-<a class="sourceLine" id="cb53-3" title="3"><span class="co">#&gt; &#39;data.frame&#39;:    4560 obs. of  4 variables:</span></a>
-<a class="sourceLine" id="cb53-4" title="4"><span class="co">#&gt;  $ PairIndividuals: chr  &quot;RGID1_S10RGID1_S11&quot; &quot;RGID1_S10RGID1_S26&quot; &quot;RGID1_S10RGID1_S36&quot; &quot;RGID1_S10RGID1_S39&quot; ...</span></a>
-<a class="sourceLine" id="cb53-5" title="5"><span class="co">#&gt;  $ Relationship   : chr  &quot;Unrelated&quot; &quot;Unrelated&quot; &quot;Unrelated&quot; &quot;Unrelated&quot; ...</span></a>
-<a class="sourceLine" id="cb53-6" title="6"><span class="co">#&gt;  $ Z_upper        : num  NA NA NA NA NA NA NA NA NA NA ...</span></a>
-<a class="sourceLine" id="cb53-7" title="7"><span class="co">#&gt;  $ Z_lower        : num  -9.91 -12.35 -4.68 -13.99 -16.15 ...</span></a></code></pre></div>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb49-1" title="1">READ_rawresults &lt;-<span class="st"> </span><span class="kw">read.delim</span>(<span class="st">&quot;vignettes/data/pipeline/no_repeats_relatedness_results/nf_results/read/meansP0_AncientDNA_normalized&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">&quot; &quot;</span>, <span class="dt">as.is =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb49-2" title="2"><span class="kw">str</span>(READ_rawresults)</a>
+<a class="sourceLine" id="cb49-3" title="3"><span class="co">#&gt; &#39;data.frame&#39;:    4560 obs. of  5 variables:</span></a>
+<a class="sourceLine" id="cb49-4" title="4"><span class="co">#&gt;  $ PairIndividuals            : chr  &quot;RGID1_S10RGID1_S11&quot; &quot;RGID1_S10RGID1_S26&quot; &quot;RGID1_S10RGID1_S36&quot; &quot;RGID1_S10RGID1_S39&quot; ...</span></a>
+<a class="sourceLine" id="cb49-5" title="5"><span class="co">#&gt;  $ Normalized2AlleleDifference: num  0.954 0.968 0.931 0.972 0.985 ...</span></a>
+<a class="sourceLine" id="cb49-6" title="6"><span class="co">#&gt;  $ StandardError              : num  0.00477 0.00498 0.00534 0.00472 0.00489 ...</span></a>
+<a class="sourceLine" id="cb49-7" title="7"><span class="co">#&gt;  $ NonNormalizedP0            : num  0.341 0.346 0.333 0.347 0.352 ...</span></a>
+<a class="sourceLine" id="cb49-8" title="8"><span class="co">#&gt;  $ NonNormalizedStandardError : num  0.0017 0.00178 0.00191 0.00169 0.00175 ...</span></a></code></pre></div>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" title="1">READ_kinresults &lt;-<span class="st"> </span><span class="kw">read.delim</span>(<span class="st">&quot;vignettes/data/pipeline/no_repeats_relatedness_results/nf_results/read/READ_results&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>, <span class="dt">as.is =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb50-2" title="2"><span class="kw">str</span>(READ_kinresults)</a>
+<a class="sourceLine" id="cb50-3" title="3"><span class="co">#&gt; &#39;data.frame&#39;:    4560 obs. of  4 variables:</span></a>
+<a class="sourceLine" id="cb50-4" title="4"><span class="co">#&gt;  $ PairIndividuals: chr  &quot;RGID1_S10RGID1_S11&quot; &quot;RGID1_S10RGID1_S26&quot; &quot;RGID1_S10RGID1_S36&quot; &quot;RGID1_S10RGID1_S39&quot; ...</span></a>
+<a class="sourceLine" id="cb50-5" title="5"><span class="co">#&gt;  $ Relationship   : chr  &quot;Unrelated&quot; &quot;Unrelated&quot; &quot;Unrelated&quot; &quot;Unrelated&quot; ...</span></a>
+<a class="sourceLine" id="cb50-6" title="6"><span class="co">#&gt;  $ Z_upper        : num  NA NA NA NA NA NA NA NA NA NA ...</span></a>
+<a class="sourceLine" id="cb50-7" title="7"><span class="co">#&gt;  $ Z_lower        : num  -9.91 -12.35 -4.68 -13.99 -16.15 ...</span></a></code></pre></div>
 <p>Merge these two result files</p>
-<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb54-1" title="1">READ_results &lt;-<span class="st"> </span><span class="kw">left_join</span>(READ_rawresults, READ_kinresults, <span class="dt">by =</span> <span class="st">&quot;PairIndividuals&quot;</span>)</a>
-<a class="sourceLine" id="cb54-2" title="2"><span class="kw">str</span>(READ_results)</a>
-<a class="sourceLine" id="cb54-3" title="3"><span class="co">#&gt; &#39;data.frame&#39;:    4560 obs. of  8 variables:</span></a>
-<a class="sourceLine" id="cb54-4" title="4"><span class="co">#&gt;  $ PairIndividuals            : chr  &quot;RGID1_S10RGID1_S11&quot; &quot;RGID1_S10RGID1_S26&quot; &quot;RGID1_S10RGID1_S36&quot; &quot;RGID1_S10RGID1_S39&quot; ...</span></a>
-<a class="sourceLine" id="cb54-5" title="5"><span class="co">#&gt;  $ Normalized2AlleleDifference: num  0.954 0.968 0.931 0.972 0.985 ...</span></a>
-<a class="sourceLine" id="cb54-6" title="6"><span class="co">#&gt;  $ StandardError              : num  0.00477 0.00498 0.00534 0.00472 0.00489 ...</span></a>
-<a class="sourceLine" id="cb54-7" title="7"><span class="co">#&gt;  $ NonNormalizedP0            : num  0.341 0.346 0.333 0.347 0.352 ...</span></a>
-<a class="sourceLine" id="cb54-8" title="8"><span class="co">#&gt;  $ NonNormalizedStandardError : num  0.0017 0.00178 0.00191 0.00169 0.00175 ...</span></a>
-<a class="sourceLine" id="cb54-9" title="9"><span class="co">#&gt;  $ Relationship               : chr  &quot;Unrelated&quot; &quot;Unrelated&quot; &quot;Unrelated&quot; &quot;Unrelated&quot; ...</span></a>
-<a class="sourceLine" id="cb54-10" title="10"><span class="co">#&gt;  $ Z_upper                    : num  NA NA NA NA NA NA NA NA NA NA ...</span></a>
-<a class="sourceLine" id="cb54-11" title="11"><span class="co">#&gt;  $ Z_lower                    : num  -9.91 -12.35 -4.68 -13.99 -16.15 ...</span></a></code></pre></div>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb51-1" title="1">READ_results &lt;-<span class="st"> </span><span class="kw">left_join</span>(READ_rawresults, READ_kinresults, <span class="dt">by =</span> <span class="st">&quot;PairIndividuals&quot;</span>)</a>
+<a class="sourceLine" id="cb51-2" title="2"><span class="kw">str</span>(READ_results)</a>
+<a class="sourceLine" id="cb51-3" title="3"><span class="co">#&gt; &#39;data.frame&#39;:    4560 obs. of  8 variables:</span></a>
+<a class="sourceLine" id="cb51-4" title="4"><span class="co">#&gt;  $ PairIndividuals            : chr  &quot;RGID1_S10RGID1_S11&quot; &quot;RGID1_S10RGID1_S26&quot; &quot;RGID1_S10RGID1_S36&quot; &quot;RGID1_S10RGID1_S39&quot; ...</span></a>
+<a class="sourceLine" id="cb51-5" title="5"><span class="co">#&gt;  $ Normalized2AlleleDifference: num  0.954 0.968 0.931 0.972 0.985 ...</span></a>
+<a class="sourceLine" id="cb51-6" title="6"><span class="co">#&gt;  $ StandardError              : num  0.00477 0.00498 0.00534 0.00472 0.00489 ...</span></a>
+<a class="sourceLine" id="cb51-7" title="7"><span class="co">#&gt;  $ NonNormalizedP0            : num  0.341 0.346 0.333 0.347 0.352 ...</span></a>
+<a class="sourceLine" id="cb51-8" title="8"><span class="co">#&gt;  $ NonNormalizedStandardError : num  0.0017 0.00178 0.00191 0.00169 0.00175 ...</span></a>
+<a class="sourceLine" id="cb51-9" title="9"><span class="co">#&gt;  $ Relationship               : chr  &quot;Unrelated&quot; &quot;Unrelated&quot; &quot;Unrelated&quot; &quot;Unrelated&quot; ...</span></a>
+<a class="sourceLine" id="cb51-10" title="10"><span class="co">#&gt;  $ Z_upper                    : num  NA NA NA NA NA NA NA NA NA NA ...</span></a>
+<a class="sourceLine" id="cb51-11" title="11"><span class="co">#&gt;  $ Z_lower                    : num  -9.91 -12.35 -4.68 -13.99 -16.15 ...</span></a></code></pre></div>
 <p>Now we need to split the <em>PairIndividuals</em> into individual 1 and 2, identify these individuals and then create the dyads corresponding to the previous results.</p>
-<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb55-1" title="1"><span class="co">#Need to split PairIndividuals into 2 new columns</span></a>
-<a class="sourceLine" id="cb55-2" title="2">READ_results<span class="op">$</span>RGSM_a &lt;-<span class="st"> </span><span class="kw">gsub</span>(<span class="st">&quot;(RGID[[:alnum:]]{1}_S[[:alnum:]]{1,2})(RGID[[:alnum:]]{1}_S[[:alnum:]]{1,2})&quot;</span>, <span class="st">&quot;</span><span class="ch">\\</span><span class="st">1&quot;</span>, READ_results<span class="op">$</span>PairIndividuals)</a>
-<a class="sourceLine" id="cb55-3" title="3"></a>
-<a class="sourceLine" id="cb55-4" title="4">READ_results<span class="op">$</span>RGSM_b &lt;-<span class="st"> </span><span class="kw">gsub</span>(<span class="st">&quot;(RGID[[:alnum:]]{1}_S[[:alnum:]]{1,2})(RGID[[:alnum:]]{1}_S[[:alnum:]]{1,2})&quot;</span>, <span class="st">&quot;</span><span class="ch">\\</span><span class="st">2&quot;</span>, READ_results<span class="op">$</span>PairIndividuals)</a>
-<a class="sourceLine" id="cb55-5" title="5"></a>
-<a class="sourceLine" id="cb55-6" title="6"><span class="co">#create a new column that includes RGSM_dyad</span></a>
-<a class="sourceLine" id="cb55-7" title="7">READ_results<span class="op">$</span>RGSM_dyad &lt;-<span class="st"> </span><span class="kw">if_else</span>(READ_results<span class="op">$</span>RGSM_a <span class="op">&lt;</span><span class="st"> </span>READ_results<span class="op">$</span>RGSM_b, <span class="kw">paste</span>(READ_results<span class="op">$</span>RGSM_a, READ_results<span class="op">$</span>RGSM_b, <span class="dt">sep =</span> <span class="st">&quot;-&quot;</span>), <span class="kw">paste</span>(READ_results<span class="op">$</span>RGSM_b, READ_results<span class="op">$</span>RGSM_a, <span class="dt">sep =</span> <span class="st">&quot;-&quot;</span>))</a>
-<a class="sourceLine" id="cb55-8" title="8"></a>
-<a class="sourceLine" id="cb55-9" title="9"><span class="kw">str</span>(READ_results)</a>
-<a class="sourceLine" id="cb55-10" title="10"><span class="co">#&gt; &#39;data.frame&#39;:    4560 obs. of  11 variables:</span></a>
-<a class="sourceLine" id="cb55-11" title="11"><span class="co">#&gt;  $ PairIndividuals            : chr  &quot;RGID1_S10RGID1_S11&quot; &quot;RGID1_S10RGID1_S26&quot; &quot;RGID1_S10RGID1_S36&quot; &quot;RGID1_S10RGID1_S39&quot; ...</span></a>
-<a class="sourceLine" id="cb55-12" title="12"><span class="co">#&gt;  $ Normalized2AlleleDifference: num  0.954 0.968 0.931 0.972 0.985 ...</span></a>
-<a class="sourceLine" id="cb55-13" title="13"><span class="co">#&gt;  $ StandardError              : num  0.00477 0.00498 0.00534 0.00472 0.00489 ...</span></a>
-<a class="sourceLine" id="cb55-14" title="14"><span class="co">#&gt;  $ NonNormalizedP0            : num  0.341 0.346 0.333 0.347 0.352 ...</span></a>
-<a class="sourceLine" id="cb55-15" title="15"><span class="co">#&gt;  $ NonNormalizedStandardError : num  0.0017 0.00178 0.00191 0.00169 0.00175 ...</span></a>
-<a class="sourceLine" id="cb55-16" title="16"><span class="co">#&gt;  $ Relationship               : chr  &quot;Unrelated&quot; &quot;Unrelated&quot; &quot;Unrelated&quot; &quot;Unrelated&quot; ...</span></a>
-<a class="sourceLine" id="cb55-17" title="17"><span class="co">#&gt;  $ Z_upper                    : num  NA NA NA NA NA NA NA NA NA NA ...</span></a>
-<a class="sourceLine" id="cb55-18" title="18"><span class="co">#&gt;  $ Z_lower                    : num  -9.91 -12.35 -4.68 -13.99 -16.15 ...</span></a>
-<a class="sourceLine" id="cb55-19" title="19"><span class="co">#&gt;  $ RGSM_a                     : chr  &quot;RGID1_S10&quot; &quot;RGID1_S10&quot; &quot;RGID1_S10&quot; &quot;RGID1_S10&quot; ...</span></a>
-<a class="sourceLine" id="cb55-20" title="20"><span class="co">#&gt;  $ RGSM_b                     : chr  &quot;RGID1_S11&quot; &quot;RGID1_S26&quot; &quot;RGID1_S36&quot; &quot;RGID1_S39&quot; ...</span></a>
-<a class="sourceLine" id="cb55-21" title="21"><span class="co">#&gt;  $ RGSM_dyad                  : chr  &quot;RGID1_S10-RGID1_S11&quot; &quot;RGID1_S10-RGID1_S26&quot; &quot;RGID1_S10-RGID1_S36&quot; &quot;RGID1_S10-RGID1_S39&quot; ...</span></a></code></pre></div>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb52-1" title="1"><span class="co">#Need to split PairIndividuals into 2 new columns</span></a>
+<a class="sourceLine" id="cb52-2" title="2">READ_results<span class="op">$</span>RGSM_a &lt;-<span class="st"> </span><span class="kw">gsub</span>(<span class="st">&quot;(RGID[[:alnum:]]{1}_S[[:alnum:]]{1,2})(RGID[[:alnum:]]{1}_S[[:alnum:]]{1,2})&quot;</span>, <span class="st">&quot;</span><span class="ch">\\</span><span class="st">1&quot;</span>, READ_results<span class="op">$</span>PairIndividuals)</a>
+<a class="sourceLine" id="cb52-3" title="3"></a>
+<a class="sourceLine" id="cb52-4" title="4">READ_results<span class="op">$</span>RGSM_b &lt;-<span class="st"> </span><span class="kw">gsub</span>(<span class="st">&quot;(RGID[[:alnum:]]{1}_S[[:alnum:]]{1,2})(RGID[[:alnum:]]{1}_S[[:alnum:]]{1,2})&quot;</span>, <span class="st">&quot;</span><span class="ch">\\</span><span class="st">2&quot;</span>, READ_results<span class="op">$</span>PairIndividuals)</a>
+<a class="sourceLine" id="cb52-5" title="5"></a>
+<a class="sourceLine" id="cb52-6" title="6"><span class="co">#create a new column that includes RGSM_dyad</span></a>
+<a class="sourceLine" id="cb52-7" title="7">READ_results<span class="op">$</span>RGSM_dyad &lt;-<span class="st"> </span><span class="kw">if_else</span>(READ_results<span class="op">$</span>RGSM_a <span class="op">&lt;</span><span class="st"> </span>READ_results<span class="op">$</span>RGSM_b, <span class="kw">paste</span>(READ_results<span class="op">$</span>RGSM_a, READ_results<span class="op">$</span>RGSM_b, <span class="dt">sep =</span> <span class="st">&quot;-&quot;</span>), <span class="kw">paste</span>(READ_results<span class="op">$</span>RGSM_b, READ_results<span class="op">$</span>RGSM_a, <span class="dt">sep =</span> <span class="st">&quot;-&quot;</span>))</a>
+<a class="sourceLine" id="cb52-8" title="8"></a>
+<a class="sourceLine" id="cb52-9" title="9"><span class="kw">str</span>(READ_results)</a>
+<a class="sourceLine" id="cb52-10" title="10"><span class="co">#&gt; &#39;data.frame&#39;:    4560 obs. of  11 variables:</span></a>
+<a class="sourceLine" id="cb52-11" title="11"><span class="co">#&gt;  $ PairIndividuals            : chr  &quot;RGID1_S10RGID1_S11&quot; &quot;RGID1_S10RGID1_S26&quot; &quot;RGID1_S10RGID1_S36&quot; &quot;RGID1_S10RGID1_S39&quot; ...</span></a>
+<a class="sourceLine" id="cb52-12" title="12"><span class="co">#&gt;  $ Normalized2AlleleDifference: num  0.954 0.968 0.931 0.972 0.985 ...</span></a>
+<a class="sourceLine" id="cb52-13" title="13"><span class="co">#&gt;  $ StandardError              : num  0.00477 0.00498 0.00534 0.00472 0.00489 ...</span></a>
+<a class="sourceLine" id="cb52-14" title="14"><span class="co">#&gt;  $ NonNormalizedP0            : num  0.341 0.346 0.333 0.347 0.352 ...</span></a>
+<a class="sourceLine" id="cb52-15" title="15"><span class="co">#&gt;  $ NonNormalizedStandardError : num  0.0017 0.00178 0.00191 0.00169 0.00175 ...</span></a>
+<a class="sourceLine" id="cb52-16" title="16"><span class="co">#&gt;  $ Relationship               : chr  &quot;Unrelated&quot; &quot;Unrelated&quot; &quot;Unrelated&quot; &quot;Unrelated&quot; ...</span></a>
+<a class="sourceLine" id="cb52-17" title="17"><span class="co">#&gt;  $ Z_upper                    : num  NA NA NA NA NA NA NA NA NA NA ...</span></a>
+<a class="sourceLine" id="cb52-18" title="18"><span class="co">#&gt;  $ Z_lower                    : num  -9.91 -12.35 -4.68 -13.99 -16.15 ...</span></a>
+<a class="sourceLine" id="cb52-19" title="19"><span class="co">#&gt;  $ RGSM_a                     : chr  &quot;RGID1_S10&quot; &quot;RGID1_S10&quot; &quot;RGID1_S10&quot; &quot;RGID1_S10&quot; ...</span></a>
+<a class="sourceLine" id="cb52-20" title="20"><span class="co">#&gt;  $ RGSM_b                     : chr  &quot;RGID1_S11&quot; &quot;RGID1_S26&quot; &quot;RGID1_S36&quot; &quot;RGID1_S39&quot; ...</span></a>
+<a class="sourceLine" id="cb52-21" title="21"><span class="co">#&gt;  $ RGSM_dyad                  : chr  &quot;RGID1_S10-RGID1_S11&quot; &quot;RGID1_S10-RGID1_S26&quot; &quot;RGID1_S10-RGID1_S36&quot; &quot;RGID1_S10-RGID1_S39&quot; ...</span></a></code></pre></div>
 <p>We join together the relatedness estimates with the sample information, to know the identity of the dyads</p>
-<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb56-1" title="1"></a>
-<a class="sourceLine" id="cb56-2" title="2"><span class="co">#first include ID of individual a</span></a>
-<a class="sourceLine" id="cb56-3" title="3">READ_results_ID &lt;-<span class="st"> </span><span class="kw">left_join</span>(READ_results, seqlib_overview[<span class="dv">6</span><span class="op">:</span><span class="dv">7</span>], <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;RGSM_a&quot;</span> =<span class="st"> &quot;RGSM&quot;</span>))</a>
-<a class="sourceLine" id="cb56-4" title="4"></a>
-<a class="sourceLine" id="cb56-5" title="5"><span class="co">#rename &quot;ID&quot; to &quot;ID_a&quot;</span></a>
-<a class="sourceLine" id="cb56-6" title="6">READ_results_ID &lt;-<span class="st"> </span><span class="kw">rename</span>(READ_results_ID, <span class="st">&quot;ID_a&quot;</span> =<span class="st"> &quot;ID&quot;</span>)</a>
-<a class="sourceLine" id="cb56-7" title="7"></a>
-<a class="sourceLine" id="cb56-8" title="8"><span class="co">#now include ID of individual b</span></a>
-<a class="sourceLine" id="cb56-9" title="9">READ_results_ID &lt;-<span class="st"> </span><span class="kw">left_join</span>(READ_results_ID, seqlib_overview[<span class="dv">6</span><span class="op">:</span><span class="dv">7</span>], <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;RGSM_b&quot;</span> =<span class="st"> &quot;RGSM&quot;</span>))</a>
-<a class="sourceLine" id="cb56-10" title="10"></a>
-<a class="sourceLine" id="cb56-11" title="11"><span class="co">#rename &quot;ID&quot; to &quot;ID_b&quot;</span></a>
-<a class="sourceLine" id="cb56-12" title="12">READ_results_ID &lt;-<span class="st"> </span><span class="kw">rename</span>(READ_results_ID, <span class="st">&quot;ID_b&quot;</span> =<span class="st"> &quot;ID&quot;</span>)</a>
-<a class="sourceLine" id="cb56-13" title="13"></a>
-<a class="sourceLine" id="cb56-14" title="14"><span class="co">#create a new column that includes the dyad</span></a>
-<a class="sourceLine" id="cb56-15" title="15">READ_results_ID<span class="op">$</span>dyad &lt;-<span class="st"> </span><span class="kw">if_else</span>(READ_results_ID<span class="op">$</span>ID_a <span class="op">&lt;</span><span class="st"> </span>READ_results_ID<span class="op">$</span>ID_b, <span class="kw">paste</span>(READ_results_ID<span class="op">$</span>ID_a, READ_results_ID<span class="op">$</span>ID_b, <span class="dt">sep =</span> <span class="st">&quot;-&quot;</span>), <span class="kw">paste</span>(READ_results_ID<span class="op">$</span>ID_b, READ_results_ID<span class="op">$</span>ID_a, <span class="dt">sep =</span> <span class="st">&quot;-&quot;</span>))</a>
-<a class="sourceLine" id="cb56-16" title="16"></a>
-<a class="sourceLine" id="cb56-17" title="17"><span class="co">#remove duplicates ##maybe not necessary anymore</span></a>
-<a class="sourceLine" id="cb56-18" title="18"></a>
-<a class="sourceLine" id="cb56-19" title="19">READ_results_ID &lt;-<span class="st"> </span><span class="kw">distinct</span>(READ_results_ID)</a></code></pre></div>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb53-1" title="1"></a>
+<a class="sourceLine" id="cb53-2" title="2"><span class="co">#first include ID of individual a</span></a>
+<a class="sourceLine" id="cb53-3" title="3">READ_results_ID &lt;-<span class="st"> </span><span class="kw">left_join</span>(READ_results, seqlib_overview[<span class="dv">6</span><span class="op">:</span><span class="dv">7</span>], <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;RGSM_a&quot;</span> =<span class="st"> &quot;RGSM&quot;</span>))</a>
+<a class="sourceLine" id="cb53-4" title="4"></a>
+<a class="sourceLine" id="cb53-5" title="5"><span class="co">#rename &quot;ID&quot; to &quot;ID_a&quot;</span></a>
+<a class="sourceLine" id="cb53-6" title="6">READ_results_ID &lt;-<span class="st"> </span><span class="kw">rename</span>(READ_results_ID, <span class="st">&quot;ID_a&quot;</span> =<span class="st"> &quot;ID&quot;</span>)</a>
+<a class="sourceLine" id="cb53-7" title="7"></a>
+<a class="sourceLine" id="cb53-8" title="8"><span class="co">#now include ID of individual b</span></a>
+<a class="sourceLine" id="cb53-9" title="9">READ_results_ID &lt;-<span class="st"> </span><span class="kw">left_join</span>(READ_results_ID, seqlib_overview[<span class="dv">6</span><span class="op">:</span><span class="dv">7</span>], <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;RGSM_b&quot;</span> =<span class="st"> &quot;RGSM&quot;</span>))</a>
+<a class="sourceLine" id="cb53-10" title="10"></a>
+<a class="sourceLine" id="cb53-11" title="11"><span class="co">#rename &quot;ID&quot; to &quot;ID_b&quot;</span></a>
+<a class="sourceLine" id="cb53-12" title="12">READ_results_ID &lt;-<span class="st"> </span><span class="kw">rename</span>(READ_results_ID, <span class="st">&quot;ID_b&quot;</span> =<span class="st"> &quot;ID&quot;</span>)</a>
+<a class="sourceLine" id="cb53-13" title="13"></a>
+<a class="sourceLine" id="cb53-14" title="14"><span class="co">#create a new column that includes the dyad</span></a>
+<a class="sourceLine" id="cb53-15" title="15">READ_results_ID<span class="op">$</span>dyad &lt;-<span class="st"> </span><span class="kw">if_else</span>(READ_results_ID<span class="op">$</span>ID_a <span class="op">&lt;</span><span class="st"> </span>READ_results_ID<span class="op">$</span>ID_b, <span class="kw">paste</span>(READ_results_ID<span class="op">$</span>ID_a, READ_results_ID<span class="op">$</span>ID_b, <span class="dt">sep =</span> <span class="st">&quot;-&quot;</span>), <span class="kw">paste</span>(READ_results_ID<span class="op">$</span>ID_b, READ_results_ID<span class="op">$</span>ID_a, <span class="dt">sep =</span> <span class="st">&quot;-&quot;</span>))</a>
+<a class="sourceLine" id="cb53-16" title="16"></a>
+<a class="sourceLine" id="cb53-17" title="17"><span class="co">#remove duplicates ##maybe not necessary anymore</span></a>
+<a class="sourceLine" id="cb53-18" title="18"></a>
+<a class="sourceLine" id="cb53-19" title="19">READ_results_ID &lt;-<span class="st"> </span><span class="kw">distinct</span>(READ_results_ID)</a></code></pre></div>
 <p>Let’s have a closer look at the samples that were sequenced twice</p>
-<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb57-1" title="1"><span class="co">#find samples that were sequenced twice</span></a>
-<a class="sourceLine" id="cb57-2" title="2">duplicates &lt;-<span class="st"> </span><span class="kw">filter</span>(READ_results_ID, ID_a <span class="op">==</span><span class="st"> </span>ID_b)</a>
-<a class="sourceLine" id="cb57-3" title="3"></a>
-<a class="sourceLine" id="cb57-4" title="4"><span class="co">#average relatedness of these duplicted inidividuals</span></a>
-<a class="sourceLine" id="cb57-5" title="5"><span class="kw">mean</span>(duplicates<span class="op">$</span>NonNormalizedP0)</a>
-<a class="sourceLine" id="cb57-6" title="6"><span class="co">#&gt; [1] NaN</span></a>
-<a class="sourceLine" id="cb57-7" title="7"></a>
-<a class="sourceLine" id="cb57-8" title="8"><span class="co">#range</span></a>
-<a class="sourceLine" id="cb57-9" title="9"><span class="kw">range</span>(duplicates<span class="op">$</span>NonNormalizedP0)</a>
-<a class="sourceLine" id="cb57-10" title="10"><span class="co">#&gt; Warning in min(x): kein nicht-fehlendes Argument für min; gebe Inf zurück</span></a>
-<a class="sourceLine" id="cb57-11" title="11"><span class="co">#&gt; Warning in max(x): kein nicht-fehlendes Argument für max; gebe -Inf zurück</span></a>
-<a class="sourceLine" id="cb57-12" title="12"><span class="co">#&gt; [1]  Inf -Inf</span></a></code></pre></div>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb54-1" title="1"><span class="co">#find samples that were sequenced twice</span></a>
+<a class="sourceLine" id="cb54-2" title="2">duplicates &lt;-<span class="st"> </span><span class="kw">filter</span>(READ_results_ID, ID_a <span class="op">==</span><span class="st"> </span>ID_b)</a>
+<a class="sourceLine" id="cb54-3" title="3"></a>
+<a class="sourceLine" id="cb54-4" title="4"><span class="co">#average relatedness of these duplicted inidividuals</span></a>
+<a class="sourceLine" id="cb54-5" title="5"><span class="kw">mean</span>(duplicates<span class="op">$</span>NonNormalizedP0)</a>
+<a class="sourceLine" id="cb54-6" title="6"><span class="co">#&gt; [1] NaN</span></a>
+<a class="sourceLine" id="cb54-7" title="7"></a>
+<a class="sourceLine" id="cb54-8" title="8"><span class="co">#range</span></a>
+<a class="sourceLine" id="cb54-9" title="9"><span class="kw">range</span>(duplicates<span class="op">$</span>NonNormalizedP0)</a>
+<a class="sourceLine" id="cb54-10" title="10"><span class="co">#&gt; Warning in min(x): kein nicht-fehlendes Argument für min; gebe Inf zurück</span></a>
+<a class="sourceLine" id="cb54-11" title="11"><span class="co">#&gt; Warning in max(x): kein nicht-fehlendes Argument für max; gebe -Inf zurück</span></a>
+<a class="sourceLine" id="cb54-12" title="12"><span class="co">#&gt; [1]  Inf -Inf</span></a></code></pre></div>
 <p>We also include the group information</p>
-<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb58-1" title="1"><span class="co">#first include group of individual a</span></a>
-<a class="sourceLine" id="cb58-2" title="2">READ_results_sample_info &lt;-<span class="st"> </span><span class="kw">left_join</span>(READ_results_ID, sample_info, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;ID_a&quot;</span> =<span class="st"> &quot;ID&quot;</span>))</a>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb55-1" title="1"><span class="co">#first include group of individual a</span></a>
+<a class="sourceLine" id="cb55-2" title="2">READ_results_sample_info &lt;-<span class="st"> </span><span class="kw">left_join</span>(READ_results_ID, sample_info, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;ID_a&quot;</span> =<span class="st"> &quot;ID&quot;</span>))</a>
+<a class="sourceLine" id="cb55-3" title="3"></a>
+<a class="sourceLine" id="cb55-4" title="4"><span class="co">#rename &quot;Group_ID&quot; to &quot;a_Group&quot;</span></a>
+<a class="sourceLine" id="cb55-5" title="5">READ_results_sample_info &lt;-<span class="st"> </span><span class="kw">rename</span>(READ_results_sample_info, <span class="st">&quot;a_Group&quot;</span> =<span class="st"> &quot;Group_ID&quot;</span>)</a>
+<a class="sourceLine" id="cb55-6" title="6">READ_results_sample_info &lt;-<span class="st"> </span><span class="kw">rename</span>(READ_results_sample_info, <span class="st">&quot;a_sex&quot;</span> =<span class="st"> &quot;sex&quot;</span>)</a>
+<a class="sourceLine" id="cb55-7" title="7"></a>
+<a class="sourceLine" id="cb55-8" title="8"><span class="co">#then include group of individual b</span></a>
+<a class="sourceLine" id="cb55-9" title="9">READ_results_sample_info &lt;-<span class="st"> </span><span class="kw">left_join</span>(READ_results_sample_info, sample_info, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;ID_b&quot;</span> =<span class="st"> &quot;ID&quot;</span>))</a>
+<a class="sourceLine" id="cb55-10" title="10">READ_results_sample_info &lt;-<span class="st"> </span><span class="kw">rename</span>(READ_results_sample_info, <span class="st">&quot;b_sex&quot;</span> =<span class="st"> &quot;sex&quot;</span>)</a>
+<a class="sourceLine" id="cb55-11" title="11"></a>
+<a class="sourceLine" id="cb55-12" title="12"><span class="co">#rename &quot;Group_ID&quot; to &quot;b_Group&quot;</span></a>
+<a class="sourceLine" id="cb55-13" title="13">READ_results_sample_info &lt;-<span class="st"> </span><span class="kw">rename</span>(READ_results_sample_info, <span class="st">&quot;b_Group&quot;</span> =<span class="st"> &quot;Group_ID&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb56-1" title="1"><span class="co">#create new column that specifies if individuals are from same or different groups</span></a>
+<a class="sourceLine" id="cb56-2" title="2">READ_results_sample_info &lt;-<span class="st"> </span>READ_results_sample_info <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb56-3" title="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">dyad_group =</span> <span class="kw">case_when</span>(ID_a <span class="op">==</span><span class="st"> </span>ID_b <span class="op">~</span><span class="st"> &quot;identical&quot;</span>,</a>
+<a class="sourceLine" id="cb56-4" title="4">                                a_Group <span class="op">==</span><span class="st"> </span>b_Group <span class="op">~</span><span class="st"> &quot;intragroup&quot;</span>,</a>
+<a class="sourceLine" id="cb56-5" title="5">                                a_Group <span class="op">!=</span><span class="st"> </span>b_Group <span class="op">~</span><span class="st"> &quot;intergroup&quot;</span>))</a>
+<a class="sourceLine" id="cb56-6" title="6"></a>
+<a class="sourceLine" id="cb56-7" title="7"><span class="kw">unique</span>(READ_results_sample_info<span class="op">$</span>dyad_group)</a>
+<a class="sourceLine" id="cb56-8" title="8"><span class="co">#&gt; [1] &quot;intergroup&quot; &quot;intragroup&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb57-1" title="1"><span class="co">#create new column that specifies if individuals have same or different sex</span></a>
+<a class="sourceLine" id="cb57-2" title="2">READ_results_sample_info &lt;-<span class="st"> </span>READ_results_sample_info <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb57-3" title="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">dyad_sex =</span> <span class="kw">case_when</span>(ID_a <span class="op">==</span><span class="st"> </span>ID_b <span class="op">~</span><span class="st"> &quot;identical&quot;</span>,</a>
+<a class="sourceLine" id="cb57-4" title="4">                                a_sex <span class="op">==</span><span class="st"> </span>b_sex <span class="op">~</span><span class="st"> &quot;same sex&quot;</span>,</a>
+<a class="sourceLine" id="cb57-5" title="5">                                a_sex <span class="op">!=</span><span class="st"> </span>b_sex <span class="op">~</span><span class="st"> &quot;male-female&quot;</span>)) </a>
+<a class="sourceLine" id="cb57-6" title="6"></a>
+<a class="sourceLine" id="cb57-7" title="7"><span class="co">#recode dyads for individuals with undetermined sex to NA</span></a>
+<a class="sourceLine" id="cb57-8" title="8">READ_results_sample_info<span class="op">$</span>dyad_sex[READ_results_sample_info<span class="op">$</span>a_sex <span class="op">==</span><span class="st"> &quot;u&quot;</span>] &lt;-<span class="st"> </span><span class="ot">NA</span></a>
+<a class="sourceLine" id="cb57-9" title="9">READ_results_sample_info<span class="op">$</span>dyad_sex[READ_results_sample_info<span class="op">$</span>b_sex <span class="op">==</span><span class="st"> &quot;u&quot;</span>] &lt;-<span class="st"> </span><span class="ot">NA</span></a>
+<a class="sourceLine" id="cb57-10" title="10"></a>
+<a class="sourceLine" id="cb57-11" title="11"><span class="co">#recode same sex dyads to male or female</span></a>
+<a class="sourceLine" id="cb57-12" title="12">READ_results_sample_info<span class="op">$</span>dyad_sex[READ_results_sample_info<span class="op">$</span>dyad_sex <span class="op">==</span><span class="st"> &quot;same sex&quot;</span> <span class="op">&amp;</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb57-13" title="13"><span class="st">                                         </span>READ_results_sample_info<span class="op">$</span>a_sex <span class="op">==</span><span class="st"> &quot;f&quot;</span>] &lt;-<span class="st"> &quot;female&quot;</span></a>
+<a class="sourceLine" id="cb57-14" title="14">READ_results_sample_info<span class="op">$</span>dyad_sex[READ_results_sample_info<span class="op">$</span>dyad_sex <span class="op">==</span><span class="st"> &quot;same sex&quot;</span> <span class="op">&amp;</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb57-15" title="15"><span class="st">                                         </span>READ_results_sample_info<span class="op">$</span>a_sex <span class="op">==</span><span class="st"> &quot;m&quot;</span>] &lt;-<span class="st"> &quot;male&quot;</span></a>
+<a class="sourceLine" id="cb57-16" title="16"></a>
+<a class="sourceLine" id="cb57-17" title="17"></a>
+<a class="sourceLine" id="cb57-18" title="18"><span class="kw">unique</span>(READ_results_sample_info<span class="op">$</span>dyad_sex)</a>
+<a class="sourceLine" id="cb57-19" title="19"><span class="co">#&gt; [1] NA            &quot;male-female&quot; &quot;male&quot;        &quot;female&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb58-1" title="1"></a>
+<a class="sourceLine" id="cb58-2" title="2"><span class="kw">theme_set</span>(<span class="kw">theme_classic</span>())</a>
 <a class="sourceLine" id="cb58-3" title="3"></a>
-<a class="sourceLine" id="cb58-4" title="4"><span class="co">#rename &quot;Group_ID&quot; to &quot;a_Group&quot;</span></a>
-<a class="sourceLine" id="cb58-5" title="5">READ_results_sample_info &lt;-<span class="st"> </span><span class="kw">rename</span>(READ_results_sample_info, <span class="st">&quot;a_Group&quot;</span> =<span class="st"> &quot;Group_ID&quot;</span>)</a>
-<a class="sourceLine" id="cb58-6" title="6">READ_results_sample_info &lt;-<span class="st"> </span><span class="kw">rename</span>(READ_results_sample_info, <span class="st">&quot;a_sex&quot;</span> =<span class="st"> &quot;sex&quot;</span>)</a>
-<a class="sourceLine" id="cb58-7" title="7"></a>
-<a class="sourceLine" id="cb58-8" title="8"><span class="co">#then include group of individual b</span></a>
-<a class="sourceLine" id="cb58-9" title="9">READ_results_sample_info &lt;-<span class="st"> </span><span class="kw">left_join</span>(READ_results_sample_info, sample_info, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;ID_b&quot;</span> =<span class="st"> &quot;ID&quot;</span>))</a>
-<a class="sourceLine" id="cb58-10" title="10">READ_results_sample_info &lt;-<span class="st"> </span><span class="kw">rename</span>(READ_results_sample_info, <span class="st">&quot;b_sex&quot;</span> =<span class="st"> &quot;sex&quot;</span>)</a>
-<a class="sourceLine" id="cb58-11" title="11"></a>
-<a class="sourceLine" id="cb58-12" title="12"><span class="co">#rename &quot;Group_ID&quot; to &quot;b_Group&quot;</span></a>
-<a class="sourceLine" id="cb58-13" title="13">READ_results_sample_info &lt;-<span class="st"> </span><span class="kw">rename</span>(READ_results_sample_info, <span class="st">&quot;b_Group&quot;</span> =<span class="st"> &quot;Group_ID&quot;</span>)</a></code></pre></div>
-<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb59-1" title="1"><span class="co">#create new column that specifies if individuals are from same or different groups</span></a>
-<a class="sourceLine" id="cb59-2" title="2">READ_results_sample_info &lt;-<span class="st"> </span>READ_results_sample_info <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb59-3" title="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">dyad_group =</span> <span class="kw">case_when</span>(ID_a <span class="op">==</span><span class="st"> </span>ID_b <span class="op">~</span><span class="st"> &quot;identical&quot;</span>,</a>
-<a class="sourceLine" id="cb59-4" title="4">                                a_Group <span class="op">==</span><span class="st"> </span>b_Group <span class="op">~</span><span class="st"> &quot;intragroup&quot;</span>,</a>
-<a class="sourceLine" id="cb59-5" title="5">                                a_Group <span class="op">!=</span><span class="st"> </span>b_Group <span class="op">~</span><span class="st"> &quot;intergroup&quot;</span>))</a>
-<a class="sourceLine" id="cb59-6" title="6"></a>
-<a class="sourceLine" id="cb59-7" title="7"><span class="kw">unique</span>(READ_results_sample_info<span class="op">$</span>dyad_group)</a>
-<a class="sourceLine" id="cb59-8" title="8"><span class="co">#&gt; [1] &quot;intergroup&quot; &quot;intragroup&quot;</span></a></code></pre></div>
-<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb60-1" title="1"><span class="co">#create new column that specifies if individuals have same or different sex</span></a>
-<a class="sourceLine" id="cb60-2" title="2">READ_results_sample_info &lt;-<span class="st"> </span>READ_results_sample_info <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb60-3" title="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">dyad_sex =</span> <span class="kw">case_when</span>(ID_a <span class="op">==</span><span class="st"> </span>ID_b <span class="op">~</span><span class="st"> &quot;identical&quot;</span>,</a>
-<a class="sourceLine" id="cb60-4" title="4">                                a_sex <span class="op">==</span><span class="st"> </span>b_sex <span class="op">~</span><span class="st"> &quot;same sex&quot;</span>,</a>
-<a class="sourceLine" id="cb60-5" title="5">                                a_sex <span class="op">!=</span><span class="st"> </span>b_sex <span class="op">~</span><span class="st"> &quot;male-female&quot;</span>)) </a>
-<a class="sourceLine" id="cb60-6" title="6"></a>
-<a class="sourceLine" id="cb60-7" title="7"><span class="co">#recode dyads for individuals with undetermined sex to NA</span></a>
-<a class="sourceLine" id="cb60-8" title="8">READ_results_sample_info<span class="op">$</span>dyad_sex[READ_results_sample_info<span class="op">$</span>a_sex <span class="op">==</span><span class="st"> &quot;u&quot;</span>] &lt;-<span class="st"> </span><span class="ot">NA</span></a>
-<a class="sourceLine" id="cb60-9" title="9">READ_results_sample_info<span class="op">$</span>dyad_sex[READ_results_sample_info<span class="op">$</span>b_sex <span class="op">==</span><span class="st"> &quot;u&quot;</span>] &lt;-<span class="st"> </span><span class="ot">NA</span></a>
-<a class="sourceLine" id="cb60-10" title="10"></a>
-<a class="sourceLine" id="cb60-11" title="11"><span class="co">#recode same sex dyads to male or female</span></a>
-<a class="sourceLine" id="cb60-12" title="12">READ_results_sample_info<span class="op">$</span>dyad_sex[READ_results_sample_info<span class="op">$</span>dyad_sex <span class="op">==</span><span class="st"> &quot;same sex&quot;</span> <span class="op">&amp;</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb60-13" title="13"><span class="st">                                         </span>READ_results_sample_info<span class="op">$</span>a_sex <span class="op">==</span><span class="st"> &quot;f&quot;</span>] &lt;-<span class="st"> &quot;female&quot;</span></a>
-<a class="sourceLine" id="cb60-14" title="14">READ_results_sample_info<span class="op">$</span>dyad_sex[READ_results_sample_info<span class="op">$</span>dyad_sex <span class="op">==</span><span class="st"> &quot;same sex&quot;</span> <span class="op">&amp;</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb60-15" title="15"><span class="st">                                         </span>READ_results_sample_info<span class="op">$</span>a_sex <span class="op">==</span><span class="st"> &quot;m&quot;</span>] &lt;-<span class="st"> &quot;male&quot;</span></a>
-<a class="sourceLine" id="cb60-16" title="16"></a>
-<a class="sourceLine" id="cb60-17" title="17"></a>
-<a class="sourceLine" id="cb60-18" title="18"><span class="kw">unique</span>(READ_results_sample_info<span class="op">$</span>dyad_sex)</a>
-<a class="sourceLine" id="cb60-19" title="19"><span class="co">#&gt; [1] NA            &quot;male-female&quot; &quot;male&quot;        &quot;female&quot;</span></a></code></pre></div>
-<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb61-1" title="1"></a>
-<a class="sourceLine" id="cb61-2" title="2"><span class="kw">theme_set</span>(<span class="kw">theme_classic</span>())</a>
-<a class="sourceLine" id="cb61-3" title="3"></a>
-<a class="sourceLine" id="cb61-4" title="4"><span class="co">#plot relatedness P0 (y-axis) for every dyad (x-axis), ordered from low to high relatedness and colored according to inter- or intragroup dyad</span></a>
-<a class="sourceLine" id="cb61-5" title="5"></a>
-<a class="sourceLine" id="cb61-6" title="6"><span class="kw">ggplot</span>(READ_results_sample_info, <span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">reorder</span>(PairIndividuals, NonNormalizedP0), <span class="dt">y =</span> NonNormalizedP0, <span class="dt">color =</span> dyad_sex)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb61-7" title="7"><span class="st">  </span></a>
-<a class="sourceLine" id="cb61-8" title="8"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.1</span>, <span class="kw">aes</span>(<span class="dt">y =</span> NonNormalizedP0)) <span class="op">+</span><span class="st"> </span><span class="co">#plot relatedness estimates as points </span></a>
-<a class="sourceLine" id="cb61-9" title="9"><span class="st">  </span></a>
-<a class="sourceLine" id="cb61-10" title="10"><span class="st">  </span><span class="kw">labs</span>( <span class="dt">x =</span> <span class="st">&quot;Dyad&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Relatedness (READ)&quot;</span>) </a></code></pre></div>
+<a class="sourceLine" id="cb58-4" title="4"><span class="co">#plot relatedness P0 (y-axis) for every dyad (x-axis), ordered from low to high relatedness and colored according to inter- or intragroup dyad</span></a>
+<a class="sourceLine" id="cb58-5" title="5"></a>
+<a class="sourceLine" id="cb58-6" title="6"><span class="kw">ggplot</span>(READ_results_sample_info, <span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">reorder</span>(PairIndividuals, NonNormalizedP0), <span class="dt">y =</span> NonNormalizedP0, <span class="dt">color =</span> dyad_sex)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb58-7" title="7"><span class="st">  </span></a>
+<a class="sourceLine" id="cb58-8" title="8"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.1</span>, <span class="kw">aes</span>(<span class="dt">y =</span> NonNormalizedP0)) <span class="op">+</span><span class="st"> </span><span class="co">#plot relatedness estimates as points </span></a>
+<a class="sourceLine" id="cb58-9" title="9"><span class="st">  </span></a>
+<a class="sourceLine" id="cb58-10" title="10"><span class="st">  </span><span class="kw">labs</span>( <span class="dt">x =</span> <span class="st">&quot;Dyad&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Nonnormalized P0 (READ)&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb58-11" title="11"><span class="st">  </span></a>
+<a class="sourceLine" id="cb58-12" title="12"><span class="st">  </span><span class="kw">scale_colour_viridis_d</span>(<span class="dt">na.value =</span> <span class="dv">1</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb58-13" title="13"><span class="st">  </span></a>
+<a class="sourceLine" id="cb58-14" title="14"><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;distribution of relatedness (READ)&quot;</span>)</a></code></pre></div>
 <p><img src="2_data_files/figure-html/figure%20dyadic%20relatedness%20(READ)%20distribution-1.png" width="672" /></p>
-<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb62-1" title="1"><span class="kw">theme_set</span>(<span class="kw">theme_classic</span>())</a>
-<a class="sourceLine" id="cb62-2" title="2"></a>
-<a class="sourceLine" id="cb62-3" title="3"><span class="co">#plot relatedness pi_HAT (y-axis) for the different categories of sex of dyad (x-axis) colored according to group membership</span></a>
-<a class="sourceLine" id="cb62-4" title="4"></a>
-<a class="sourceLine" id="cb62-5" title="5"><span class="kw">ggplot</span>(READ_results_sample_info, <span class="kw">aes</span>(<span class="dt">x =</span> dyad_sex, <span class="dt">y =</span> NonNormalizedP0, <span class="dt">color =</span> dyad_group)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb62-6" title="6"><span class="st">  </span></a>
-<a class="sourceLine" id="cb62-7" title="7"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.2</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb62-8" title="8"><span class="st">  </span></a>
-<a class="sourceLine" id="cb62-9" title="9"><span class="st">  </span><span class="kw">geom_boxplot</span>()</a></code></pre></div>
+<p>Note: lower P0 values mean higher relatedness!</p>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb59-1" title="1"><span class="kw">theme_set</span>(<span class="kw">theme_classic</span>())</a>
+<a class="sourceLine" id="cb59-2" title="2"></a>
+<a class="sourceLine" id="cb59-3" title="3"><span class="co">#plot relatedness P0 (y-axis) for the different categories of sex of dyad (x-axis) colored according to group membership</span></a>
+<a class="sourceLine" id="cb59-4" title="4"></a>
+<a class="sourceLine" id="cb59-5" title="5"><span class="kw">ggplot</span>(READ_results_sample_info, <span class="kw">aes</span>(<span class="dt">x =</span> dyad_sex, <span class="dt">y =</span> NonNormalizedP0, <span class="dt">color =</span> dyad_group)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb59-6" title="6"><span class="st">  </span></a>
+<a class="sourceLine" id="cb59-7" title="7"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.2</span>, <span class="dt">position =</span> <span class="kw">position_dodge</span>(<span class="fl">0.7</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb59-8" title="8"><span class="st">  </span></a>
+<a class="sourceLine" id="cb59-9" title="9"><span class="st">  </span><span class="kw">geom_boxplot</span>(<span class="dt">alpha =</span> <span class="fl">0.4</span>, <span class="dt">outlier.shape =</span> <span class="ot">NA</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb59-10" title="10"><span class="st">  </span></a>
+<a class="sourceLine" id="cb59-11" title="11"><span class="st">  </span><span class="kw">scale_colour_viridis_d</span>(<span class="dt">end =</span> <span class="fl">0.5</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb59-12" title="12"></a>
+<a class="sourceLine" id="cb59-13" title="13"><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;relatedness (READ)&quot;</span>)</a></code></pre></div>
 <p><img src="2_data_files/figure-html/figure%20(READ)%20relatedness%20for%20group%20and%20sex-1.png" width="672" /></p>
-<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb63-1" title="1"></a>
-<a class="sourceLine" id="cb63-2" title="2"> <span class="kw">ggtitle</span>(<span class="st">&quot;relatedness (READ)&quot;</span>)</a>
-<a class="sourceLine" id="cb63-3" title="3"><span class="co">#&gt; $title</span></a>
-<a class="sourceLine" id="cb63-4" title="4"><span class="co">#&gt; [1] &quot;relatedness (READ)&quot;</span></a>
-<a class="sourceLine" id="cb63-5" title="5"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb63-6" title="6"><span class="co">#&gt; attr(,&quot;class&quot;)</span></a>
-<a class="sourceLine" id="cb63-7" title="7"><span class="co">#&gt; [1] &quot;labels&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb60-1" title="1"><span class="kw">theme_set</span>(<span class="kw">theme_classic</span>())</a>
+<a class="sourceLine" id="cb60-2" title="2"></a>
+<a class="sourceLine" id="cb60-3" title="3"><span class="co">#plot relatedness rab (y-axis) for the different categories of sex of dyad (x-axis) colored according to group membership</span></a>
+<a class="sourceLine" id="cb60-4" title="4"></a>
+<a class="sourceLine" id="cb60-5" title="5"><span class="kw">ggplot</span>(READ_results_sample_info, <span class="kw">aes</span>(<span class="dt">x =</span> dyad_group, <span class="dt">y =</span> NonNormalizedP0, <span class="dt">color =</span> dyad_sex)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb60-6" title="6"><span class="st">  </span></a>
+<a class="sourceLine" id="cb60-7" title="7"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.2</span>, <span class="dt">position =</span> <span class="kw">position_dodge</span>(<span class="fl">0.75</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb60-8" title="8"><span class="st">  </span></a>
+<a class="sourceLine" id="cb60-9" title="9"><span class="st">  </span><span class="kw">geom_boxplot</span>(<span class="dt">alpha =</span> <span class="fl">0.4</span>, <span class="dt">outlier.shape =</span> <span class="ot">NA</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb60-10" title="10"><span class="st">  </span></a>
+<a class="sourceLine" id="cb60-11" title="11"><span class="st">  </span><span class="kw">scale_colour_viridis_d</span>(<span class="dt">na.value =</span> <span class="dv">1</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb60-12" title="12"></a>
+<a class="sourceLine" id="cb60-13" title="13"><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;relatedness (READ)&quot;</span>)</a></code></pre></div>
+<p><img src="2_data_files/figure-html/figure%20(READ)%20relatedness%20for%20sex%20and%20group-1.png" width="672" /></p>
 </div>
 <div id="combined-relatedness-results" class="section level4">
 <h4><span class="header-section-number">4.3.2.4</span> Combined relatedness results</h4>
 <p>merge ngsrelate and lcmlkin</p>
-<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb64-1" title="1">relate_results &lt;-<span class="st"> </span><span class="kw">full_join</span>(ngsRelate_results_sample_info, lcmlkin_results_sample_info, <span class="dt">by =</span> <span class="st">&quot;RGSM_dyad&quot;</span>)</a>
-<a class="sourceLine" id="cb64-2" title="2">relate_results &lt;-<span class="st"> </span><span class="kw">full_join</span>(relate_results, READ_results_sample_info, <span class="dt">by =</span> <span class="st">&quot;RGSM_dyad&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb61-1" title="1">relate_results &lt;-<span class="st"> </span><span class="kw">full_join</span>(ngsRelate_results_sample_info, lcmlkin_results_sample_info, <span class="dt">by =</span> <span class="st">&quot;RGSM_dyad&quot;</span>)</a>
+<a class="sourceLine" id="cb61-2" title="2">relate_results &lt;-<span class="st"> </span><span class="kw">full_join</span>(relate_results, READ_results_sample_info, <span class="dt">by =</span> <span class="st">&quot;RGSM_dyad&quot;</span>)</a></code></pre></div>
 <p>plot</p>
-<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb65-1" title="1"></a>
-<a class="sourceLine" id="cb65-2" title="2"><span class="kw">theme_set</span>(<span class="kw">theme_classic</span>())</a>
-<a class="sourceLine" id="cb65-3" title="3"></a>
-<a class="sourceLine" id="cb65-4" title="4"><span class="co">#plot relatedness pi_HAT and rab (y-axis) for every dyad (x-axis), ordered from low to high relatedness and colored according to inter- or intragroup dyad</span></a>
-<a class="sourceLine" id="cb65-5" title="5"></a>
-<a class="sourceLine" id="cb65-6" title="6"><span class="kw">ggplot</span>(<span class="kw">filter</span>(relate_results, coverage <span class="op">&gt;</span><span class="st"> </span><span class="fl">0.85</span>), <span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">reorder</span>(dyad, pi_HAT), <span class="dt">color =</span> dyad_sex)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb65-7" title="7"><span class="st">  </span></a>
-<a class="sourceLine" id="cb65-8" title="8"><span class="st">  </span><span class="kw">scale_colour_viridis_d</span>() <span class="op">+</span></a>
-<a class="sourceLine" id="cb65-9" title="9"><span class="st">  </span></a>
-<a class="sourceLine" id="cb65-10" title="10"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>, <span class="kw">aes</span>(<span class="dt">y =</span> pi_HAT), <span class="dt">shape =</span> <span class="dv">15</span>) <span class="op">+</span><span class="st"> </span><span class="co">#plot lcmlkin relatedness estimates as points </span></a>
-<a class="sourceLine" id="cb65-11" title="11"><span class="st">  </span></a>
-<a class="sourceLine" id="cb65-12" title="12"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>, <span class="kw">aes</span>(<span class="dt">y =</span> <span class="fl">0.7</span><span class="op">-</span>NonNormalizedP0), <span class="dt">shape =</span> <span class="dv">16</span>) <span class="op">+</span><span class="st"> </span><span class="co">#plot READ estimate</span></a>
-<a class="sourceLine" id="cb65-13" title="13"><span class="st">  </span></a>
-<a class="sourceLine" id="cb65-14" title="14"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>, <span class="kw">aes</span>(<span class="dt">y =</span> rab), <span class="dt">shape =</span> <span class="dv">17</span>) <span class="op">+</span><span class="st"> </span><span class="co"># plot ngsRelate estimates</span></a>
-<a class="sourceLine" id="cb65-15" title="15"><span class="st">  </span></a>
-<a class="sourceLine" id="cb65-16" title="16"><span class="st">  </span><span class="kw">scale_y_continuous</span>(</a>
-<a class="sourceLine" id="cb65-17" title="17">    </a>
-<a class="sourceLine" id="cb65-18" title="18">    <span class="dt">name =</span> <span class="st">&quot;relatedness (lcmlkin)&quot;</span>, <span class="co">#features of first axis</span></a>
-<a class="sourceLine" id="cb65-19" title="19">    </a>
-<a class="sourceLine" id="cb65-20" title="20">    <span class="dt">sec.axis =</span> <span class="kw">sec_axis</span>(<span class="op">~</span>., <span class="dt">name =</span> <span class="st">&quot;P0&quot;</span>) <span class="co">#features of second axis</span></a>
-<a class="sourceLine" id="cb65-21" title="21">  ) <span class="op">+</span></a>
-<a class="sourceLine" id="cb65-22" title="22"><span class="st">  </span></a>
-<a class="sourceLine" id="cb65-23" title="23"><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Comparison of relatedness estimators (&gt;0.85X)&quot;</span>)</a>
-<a class="sourceLine" id="cb65-24" title="24"><span class="co">#&gt; Warning: Removed 28 rows containing missing values (geom_point).</span></a>
-<a class="sourceLine" id="cb65-25" title="25"></a>
-<a class="sourceLine" id="cb65-26" title="26"><span class="co">#&gt; Warning: Removed 28 rows containing missing values (geom_point).</span></a>
-<a class="sourceLine" id="cb65-27" title="27"></a>
-<a class="sourceLine" id="cb65-28" title="28"><span class="co">#&gt; Warning: Removed 28 rows containing missing values (geom_point).</span></a></code></pre></div>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb62-1" title="1"></a>
+<a class="sourceLine" id="cb62-2" title="2"><span class="kw">theme_set</span>(<span class="kw">theme_classic</span>())</a>
+<a class="sourceLine" id="cb62-3" title="3"></a>
+<a class="sourceLine" id="cb62-4" title="4"><span class="co">#plot relatedness pi_HAT and rab (y-axis) for every dyad (x-axis), ordered from low to high relatedness and colored according to inter- or intragroup dyad</span></a>
+<a class="sourceLine" id="cb62-5" title="5"></a>
+<a class="sourceLine" id="cb62-6" title="6"><span class="kw">ggplot</span>(<span class="kw">filter</span>(relate_results, coverage <span class="op">&gt;</span><span class="st"> </span><span class="fl">0.85</span>), <span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">reorder</span>(dyad, pi_HAT), <span class="dt">color =</span> dyad_sex)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb62-7" title="7"><span class="st">  </span></a>
+<a class="sourceLine" id="cb62-8" title="8"><span class="st">  </span><span class="kw">scale_colour_viridis_d</span>(<span class="dt">na.value =</span> <span class="dv">1</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb62-9" title="9"><span class="st">  </span></a>
+<a class="sourceLine" id="cb62-10" title="10"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>, <span class="kw">aes</span>(<span class="dt">y =</span> pi_HAT), <span class="dt">shape =</span> <span class="dv">15</span>) <span class="op">+</span><span class="st"> </span><span class="co">#plot lcmlkin relatedness estimates as points </span></a>
+<a class="sourceLine" id="cb62-11" title="11"><span class="st">  </span></a>
+<a class="sourceLine" id="cb62-12" title="12"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>, <span class="kw">aes</span>(<span class="dt">y =</span> <span class="fl">0.7</span><span class="op">-</span>NonNormalizedP0), <span class="dt">shape =</span> <span class="dv">16</span>) <span class="op">+</span><span class="st"> </span><span class="co">#plot READ estimate</span></a>
+<a class="sourceLine" id="cb62-13" title="13"><span class="st">  </span></a>
+<a class="sourceLine" id="cb62-14" title="14"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>, <span class="kw">aes</span>(<span class="dt">y =</span> rab), <span class="dt">shape =</span> <span class="dv">17</span>) <span class="op">+</span><span class="st"> </span><span class="co"># plot ngsRelate estimates</span></a>
+<a class="sourceLine" id="cb62-15" title="15"><span class="st">  </span></a>
+<a class="sourceLine" id="cb62-16" title="16"><span class="st">  </span><span class="kw">scale_y_continuous</span>(</a>
+<a class="sourceLine" id="cb62-17" title="17">    </a>
+<a class="sourceLine" id="cb62-18" title="18">    <span class="dt">name =</span> <span class="st">&quot;relatedness&quot;</span>, <span class="co">#features of first axis</span></a>
+<a class="sourceLine" id="cb62-19" title="19">    </a>
+<a class="sourceLine" id="cb62-20" title="20">    <span class="dt">sec.axis =</span> <span class="kw">sec_axis</span>(<span class="op">~</span>., <span class="dt">name =</span> <span class="st">&quot;P0&quot;</span>) <span class="co">#features of second axis</span></a>
+<a class="sourceLine" id="cb62-21" title="21">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb62-22" title="22"><span class="st">  </span></a>
+<a class="sourceLine" id="cb62-23" title="23"><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Comparison of relatedness estimators (&gt;0.85X)&quot;</span>)</a></code></pre></div>
 <p><img src="2_data_files/figure-html/figure%20dyadic%20relatedness%20distribution-1.png" width="672" /></p>
 <p>Compare correlation among the three estimators</p>
-<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb66-1" title="1"><span class="kw">ggplot</span>(relate_results, <span class="kw">aes</span>(<span class="dt">x =</span> rab, <span class="dt">y =</span> pi_HAT, <span class="dt">color =</span> dyad_sex, <span class="dt">size =</span> nSites, <span class="dt">shape =</span> dyad_group.x)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb66-2" title="2"><span class="st">  </span></a>
-<a class="sourceLine" id="cb66-3" title="3"><span class="st">  </span><span class="kw">scale_colour_viridis_d</span>() <span class="op">+</span></a>
-<a class="sourceLine" id="cb66-4" title="4"><span class="st">  </span></a>
-<a class="sourceLine" id="cb66-5" title="5"><span class="st">   </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.2</span>) </a>
-<a class="sourceLine" id="cb66-6" title="6"><span class="co">#&gt; Warning: Removed 374 rows containing missing values (geom_point).</span></a></code></pre></div>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb63-1" title="1"><span class="kw">ggplot</span>(relate_results, <span class="kw">aes</span>(<span class="dt">x =</span> rab, <span class="dt">y =</span> pi_HAT, <span class="dt">color =</span> dyad_sex, <span class="dt">size =</span> nSites, <span class="dt">shape =</span> dyad_group.x)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb63-2" title="2"><span class="st">  </span></a>
+<a class="sourceLine" id="cb63-3" title="3"><span class="st">  </span><span class="kw">scale_colour_viridis_d</span>(<span class="dt">na.value =</span> <span class="dv">1</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb63-4" title="4"><span class="st">  </span></a>
+<a class="sourceLine" id="cb63-5" title="5"><span class="st">   </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.2</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb63-6" title="6"><span class="st">  </span></a>
+<a class="sourceLine" id="cb63-7" title="7"><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Comparison ngsRelate vs. lcmlkin&quot;</span>)</a></code></pre></div>
 <p><img src="2_data_files/figure-html/correlation%20ngsrelate%20lcmlkin-1.png" width="672" /></p>
-<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb67-1" title="1"></a>
-<a class="sourceLine" id="cb67-2" title="2"><span class="kw">ggplot</span>(relate_results, <span class="kw">aes</span>(<span class="dt">x =</span> rab, <span class="dt">y =</span> NonNormalizedP0, <span class="dt">color =</span> dyad_sex, <span class="dt">size =</span> nSites, <span class="dt">shape =</span> dyad_group.x)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb67-3" title="3"><span class="st">  </span></a>
-<a class="sourceLine" id="cb67-4" title="4"><span class="st">  </span><span class="kw">scale_colour_viridis_d</span>() <span class="op">+</span></a>
-<a class="sourceLine" id="cb67-5" title="5"><span class="st">  </span></a>
-<a class="sourceLine" id="cb67-6" title="6"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.2</span>) </a>
-<a class="sourceLine" id="cb67-7" title="7"><span class="co">#&gt; Warning: Removed 374 rows containing missing values (geom_point).</span></a></code></pre></div>
+<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb64-1" title="1"></a>
+<a class="sourceLine" id="cb64-2" title="2"><span class="kw">ggplot</span>(relate_results, <span class="kw">aes</span>(<span class="dt">x =</span> rab, <span class="dt">y =</span> NonNormalizedP0, <span class="dt">color =</span> dyad_sex, <span class="dt">size =</span> nSites, <span class="dt">shape =</span> dyad_group.x)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb64-3" title="3"><span class="st">  </span></a>
+<a class="sourceLine" id="cb64-4" title="4"><span class="st">  </span><span class="kw">scale_colour_viridis_d</span>(<span class="dt">na.value =</span> <span class="dv">1</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb64-5" title="5"><span class="st">  </span></a>
+<a class="sourceLine" id="cb64-6" title="6"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.2</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb64-7" title="7"><span class="st">  </span></a>
+<a class="sourceLine" id="cb64-8" title="8"><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Comparison ngsRelate vs. READ&quot;</span>)</a></code></pre></div>
 <p><img src="2_data_files/figure-html/correlation%20ngsrelate%20READ-1.png" width="672" /></p>
-<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb68-1" title="1"></a>
-<a class="sourceLine" id="cb68-2" title="2"><span class="kw">ggplot</span>(relate_results, <span class="kw">aes</span>(<span class="dt">x =</span> pi_HAT, <span class="dt">y =</span> NonNormalizedP0, <span class="dt">color =</span> dyad_sex, <span class="dt">size =</span> nSites, <span class="dt">shape =</span> dyad_group.x)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb68-3" title="3"><span class="st">  </span></a>
-<a class="sourceLine" id="cb68-4" title="4"><span class="st">  </span><span class="kw">scale_colour_viridis_d</span>() <span class="op">+</span></a>
-<a class="sourceLine" id="cb68-5" title="5"><span class="st">  </span></a>
-<a class="sourceLine" id="cb68-6" title="6"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.2</span>) </a>
-<a class="sourceLine" id="cb68-7" title="7"><span class="co">#&gt; Warning: Removed 374 rows containing missing values (geom_point).</span></a></code></pre></div>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb65-1" title="1"></a>
+<a class="sourceLine" id="cb65-2" title="2"><span class="kw">ggplot</span>(relate_results, <span class="kw">aes</span>(<span class="dt">x =</span> pi_HAT, <span class="dt">y =</span> NonNormalizedP0, <span class="dt">color =</span> dyad_sex, <span class="dt">size =</span> nSites, <span class="dt">shape =</span> dyad_group.x)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb65-3" title="3"><span class="st">  </span></a>
+<a class="sourceLine" id="cb65-4" title="4"><span class="st">  </span><span class="kw">scale_colour_viridis_d</span>(<span class="dt">na.value =</span> <span class="dv">1</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb65-5" title="5"><span class="st">  </span></a>
+<a class="sourceLine" id="cb65-6" title="6"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.2</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb65-7" title="7"><span class="st">  </span></a>
+<a class="sourceLine" id="cb65-8" title="8"><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Comparison lcmlkin vs. READ&quot;</span>)</a></code></pre></div>
 <p><img src="2_data_files/figure-html/correlation%20lcmlkin%20READ-1.png" width="672" /></p>
 <p>Have a closer look at the groups</p>
-<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb69-1" title="1"><span class="kw">ggplot</span>(<span class="kw">filter</span>(relate_results, dyad_group <span class="op">==</span><span class="st"> &quot;intragroup&quot;</span>), <span class="kw">aes</span>(<span class="dt">x =</span> dyad_sex, <span class="dt">y =</span> rab, <span class="dt">color =</span> dyad_sex)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb69-2" title="2"><span class="st">  </span></a>
-<a class="sourceLine" id="cb69-3" title="3"><span class="st">  </span><span class="kw">scale_color_viridis_d</span>() <span class="op">+</span></a>
-<a class="sourceLine" id="cb69-4" title="4"><span class="st">  </span></a>
-<a class="sourceLine" id="cb69-5" title="5"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.2</span>, <span class="dt">position =</span> <span class="kw">position_dodge</span>(<span class="fl">0.5</span>)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb69-6" title="6"><span class="st">  </span></a>
-<a class="sourceLine" id="cb69-7" title="7"><span class="st">  </span><span class="kw">geom_boxplot</span>(<span class="dt">alpha =</span> <span class="fl">0.4</span>, <span class="dt">outlier.shape =</span> <span class="ot">NA</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb69-8" title="8"><span class="st">  </span></a>
-<a class="sourceLine" id="cb69-9" title="9"><span class="st">  </span><span class="kw">facet_grid</span>(.<span class="op">~</span>a_Group)</a>
-<a class="sourceLine" id="cb69-10" title="10"><span class="co">#&gt; Warning: Removed 34 rows containing missing values (geom_point).</span></a></code></pre></div>
-<p><img src="2_data_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb66-1" title="1"><span class="kw">ggplot</span>(<span class="kw">filter</span>(relate_results, dyad_group <span class="op">==</span><span class="st"> &quot;intragroup&quot;</span>), <span class="kw">aes</span>(<span class="dt">x =</span> dyad_sex, <span class="dt">y =</span> rab, <span class="dt">color =</span> dyad_sex)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb66-2" title="2"><span class="st">  </span></a>
+<a class="sourceLine" id="cb66-3" title="3"><span class="st">  </span><span class="kw">scale_color_viridis_d</span>(<span class="dt">na.value =</span> <span class="dv">1</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb66-4" title="4"><span class="st">  </span></a>
+<a class="sourceLine" id="cb66-5" title="5"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.2</span>, <span class="dt">position =</span> <span class="kw">position_dodge</span>(<span class="fl">0.5</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb66-6" title="6"><span class="st">  </span></a>
+<a class="sourceLine" id="cb66-7" title="7"><span class="st">  </span><span class="kw">geom_boxplot</span>(<span class="dt">alpha =</span> <span class="fl">0.4</span>, <span class="dt">outlier.shape =</span> <span class="ot">NA</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb66-8" title="8"><span class="st">  </span></a>
+<a class="sourceLine" id="cb66-9" title="9"><span class="st">  </span><span class="kw">facet_grid</span>(.<span class="op">~</span>a_Group) <span class="op">+</span></a>
+<a class="sourceLine" id="cb66-10" title="10"><span class="st">  </span></a>
+<a class="sourceLine" id="cb66-11" title="11"><span class="st"> </span><span class="kw">theme</span> (<span class="dt">axis.text.x =</span> <span class="kw">element_blank</span>(), </a>
+<a class="sourceLine" id="cb66-12" title="12">        <span class="dt">axis.title.x =</span> <span class="kw">element_blank</span>()) <span class="op">+</span></a>
+<a class="sourceLine" id="cb66-13" title="13"><span class="st">  </span></a>
+<a class="sourceLine" id="cb66-14" title="14"><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Relatedness (ngsRelate) in each group&quot;</span>)</a></code></pre></div>
+<p><img src="2_data_files/figure-html/intragroup%20relatedness%20(ngsrelate)%20for%20each%20group-1.png" width="672" /></p>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb67-1" title="1"><span class="kw">ggplot</span>(<span class="kw">filter</span>(relate_results, dyad_group <span class="op">==</span><span class="st"> &quot;intragroup&quot;</span>, coverage <span class="op">&gt;</span><span class="st"> </span><span class="fl">0.75</span>), <span class="kw">aes</span>(<span class="dt">x =</span> dyad_sex, <span class="dt">y =</span> rab, <span class="dt">color =</span> dyad_sex)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb67-2" title="2"><span class="st">  </span></a>
+<a class="sourceLine" id="cb67-3" title="3"><span class="st">  </span><span class="kw">scale_color_viridis_d</span>(<span class="dt">na.value =</span> <span class="dv">1</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb67-4" title="4"><span class="st">  </span></a>
+<a class="sourceLine" id="cb67-5" title="5"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.2</span>, <span class="dt">position =</span> <span class="kw">position_dodge</span>(<span class="fl">0.5</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb67-6" title="6"><span class="st">  </span></a>
+<a class="sourceLine" id="cb67-7" title="7"><span class="st">  </span><span class="kw">geom_boxplot</span>(<span class="dt">alpha =</span> <span class="fl">0.4</span>, <span class="dt">outlier.shape =</span> <span class="ot">NA</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb67-8" title="8"><span class="st">  </span></a>
+<a class="sourceLine" id="cb67-9" title="9"><span class="st">  </span><span class="kw">facet_grid</span>(.<span class="op">~</span>a_Group) <span class="op">+</span></a>
+<a class="sourceLine" id="cb67-10" title="10"><span class="st">  </span></a>
+<a class="sourceLine" id="cb67-11" title="11"><span class="st"> </span><span class="kw">theme</span> (<span class="dt">axis.text.x =</span> <span class="kw">element_blank</span>(), </a>
+<a class="sourceLine" id="cb67-12" title="12">        <span class="dt">axis.title.x =</span> <span class="kw">element_blank</span>()) <span class="op">+</span></a>
+<a class="sourceLine" id="cb67-13" title="13"><span class="st">  </span></a>
+<a class="sourceLine" id="cb67-14" title="14"><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Relatedness (ngsRelate) X greater 0.75 in each group&quot;</span>)</a></code></pre></div>
+<p><img src="2_data_files/figure-html/intragroup%20relatedness%20(ngsrelate)%20X%20greater%200.75%20for%20each%20group-1.png" width="672" /></p>
+<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb68-1" title="1"><span class="kw">ggplot</span>(<span class="kw">filter</span>(relate_results, dyad_group <span class="op">==</span><span class="st"> &quot;intragroup&quot;</span>), <span class="kw">aes</span>(<span class="dt">x =</span> dyad_sex, <span class="dt">y =</span> NonNormalizedP0, <span class="dt">color =</span> dyad_sex)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb68-2" title="2"><span class="st">  </span></a>
+<a class="sourceLine" id="cb68-3" title="3"><span class="st">  </span><span class="kw">scale_color_viridis_d</span>(<span class="dt">na.value =</span> <span class="dv">1</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb68-4" title="4"><span class="st">  </span></a>
+<a class="sourceLine" id="cb68-5" title="5"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.2</span>, <span class="dt">position =</span> <span class="kw">position_dodge</span>(<span class="fl">0.5</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb68-6" title="6"><span class="st">  </span></a>
+<a class="sourceLine" id="cb68-7" title="7"><span class="st">  </span><span class="kw">geom_boxplot</span>(<span class="dt">alpha =</span> <span class="fl">0.4</span>, <span class="dt">outlier.shape =</span> <span class="ot">NA</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb68-8" title="8"><span class="st">  </span></a>
+<a class="sourceLine" id="cb68-9" title="9"><span class="st">  </span><span class="kw">facet_grid</span>(.<span class="op">~</span>a_Group) <span class="op">+</span></a>
+<a class="sourceLine" id="cb68-10" title="10"><span class="st">  </span></a>
+<a class="sourceLine" id="cb68-11" title="11"><span class="st"> </span><span class="kw">theme</span> (<span class="dt">axis.text.x =</span> <span class="kw">element_blank</span>(), </a>
+<a class="sourceLine" id="cb68-12" title="12">        <span class="dt">axis.title.x =</span> <span class="kw">element_blank</span>()) <span class="op">+</span></a>
+<a class="sourceLine" id="cb68-13" title="13"><span class="st">  </span></a>
+<a class="sourceLine" id="cb68-14" title="14"><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Relatedness (READ) in each group&quot;</span>)</a></code></pre></div>
+<p><img src="2_data_files/figure-html/intragroup%20relatedness%20(READ)%20for%20each%20group-1.png" width="672" /></p>
 <p>For comparison of relatedness estimators check Yaka et al. 2021 Curr Biol.</p>
 <hr />
 

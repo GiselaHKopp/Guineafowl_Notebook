@@ -710,46 +710,46 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h1><span class="header-section-number">5</span> Analysis</h1>
 <div id="setup-1" class="section level2">
 <h2><span class="header-section-number">5.1</span> Setup</h2>
-<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb70-1" title="1"><span class="kw">library</span>(tidyverse)</a>
-<a class="sourceLine" id="cb70-2" title="2"><span class="co">#&gt; -- Attaching packages ---------------------------------------------------------------------- tidyverse 1.3.0 --</span></a>
-<a class="sourceLine" id="cb70-3" title="3"><span class="co">#&gt; v ggplot2 3.3.2     v purrr   0.3.4</span></a>
-<a class="sourceLine" id="cb70-4" title="4"><span class="co">#&gt; v tibble  3.0.3     v dplyr   1.0.2</span></a>
-<a class="sourceLine" id="cb70-5" title="5"><span class="co">#&gt; v tidyr   1.1.2     v stringr 1.4.0</span></a>
-<a class="sourceLine" id="cb70-6" title="6"><span class="co">#&gt; v readr   1.3.1     v forcats 0.5.0</span></a>
-<a class="sourceLine" id="cb70-7" title="7"><span class="co">#&gt; -- Conflicts ------------------------------------------------------------------------- tidyverse_conflicts() --</span></a>
-<a class="sourceLine" id="cb70-8" title="8"><span class="co">#&gt; x dplyr::filter() masks stats::filter()</span></a>
-<a class="sourceLine" id="cb70-9" title="9"><span class="co">#&gt; x dplyr::lag()    masks stats::lag()</span></a>
-<a class="sourceLine" id="cb70-10" title="10"><span class="kw">library</span>(ggplot2)</a>
-<a class="sourceLine" id="cb70-11" title="11"><span class="kw">library</span>(ggthemes)</a>
-<a class="sourceLine" id="cb70-12" title="12"><span class="kw">library</span>(ggforce)</a>
-<a class="sourceLine" id="cb70-13" title="13"><span class="kw">library</span>(ggridges)</a>
-<a class="sourceLine" id="cb70-14" title="14"><span class="kw">library</span>(ggsci)</a>
-<a class="sourceLine" id="cb70-15" title="15"><span class="kw">library</span>(wesanderson)</a>
-<a class="sourceLine" id="cb70-16" title="16"><span class="kw">library</span>(gghighlight)</a></code></pre></div>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb69-1" title="1"><span class="kw">library</span>(tidyverse)</a>
+<a class="sourceLine" id="cb69-2" title="2"><span class="co">#&gt; -- Attaching packages ---------------------------------------------------------------------- tidyverse 1.3.0 --</span></a>
+<a class="sourceLine" id="cb69-3" title="3"><span class="co">#&gt; v ggplot2 3.3.2     v purrr   0.3.4</span></a>
+<a class="sourceLine" id="cb69-4" title="4"><span class="co">#&gt; v tibble  3.0.3     v dplyr   1.0.2</span></a>
+<a class="sourceLine" id="cb69-5" title="5"><span class="co">#&gt; v tidyr   1.1.2     v stringr 1.4.0</span></a>
+<a class="sourceLine" id="cb69-6" title="6"><span class="co">#&gt; v readr   1.3.1     v forcats 0.5.0</span></a>
+<a class="sourceLine" id="cb69-7" title="7"><span class="co">#&gt; -- Conflicts ------------------------------------------------------------------------- tidyverse_conflicts() --</span></a>
+<a class="sourceLine" id="cb69-8" title="8"><span class="co">#&gt; x dplyr::filter() masks stats::filter()</span></a>
+<a class="sourceLine" id="cb69-9" title="9"><span class="co">#&gt; x dplyr::lag()    masks stats::lag()</span></a>
+<a class="sourceLine" id="cb69-10" title="10"><span class="kw">library</span>(ggplot2)</a>
+<a class="sourceLine" id="cb69-11" title="11"><span class="kw">library</span>(ggthemes)</a>
+<a class="sourceLine" id="cb69-12" title="12"><span class="kw">library</span>(ggforce)</a>
+<a class="sourceLine" id="cb69-13" title="13"><span class="kw">library</span>(ggridges)</a>
+<a class="sourceLine" id="cb69-14" title="14"><span class="kw">library</span>(ggsci)</a>
+<a class="sourceLine" id="cb69-15" title="15"><span class="kw">library</span>(wesanderson)</a>
+<a class="sourceLine" id="cb69-16" title="16"><span class="kw">library</span>(gghighlight)</a></code></pre></div>
 </div>
 <div id="data-overview" class="section level2">
 <h2><span class="header-section-number">5.2</span> Data overview</h2>
 <p>An overview of the samples as of 26th April 2021 is stored in <em>Guineafowl-lcWGS_DataOverview_20210426.csv</em>. This is needed to later assign the relatedness estimates to specific individuals</p>
-<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb71-1" title="1">sample_overview &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;vignettes/data/Guineafowl-lcWGS_DataOverview_20210426.csv&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">&quot;;&quot;</span>, <span class="dt">as.is =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb71-2" title="2"><span class="kw">str</span>(sample_overview)</a>
-<a class="sourceLine" id="cb71-3" title="3"><span class="co">#&gt; &#39;data.frame&#39;:    119 obs. of  17 variables:</span></a>
-<a class="sourceLine" id="cb71-4" title="4"><span class="co">#&gt;  $ individual                   : chr  &quot;W1398&quot; &quot;W1429&quot; &quot;W1429&quot; &quot;W1502&quot; ...</span></a>
-<a class="sourceLine" id="cb71-5" title="5"><span class="co">#&gt;  $ library                      : chr  &quot;L16926&quot; &quot;L16927&quot; &quot;L16927&quot; &quot;L16928&quot; ...</span></a>
-<a class="sourceLine" id="cb71-6" title="6"><span class="co">#&gt;  $ run                          : chr  &quot;S2&quot; &quot;S1&quot; &quot;S3&quot; &quot;S4&quot; ...</span></a>
-<a class="sourceLine" id="cb71-7" title="7"><span class="co">#&gt;  $ original.o..resequenced.r.   : chr  &quot;o&quot; &quot;r&quot; &quot;o&quot; &quot;o&quot; ...</span></a>
-<a class="sourceLine" id="cb71-8" title="8"><span class="co">#&gt;  $ readGroupID                  : int  4 5 4 4 4 5 4 4 4 4 ...</span></a>
-<a class="sourceLine" id="cb71-9" title="9"><span class="co">#&gt;  $ total.reads                  : int  6720264 21332072 6069840 13390576 12081324 11995744 5684766 7759668 12174890 11373232 ...</span></a>
-<a class="sourceLine" id="cb71-10" title="10"><span class="co">#&gt;  $ trim.input.reads             : int  3360132 10666036 3034920 6695288 6040662 5997872 2842383 3879834 6087445 5686616 ...</span></a>
-<a class="sourceLine" id="cb71-11" title="11"><span class="co">#&gt;  $ trim.reads.survived.both     : int  2544284 9427764 2360036 5279275 4602830 5309238 2225803 2852960 4754568 4400910 ...</span></a>
-<a class="sourceLine" id="cb71-12" title="12"><span class="co">#&gt;  $ trim.reads.dropped....       : num  0.24 0.12 0.22 0.21 0.24 0.11 0.22 0.26 0.22 0.23 ...</span></a>
-<a class="sourceLine" id="cb71-13" title="13"><span class="co">#&gt;  $ mapped.reads                 : int  4987783 18494700 4631339 10376967 9021788 10412331 4367512 5598370 9342782 8636957 ...</span></a>
-<a class="sourceLine" id="cb71-14" title="14"><span class="co">#&gt;  $ mapped.reads....             : num  98 98.1 98.1 98.3 98 ...</span></a>
-<a class="sourceLine" id="cb71-15" title="15"><span class="co">#&gt;  $ coverage.mean                : num  0.56 2.06 0.52 1.14 0.97 1.14 0.48 0.63 1.05 0.98 ...</span></a>
-<a class="sourceLine" id="cb71-16" title="16"><span class="co">#&gt;  $ coverage.st.dev.             : num  2.48 4.96 2.58 2.8 3.81 3.56 2.18 2.43 2.58 3.13 ...</span></a>
-<a class="sourceLine" id="cb71-17" title="17"><span class="co">#&gt;  $ Duplicates....               : num  5.07 8.13 4.92 5.2 5.09 9.35 5.56 4.54 4.59 4.84 ...</span></a>
-<a class="sourceLine" id="cb71-18" title="18"><span class="co">#&gt;  $ Lib.complexity.total.reads   : int  2250000 8750000 2250000 5000000 4250000 4750000 2000000 2750000 4500000 4250000 ...</span></a>
-<a class="sourceLine" id="cb71-19" title="19"><span class="co">#&gt;  $ Lib.complexity.distinct.reads: int  2224740 8608220 2221360 4963340 4181270 4688400 1979850 2722780 4466910 4203570 ...</span></a>
-<a class="sourceLine" id="cb71-20" title="20"><span class="co">#&gt;  $ number.of.snps               : logi  NA NA NA NA NA NA ...</span></a></code></pre></div>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb70-1" title="1">sample_overview &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;vignettes/data/Guineafowl-lcWGS_DataOverview_20210426.csv&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">&quot;;&quot;</span>, <span class="dt">as.is =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb70-2" title="2"><span class="kw">str</span>(sample_overview)</a>
+<a class="sourceLine" id="cb70-3" title="3"><span class="co">#&gt; &#39;data.frame&#39;:    119 obs. of  17 variables:</span></a>
+<a class="sourceLine" id="cb70-4" title="4"><span class="co">#&gt;  $ individual                   : chr  &quot;W1398&quot; &quot;W1429&quot; &quot;W1429&quot; &quot;W1502&quot; ...</span></a>
+<a class="sourceLine" id="cb70-5" title="5"><span class="co">#&gt;  $ library                      : chr  &quot;L16926&quot; &quot;L16927&quot; &quot;L16927&quot; &quot;L16928&quot; ...</span></a>
+<a class="sourceLine" id="cb70-6" title="6"><span class="co">#&gt;  $ run                          : chr  &quot;S2&quot; &quot;S1&quot; &quot;S3&quot; &quot;S4&quot; ...</span></a>
+<a class="sourceLine" id="cb70-7" title="7"><span class="co">#&gt;  $ original.o..resequenced.r.   : chr  &quot;o&quot; &quot;r&quot; &quot;o&quot; &quot;o&quot; ...</span></a>
+<a class="sourceLine" id="cb70-8" title="8"><span class="co">#&gt;  $ readGroupID                  : int  4 5 4 4 4 5 4 4 4 4 ...</span></a>
+<a class="sourceLine" id="cb70-9" title="9"><span class="co">#&gt;  $ total.reads                  : int  6720264 21332072 6069840 13390576 12081324 11995744 5684766 7759668 12174890 11373232 ...</span></a>
+<a class="sourceLine" id="cb70-10" title="10"><span class="co">#&gt;  $ trim.input.reads             : int  3360132 10666036 3034920 6695288 6040662 5997872 2842383 3879834 6087445 5686616 ...</span></a>
+<a class="sourceLine" id="cb70-11" title="11"><span class="co">#&gt;  $ trim.reads.survived.both     : int  2544284 9427764 2360036 5279275 4602830 5309238 2225803 2852960 4754568 4400910 ...</span></a>
+<a class="sourceLine" id="cb70-12" title="12"><span class="co">#&gt;  $ trim.reads.dropped....       : num  0.24 0.12 0.22 0.21 0.24 0.11 0.22 0.26 0.22 0.23 ...</span></a>
+<a class="sourceLine" id="cb70-13" title="13"><span class="co">#&gt;  $ mapped.reads                 : int  4987783 18494700 4631339 10376967 9021788 10412331 4367512 5598370 9342782 8636957 ...</span></a>
+<a class="sourceLine" id="cb70-14" title="14"><span class="co">#&gt;  $ mapped.reads....             : num  98 98.1 98.1 98.3 98 ...</span></a>
+<a class="sourceLine" id="cb70-15" title="15"><span class="co">#&gt;  $ coverage.mean                : num  0.56 2.06 0.52 1.14 0.97 1.14 0.48 0.63 1.05 0.98 ...</span></a>
+<a class="sourceLine" id="cb70-16" title="16"><span class="co">#&gt;  $ coverage.st.dev.             : num  2.48 4.96 2.58 2.8 3.81 3.56 2.18 2.43 2.58 3.13 ...</span></a>
+<a class="sourceLine" id="cb70-17" title="17"><span class="co">#&gt;  $ Duplicates....               : num  5.07 8.13 4.92 5.2 5.09 9.35 5.56 4.54 4.59 4.84 ...</span></a>
+<a class="sourceLine" id="cb70-18" title="18"><span class="co">#&gt;  $ Lib.complexity.total.reads   : int  2250000 8750000 2250000 5000000 4250000 4750000 2000000 2750000 4500000 4250000 ...</span></a>
+<a class="sourceLine" id="cb70-19" title="19"><span class="co">#&gt;  $ Lib.complexity.distinct.reads: int  2224740 8608220 2221360 4963340 4181270 4688400 1979850 2722780 4466910 4203570 ...</span></a>
+<a class="sourceLine" id="cb70-20" title="20"><span class="co">#&gt;  $ number.of.snps               : logi  NA NA NA NA NA NA ...</span></a></code></pre></div>
 </div>
 <div id="analysis-2" class="section level2">
 <h2><span class="header-section-number">5.3</span> Analysis 2</h2>

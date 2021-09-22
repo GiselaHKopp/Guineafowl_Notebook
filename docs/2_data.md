@@ -379,7 +379,10 @@ ggplot(data_overview, aes(x = factor(RGID, level = c("1", "2")), y = reads_post_
  
   theme(legend.title = element_blank()) + #remove legend title
   
-  theme(panel.grid.major.x = element_blank())  #remove x-axis grid lines
+  theme(panel.grid.major.x = element_blank()) + #remove x-axis grid lines
+  
+   
+  ggtitle("Increase of reads for resequenced samples")
 ```
 
 <img src="2_data_files/figure-html/figure compare amount of reads per sequencing strategy-1.png" width="672" />
@@ -413,7 +416,10 @@ ggplot(data_overview, aes(x = factor(RGID, level = c("1", "2")), y = reads_mappe
  
   theme(legend.title = element_blank()) + #remove legend title
   
-  theme(panel.grid.major.x = element_blank())  #remove x-axis grid lines
+  theme(panel.grid.major.x = element_blank()) + #remove x-axis grid lines
+
+  
+  ggtitle("Increase of mapped reads for resequenced samples")
 ```
 
 <img src="2_data_files/figure-html/figure mapped reads per sequencing strategy-1.png" width="672" />
@@ -445,7 +451,9 @@ ggplot(data_overview, aes(x = average_coverage, y = reads_post_trim_total, color
   #annotation_logticks() +
   
   labs(x = "coverage", y = "reads (after quality filtering)", 
-       size = "% reads mapped", color ="", shape = "") 
+       size = "% reads mapped", color ="", shape = "") +
+  
+  ggtitle("Higher coverage with increasing number of reads")
 ```
 
 <img src="2_data_files/figure-html/figure number of reads and final coverage-1.png" width="672" />
@@ -469,7 +477,9 @@ ggplot(data_overview, aes(x = unpaired_reads_examined_for_deduplication, y = seq
   labs(x = "total unpaired reads", y = "sequenced library complexity", 
        size = "coverage", color ="", shape = "") + #adjust axis and legend labels
   
-   scale_color_viridis_d(end = 0.5)
+   scale_color_viridis_d(end = 0.5) +
+  
+  ggtitle("c-curve (total unpaired reads)")
 ```
 
 <img src="2_data_files/figure-html/figure c-curve-1.png" width="672" />
@@ -490,7 +500,9 @@ ggplot(data_overview, aes(x =  reads_post_trim_total, y = sequenced_library_comp
   theme(panel.grid.minor.x = element_blank(), panel.grid.minor.y = element_blank()) + #remove x/y-axis grid lines
   
   labs(x = "total surviving reads (Trimmomatic)", y = "sequenced library complexity", 
-       size = "coverage", color ="", shape = "")  #adjust axis and legend labels
+       size = "coverage", color ="", shape = "") +  #adjust axis and legend labels
+  
+  ggtitle("c-curve (total surviving reads)")
 ```
 
 <img src="2_data_files/figure-html/figure total surving reads to distinct mapped reads-1.png" width="672" />
@@ -528,10 +540,12 @@ ggplot(filter(data_overview, original_reseq == "original"), aes(x = reorder(ID, 
   
   theme(axis.text.x = element_text(angle = 50, vjust = 1, hjust = 1, size = 8)) +
   
-  scale_x_discrete(guide = guide_axis(n.dodge=2))  #avoid overlap of x-axis labels
+  scale_x_discrete(guide = guide_axis(n.dodge=2)) +  #avoid overlap of x-axis labels
+
+  ggtitle("coverage per sample")
 ```
 
-<img src="2_data_files/figure-html/mt coverage-1.png" width="672" />
+<img src="2_data_files/figure-html/coverage-1.png" width="672" />
 
 ### Relatedness data
 
@@ -727,13 +741,15 @@ theme_set(theme_classic())
 
 ggplot(ngsRelate_results_sample_info_250k, aes(x = reorder(dyad, rab), y = rab, color = dyad_sex, shape = dyad_group)) +
   
+  scale_colour_viridis_d(na.value = 1) +
+  
   geom_point(alpha = 0.2, aes(y = rab)) + #plot relatedness estimates as points 
   
   geom_hline(yintercept = c(0.125, 0.25, 0.5), linetype = "dashed") + #include horizontal line to show traditional kinship categories
   
   labs( x = "Dyad", y = "Relatedness (ngsRelate)") +
   
-  ggtitle("distribution of relatedness (ngsrelate) 250k")
+  ggtitle("distribution of relatedness (ngsrelate) 250k SNPs")
 ```
 
 <img src="2_data_files/figure-html/figure dyadic relatedness (ngsrelate) distribution-1.png" width="672" />
@@ -748,22 +764,16 @@ theme_set(theme_classic())
 
 ggplot(ngsRelate_results_sample_info, aes(x = dyad_sex, y = nSites, color = coverage, shape = dyad_group)) +
   
-  geom_point(alpha = 0.2) +
+  geom_point(alpha = 0.5, position = position_dodge(0.7)) +
   
-  geom_boxplot()
+  scale_colour_viridis_c(na.value = 1) +
+  
+  geom_boxplot(alpha = 0.4, outlier.shape = NA) +
+
+ ggtitle("ngsRelate: number of sites per sex")
 ```
 
 <img src="2_data_files/figure-html/figure (ngsrelate) dyad_sex and nSites-1.png" width="672" />
-
-```r
-
- ggtitle("nsites vs sex")
-#> $title
-#> [1] "nsites vs sex"
-#> 
-#> attr(,"class")
-#> [1] "labels"
-```
 
 Compare relatedness estimates according to group and sex
 
@@ -775,23 +785,36 @@ theme_set(theme_classic())
 
 ggplot(ngsRelate_results_sample_info_250k, aes(x = dyad_sex, y = rab, color = dyad_group, shape = dyad_group)) +
   
-  geom_point(alpha = 0.2, position = position_dodge(0.5)) +
+  geom_point(alpha = 0.2, position = position_dodge(0.7)) +
   
-  geom_boxplot(alpha = 0.4, outlier.shape = NA)
+  geom_boxplot(alpha = 0.4, outlier.shape = NA) + 
+  
+  scale_colour_viridis_d(end = 0.5) +
+
+ ggtitle("relatedness (ngsrelate) 250k SNPs")
 ```
 
 <img src="2_data_files/figure-html/figure (ngsrelate) relatedness for group and sex-1.png" width="672" />
 
-```r
 
- ggtitle("relatedness (ngsrelate) 250k")
-#> $title
-#> [1] "relatedness (ngsrelate) 250k"
-#> 
-#> attr(,"class")
-#> [1] "labels"
+
+```r
+theme_set(theme_classic())
+
+#plot relatedness rab (y-axis) for the different categories of sex of dyad (x-axis) colored according to group membership
+
+ggplot(ngsRelate_results_sample_info_250k, aes(x = dyad_group, y = rab, color = dyad_sex)) +
+  
+  geom_point(alpha = 0.2, position = position_dodge(0.75)) +
+  
+  geom_boxplot(alpha = 0.4, outlier.shape = NA) +
+  
+  scale_colour_viridis_d(na.value = 1) +
+
+ ggtitle("relatedness (ngsRelate) 250k SNPs")
 ```
 
+<img src="2_data_files/figure-html/figure (ngsrelate) relatedness for sex and group-1.png" width="672" />
 
 #### lcmlkin
 
@@ -950,6 +973,8 @@ ggplot(lcmlkin_results_sample_info_300k, aes(x = reorder(dyad, pi_HAT), y = pi_H
   geom_hline(yintercept = c(0.125, 0.25, 0.5), linetype = "dashed") + #include horizontal line to show traditional kinship categories
   
   labs( x = "Dyad", y = "Relatedness (lcmlkin)") +
+  
+  scale_colour_viridis_d(na.value = 1) +
 
  ggtitle("distribution of relatedness (lcmlkin) 300k SNPs")
 ```
@@ -966,6 +991,8 @@ theme_set(theme_classic())
 ggplot(lcmlkin_results_sample_info, aes(x = k0_hat, y = pi_HAT, color = nbSNP, shape = dyad_group)) +
   
   geom_point(alpha = 0.2) +
+  
+  scale_colour_viridis_c() +
 
  ggtitle("lcmlkin k0 vs phi")
 ```
@@ -982,22 +1009,16 @@ theme_set(theme_classic())
 
 ggplot(lcmlkin_results_sample_info, aes(x = dyad_sex, y = nbSNP, color = dyad_group, shape = dyad_group)) +
   
-  geom_point(alpha = 0.2) +
+  geom_point(alpha = 0.2, position = position_dodge(0.7)) +
   
-  geom_boxplot()
+  geom_boxplot(alpha = 0.4, outlier.shape = NA) +
+  
+  scale_colour_viridis_d(end = 0.5) +
+
+ ggtitle("lcmlkin: number of sites per sex of dyad")
 ```
 
 <img src="2_data_files/figure-html/figure (lcmlkin) dyad_sex and nbSNP-1.png" width="672" />
-
-```r
-
- ggtitle("nbSNP vs sex of dyad")
-#> $title
-#> [1] "nbSNP vs sex of dyad"
-#> 
-#> attr(,"class")
-#> [1] "labels"
-```
 
 
 ```r
@@ -1007,22 +1028,16 @@ theme_set(theme_classic())
 
 ggplot(lcmlkin_results_sample_info_300k, aes(x = dyad_group, y = pi_HAT, color = dyad_sex)) +
   
-  geom_point(alpha = 0.2) +
+  geom_point(alpha = 0.2, position = position_dodge(0.75)) +
   
-  geom_boxplot()
+  geom_boxplot(alpha = 0.4, outlier.shape = NA) +
+  
+  scale_colour_viridis_d(na.value = 1) + 
+
+ ggtitle("relatedness (lcmlkin) 300k SNPs")
 ```
 
 <img src="2_data_files/figure-html/figure (lcmlkin relatedness for group and sex-1.png" width="672" />
-
-```r
-
- ggtitle("relatedness (lcmlkin) 300k")
-#> $title
-#> [1] "relatedness (lcmlkin) 300k"
-#> 
-#> attr(,"class")
-#> [1] "labels"
-```
 
 #### READ
 
@@ -1205,35 +1220,55 @@ ggplot(READ_results_sample_info, aes(x = reorder(PairIndividuals, NonNormalizedP
   
   geom_point(alpha = 0.1, aes(y = NonNormalizedP0)) + #plot relatedness estimates as points 
   
-  labs( x = "Dyad", y = "Relatedness (READ)") 
+  labs( x = "Dyad", y = "Nonnormalized P0 (READ)") +
+  
+  scale_colour_viridis_d(na.value = 1) +
+  
+  ggtitle("distribution of relatedness (READ)")
 ```
 
 <img src="2_data_files/figure-html/figure dyadic relatedness (READ) distribution-1.png" width="672" />
+
+Note: lower P0 values mean higher relatedness!
+
 
 
 ```r
 theme_set(theme_classic())
 
-#plot relatedness pi_HAT (y-axis) for the different categories of sex of dyad (x-axis) colored according to group membership
+#plot relatedness P0 (y-axis) for the different categories of sex of dyad (x-axis) colored according to group membership
 
 ggplot(READ_results_sample_info, aes(x = dyad_sex, y = NonNormalizedP0, color = dyad_group)) +
   
-  geom_point(alpha = 0.2) +
+  geom_point(alpha = 0.2, position = position_dodge(0.7)) +
   
-  geom_boxplot()
+  geom_boxplot(alpha = 0.4, outlier.shape = NA) +
+  
+  scale_colour_viridis_d(end = 0.5) +
+
+ ggtitle("relatedness (READ)")
 ```
 
 <img src="2_data_files/figure-html/figure (READ) relatedness for group and sex-1.png" width="672" />
 
+
 ```r
+theme_set(theme_classic())
+
+#plot relatedness rab (y-axis) for the different categories of sex of dyad (x-axis) colored according to group membership
+
+ggplot(READ_results_sample_info, aes(x = dyad_group, y = NonNormalizedP0, color = dyad_sex)) +
+  
+  geom_point(alpha = 0.2, position = position_dodge(0.75)) +
+  
+  geom_boxplot(alpha = 0.4, outlier.shape = NA) +
+  
+  scale_colour_viridis_d(na.value = 1) +
 
  ggtitle("relatedness (READ)")
-#> $title
-#> [1] "relatedness (READ)"
-#> 
-#> attr(,"class")
-#> [1] "labels"
 ```
+
+<img src="2_data_files/figure-html/figure (READ) relatedness for sex and group-1.png" width="672" />
 
 
 #### Combined relatedness results
@@ -1261,7 +1296,7 @@ theme_set(theme_classic())
 
 ggplot(filter(relate_results, coverage > 0.85), aes(x = reorder(dyad, pi_HAT), color = dyad_sex)) +
   
-  scale_colour_viridis_d() +
+  scale_colour_viridis_d(na.value = 1) +
   
   geom_point(alpha = 0.5, aes(y = pi_HAT), shape = 15) + #plot lcmlkin relatedness estimates as points 
   
@@ -1271,17 +1306,12 @@ ggplot(filter(relate_results, coverage > 0.85), aes(x = reorder(dyad, pi_HAT), c
   
   scale_y_continuous(
     
-    name = "relatedness (lcmlkin)", #features of first axis
+    name = "relatedness", #features of first axis
     
     sec.axis = sec_axis(~., name = "P0") #features of second axis
   ) +
   
   ggtitle("Comparison of relatedness estimators (>0.85X)")
-#> Warning: Removed 28 rows containing missing values (geom_point).
-
-#> Warning: Removed 28 rows containing missing values (geom_point).
-
-#> Warning: Removed 28 rows containing missing values (geom_point).
 ```
 
 <img src="2_data_files/figure-html/figure dyadic relatedness distribution-1.png" width="672" />
@@ -1293,10 +1323,11 @@ Compare correlation among the three estimators
 ```r
 ggplot(relate_results, aes(x = rab, y = pi_HAT, color = dyad_sex, size = nSites, shape = dyad_group.x)) +
   
-  scale_colour_viridis_d() +
+  scale_colour_viridis_d(na.value = 1) +
   
-   geom_point(alpha = 0.2) 
-#> Warning: Removed 374 rows containing missing values (geom_point).
+   geom_point(alpha = 0.2) +
+  
+  ggtitle("Comparison ngsRelate vs. lcmlkin")
 ```
 
 <img src="2_data_files/figure-html/correlation ngsrelate lcmlkin-1.png" width="672" />
@@ -1306,10 +1337,11 @@ ggplot(relate_results, aes(x = rab, y = pi_HAT, color = dyad_sex, size = nSites,
 
 ggplot(relate_results, aes(x = rab, y = NonNormalizedP0, color = dyad_sex, size = nSites, shape = dyad_group.x)) +
   
-  scale_colour_viridis_d() +
+  scale_colour_viridis_d(na.value = 1) +
   
-  geom_point(alpha = 0.2) 
-#> Warning: Removed 374 rows containing missing values (geom_point).
+  geom_point(alpha = 0.2) +
+  
+  ggtitle("Comparison ngsRelate vs. READ")
 ```
 
 <img src="2_data_files/figure-html/correlation ngsrelate READ-1.png" width="672" />
@@ -1319,10 +1351,11 @@ ggplot(relate_results, aes(x = rab, y = NonNormalizedP0, color = dyad_sex, size 
 
 ggplot(relate_results, aes(x = pi_HAT, y = NonNormalizedP0, color = dyad_sex, size = nSites, shape = dyad_group.x)) +
   
-  scale_colour_viridis_d() +
+  scale_colour_viridis_d(na.value = 1) +
   
-  geom_point(alpha = 0.2) 
-#> Warning: Removed 374 rows containing missing values (geom_point).
+  geom_point(alpha = 0.2) +
+  
+  ggtitle("Comparison lcmlkin vs. READ")
 ```
 
 <img src="2_data_files/figure-html/correlation lcmlkin READ-1.png" width="672" />
@@ -1334,17 +1367,61 @@ Have a closer look at the groups
 ```r
 ggplot(filter(relate_results, dyad_group == "intragroup"), aes(x = dyad_sex, y = rab, color = dyad_sex)) +
   
-  scale_color_viridis_d() +
+  scale_color_viridis_d(na.value = 1) +
   
   geom_point(alpha = 0.2, position = position_dodge(0.5)) +
   
   geom_boxplot(alpha = 0.4, outlier.shape = NA) +
   
-  facet_grid(.~a_Group)
-#> Warning: Removed 34 rows containing missing values (geom_point).
+  facet_grid(.~a_Group) +
+  
+ theme (axis.text.x = element_blank(), 
+        axis.title.x = element_blank()) +
+  
+  ggtitle("Relatedness (ngsRelate) in each group")
 ```
 
-<img src="2_data_files/figure-html/unnamed-chunk-10-1.png" width="672" />
+<img src="2_data_files/figure-html/intragroup relatedness (ngsrelate) for each group-1.png" width="672" />
+
+
+```r
+ggplot(filter(relate_results, dyad_group == "intragroup", coverage > 0.75), aes(x = dyad_sex, y = rab, color = dyad_sex)) +
+  
+  scale_color_viridis_d(na.value = 1) +
+  
+  geom_point(alpha = 0.2, position = position_dodge(0.5)) +
+  
+  geom_boxplot(alpha = 0.4, outlier.shape = NA) +
+  
+  facet_grid(.~a_Group) +
+  
+ theme (axis.text.x = element_blank(), 
+        axis.title.x = element_blank()) +
+  
+  ggtitle("Relatedness (ngsRelate) X greater 0.75 in each group")
+```
+
+<img src="2_data_files/figure-html/intragroup relatedness (ngsrelate) X greater 0.75 for each group-1.png" width="672" />
+
+
+```r
+ggplot(filter(relate_results, dyad_group == "intragroup"), aes(x = dyad_sex, y = NonNormalizedP0, color = dyad_sex)) +
+  
+  scale_color_viridis_d(na.value = 1) +
+  
+  geom_point(alpha = 0.2, position = position_dodge(0.5)) +
+  
+  geom_boxplot(alpha = 0.4, outlier.shape = NA) +
+  
+  facet_grid(.~a_Group) +
+  
+ theme (axis.text.x = element_blank(), 
+        axis.title.x = element_blank()) +
+  
+  ggtitle("Relatedness (READ) in each group")
+```
+
+<img src="2_data_files/figure-html/intragroup relatedness (READ) for each group-1.png" width="672" />
 
 
 
