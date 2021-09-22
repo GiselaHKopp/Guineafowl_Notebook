@@ -48,6 +48,19 @@ sampleID_group <- select(sampleID_group, Group_ID, ID)
 str(sampleID_group)
 ```
 
+There are three samples that are not listed correctly and would lead to NA's in downstream analysis, so we manually adjust them here
+
+```{r correct sampleID_group}
+#correct sample B1299 is missing
+sample_info_add <- data.frame (Group_ID = c("wing_tags", "wing_tags", "5509"),
+                               ID = c("B1299", "W1304", "W1345"))
+sample_info_add
+
+sampleID_group <- rbind(sampleID_group, sample_info_add)
+
+```
+
+
 Sex information is stored in *samples_sex.csv*. Sex was determined in the field and confirmed at least once with a molecular sexing method in the lab. For cases with mismatch between field and molecular sex we set the sex to undetermined. 
 
 ```{r load sex information}
@@ -95,6 +108,15 @@ data_overview <- read.delim("vignettes/data/pipeline/preprocessing_overview.tsv"
 str(data_overview)
 
 ```
+
+One sequencing library was resequenced in an additionl run but wrongly assigned to RGID 1, so we correct this
+
+```{r correct seq data analysis overview}
+
+data_overview$RGID[data_overview$filename_one == "mpg_L16936-1_W1350_S1_R1_001.fastq.gz"] <- "2"
+
+```
+
 
 ```{r}
 #create new column that specifies if sequencing results are from original run or from resequencing
@@ -376,10 +398,10 @@ ggplot(filter(data_overview, original_reseq == "original"), aes(x = reorder(ID, 
 
 
 #### ngsRelate
-This is an assessment of the ngsRelate results produced by the Nextflow pipleine created by Ben Hume/SeqAna. The data is saved in the folder `pipeline` in `ngsrelate` as *relatedness.isec.0002.exMito.thinned.ngsrelate.w.sample.names.results*.
+This is an assessment of the ngsRelate results produced by the Nextflow pipleine created by Ben Hume/SeqAna. The data is saved in the folder `pipeline` in `ngsrelate` as *relatedness.isec.0002.exMito.thinned.ngsrelate.w.sample.names.results*. We now use the results excluding replicated samples and the Z chromosome, which are stored in `pipeline/no_repeats_no_Z_relatedness_results/nextflow_output/ngsrelate`.
 
 ```{r load ngsRelate results}
-ngsRelate_results <- read.delim("vignettes/data/pipeline/ngsrelate/relatedness.isec.0002.exMito.thinned.ngsrelate.w.sample.names.results", header = TRUE,  as.is = TRUE)
+ngsRelate_results <- read.delim("vignettes/data/pipeline/no_repeats_no_Z_relatedness_results/nextflow_output/ngsrelate/relatedness.isec.0002.exMito.thinned.ngsrelate.results", header = TRUE,  as.is = TRUE)
 str(ngsRelate_results)
 ```
 
@@ -550,9 +572,9 @@ theme_set(theme_classic())
 
 ggplot(ngsRelate_results_sample_info_250k, aes(x = dyad_sex, y = rab, color = dyad_group, shape = dyad_group)) +
   
-  geom_point(alpha = 0.2) +
+  geom_point(alpha = 0.2, position = position_dodge(0.5)) +
   
-  geom_boxplot()
+  geom_boxplot(alpha = 0.4, outlier.shape = NA)
 
  ggtitle("relatedness (ngsrelate) 250k")
 
@@ -561,8 +583,10 @@ ggplot(ngsRelate_results_sample_info_250k, aes(x = dyad_sex, y = rab, color = dy
 
 #### lcmlkin
 
+We now use the results excluding replicated samples, which are stored in `pipeline/no_repeats_relatedness_results/nf_results/lcmlkin`
+
 ```{r load lcMLkin results}
-lcmlkin_results <- read.delim("vignettes/data/pipeline/lcmlkin/relatedness.isec.0002.exMito.thinned.lcmlkin.results", header = TRUE,  as.is = TRUE)
+lcmlkin_results <- read.delim("vignettes/data/pipeline/no_repeats_relatedness_results/nf_results/lcmlkin/relatedness.isec.0002.exMito.thinned.lcmlkin.results", header = TRUE,  as.is = TRUE)
 str(lcmlkin_results)
 ```
 
@@ -739,12 +763,12 @@ This is an assessment of the READ results produced by the Nextflow pipleine crea
 
 
 ```{r load READ raw results}
-READ_rawresults <- read.delim("vignettes/data/pipeline/read/meansP0_AncientDNA_normalized", header = TRUE, sep = " ", as.is = TRUE)
+READ_rawresults <- read.delim("vignettes/data/pipeline/no_repeats_relatedness_results/nf_results/read/meansP0_AncientDNA_normalized", header = TRUE, sep = " ", as.is = TRUE)
 str(READ_rawresults)
 ```
 
 ```{r load READ kin results}
-READ_kinresults <- read.delim("vignettes/data/pipeline/read/READ_results", header = TRUE, sep = "\t", as.is = TRUE)
+READ_kinresults <- read.delim("vignettes/data/pipeline/no_repeats_relatedness_results/nf_results/read/READ_results", header = TRUE, sep = "\t", as.is = TRUE)
 str(READ_kinresults)
 ```
 
@@ -912,12 +936,13 @@ theme_set(theme_classic())
 
 #plot relatedness pi_HAT and rab (y-axis) for every dyad (x-axis), ordered from low to high relatedness and colored according to inter- or intragroup dyad
 
-ggplot(filter(relate_results, coverage > 0.95), aes(x = reorder(dyad, pi_HAT), color = dyad_sex)) +
+ggplot(filter(relate_results, coverage > 0.85), aes(x = reorder(dyad, pi_HAT), color = dyad_sex)) +
   
+  scale_colour_viridis_d() +
   
   geom_point(alpha = 0.5, aes(y = pi_HAT), shape = 15) + #plot lcmlkin relatedness estimates as points 
   
-  geom_point(alpha = 0.5, aes(y = NonNormalizedP0), shape = 16) + #plot READ estimate
+  geom_point(alpha = 0.5, aes(y = 0.7-NonNormalizedP0), shape = 16) + #plot READ estimate
   
   geom_point(alpha = 0.5, aes(y = rab), shape = 17) + # plot ngsRelate estimates
   
@@ -928,7 +953,7 @@ ggplot(filter(relate_results, coverage > 0.95), aes(x = reorder(dyad, pi_HAT), c
     sec.axis = sec_axis(~., name = "P0") #features of second axis
   ) +
   
-  ggtitle("Comparison of relatedness estimators (>0.95X)")
+  ggtitle("Comparison of relatedness estimators (>0.85X)")
 
 
 ```
@@ -962,6 +987,22 @@ ggplot(relate_results, aes(x = pi_HAT, y = NonNormalizedP0, color = dyad_sex, si
   scale_colour_viridis_d() +
   
   geom_point(alpha = 0.2) 
+```
+
+
+Have a closer look at the groups
+
+```{r}
+ggplot(filter(relate_results, dyad_group == "intragroup"), aes(x = dyad_sex, y = rab, color = dyad_sex)) +
+  
+  scale_color_viridis_d() +
+  
+  geom_point(alpha = 0.2, position = position_dodge(0.5)) +
+  
+  geom_boxplot(alpha = 0.4, outlier.shape = NA) +
+  
+  facet_grid(.~a_Group)
+
 ```
 
 
