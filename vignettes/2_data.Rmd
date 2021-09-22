@@ -61,7 +61,7 @@ sampleID_group <- rbind(sampleID_group, sample_info_add)
 ```
 
 
-Sex information is stored in *samples_sex.csv*. Sex was determined in the field and confirmed at least once with a molecular sexing method in the lab. For cases with mismatch between field and molecular sex we set the sex to undetermined. 
+Sex information is stored in *samples_sex.csv*. Sex was determined in the field and confirmed at least once with a molecular sexing method in the lab. For cases with mismatch between field and molecular sex we set the sex to undetermined. Field observatins were updated in Sept. 2021 and corrected some previously misidentifications.  
 
 ```{r load sex information}
 sampleID_sex <- read.csv("data/samples_sex.csv", header = TRUE, sep = ";", as.is = TRUE)

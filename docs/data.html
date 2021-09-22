@@ -761,7 +761,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb4-8" title="8"><span class="co">#&gt; 3      5509 W1345</span></a>
 <a class="sourceLine" id="cb4-9" title="9"></a>
 <a class="sourceLine" id="cb4-10" title="10">sampleID_group &lt;-<span class="st"> </span><span class="kw">rbind</span>(sampleID_group, sample_info_add)</a></code></pre></div>
-<p>Sex information is stored in <em>samples_sex.csv</em>. Sex was determined in the field and confirmed at least once with a molecular sexing method in the lab. For cases with mismatch between field and molecular sex we set the sex to undetermined.</p>
+<p>Sex information is stored in <em>samples_sex.csv</em>. Sex was determined in the field and confirmed at least once with a molecular sexing method in the lab. For cases with mismatch between field and molecular sex we set the sex to undetermined. Field observatins were updated in Sept. 2021 and corrected some previously misidentifications.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">sampleID_sex &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;data/samples_sex.csv&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">&quot;;&quot;</span>, <span class="dt">as.is =</span> <span class="ot">TRUE</span>)</a>
 <a class="sourceLine" id="cb5-2" title="2"><span class="kw">str</span>(sampleID_sex)</a>
 <a class="sourceLine" id="cb5-3" title="3"><span class="co">#&gt; &#39;data.frame&#39;:    133 obs. of  2 variables:</span></a>
@@ -1237,7 +1237,7 @@ An overview of the data as output from the Nextflow pipeline as of 29th July 202
 <a class="sourceLine" id="cb31-16" title="16"></a>
 <a class="sourceLine" id="cb31-17" title="17"></a>
 <a class="sourceLine" id="cb31-18" title="18"><span class="kw">unique</span>(ngsRelate_results_sample_info<span class="op">$</span>dyad_sex)</a>
-<a class="sourceLine" id="cb31-19" title="19"><span class="co">#&gt; [1] &quot;male-female&quot; NA            &quot;female&quot;      &quot;male&quot;</span></a></code></pre></div>
+<a class="sourceLine" id="cb31-19" title="19"><span class="co">#&gt; [1] &quot;male-female&quot; &quot;female&quot;      &quot;male&quot;</span></a></code></pre></div>
 <p>Let’s have a closer look at the samples that were sequenced twice</p>
 <div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" title="1"><span class="co">#find samples that were sequenced twice</span></a>
 <a class="sourceLine" id="cb32-2" title="2">duplicates &lt;-<span class="st"> </span><span class="kw">filter</span>(ngsRelate_results_sample_info, ID_a <span class="op">==</span><span class="st"> </span>ID_b)</a>
@@ -1411,7 +1411,7 @@ An overview of the data as output from the Nextflow pipeline as of 29th July 202
 <a class="sourceLine" id="cb42-16" title="16"></a>
 <a class="sourceLine" id="cb42-17" title="17"></a>
 <a class="sourceLine" id="cb42-18" title="18"><span class="kw">unique</span>(lcmlkin_results_sample_info<span class="op">$</span>dyad_sex)</a>
-<a class="sourceLine" id="cb42-19" title="19"><span class="co">#&gt; [1] &quot;male-female&quot; &quot;female&quot;      NA            &quot;male&quot;</span></a></code></pre></div>
+<a class="sourceLine" id="cb42-19" title="19"><span class="co">#&gt; [1] &quot;male-female&quot; &quot;female&quot;      &quot;male&quot;</span></a></code></pre></div>
 <p>Let’s have a closer look at the samples that were sequenced twice</p>
 <div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" title="1"><span class="co">#find samples that were sequenced twice</span></a>
 <a class="sourceLine" id="cb43-2" title="2">duplicates_lcmlkin &lt;-<span class="st"> </span><span class="kw">filter</span>(lcmlkin_results_sample_info, ID_a <span class="op">==</span><span class="st"> </span>ID_b)</a>
@@ -1612,7 +1612,7 @@ An overview of the data as output from the Nextflow pipeline as of 29th July 202
 <a class="sourceLine" id="cb57-16" title="16"></a>
 <a class="sourceLine" id="cb57-17" title="17"></a>
 <a class="sourceLine" id="cb57-18" title="18"><span class="kw">unique</span>(READ_results_sample_info<span class="op">$</span>dyad_sex)</a>
-<a class="sourceLine" id="cb57-19" title="19"><span class="co">#&gt; [1] NA            &quot;male-female&quot; &quot;male&quot;        &quot;female&quot;</span></a></code></pre></div>
+<a class="sourceLine" id="cb57-19" title="19"><span class="co">#&gt; [1] &quot;male&quot;        &quot;male-female&quot; &quot;female&quot;</span></a></code></pre></div>
 <div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb58-1" title="1"></a>
 <a class="sourceLine" id="cb58-2" title="2"><span class="kw">theme_set</span>(<span class="kw">theme_classic</span>())</a>
 <a class="sourceLine" id="cb58-3" title="3"></a>

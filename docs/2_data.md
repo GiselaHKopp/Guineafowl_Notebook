@@ -78,7 +78,7 @@ sampleID_group <- rbind(sampleID_group, sample_info_add)
 ```
 
 
-Sex information is stored in *samples_sex.csv*. Sex was determined in the field and confirmed at least once with a molecular sexing method in the lab. For cases with mismatch between field and molecular sex we set the sex to undetermined. 
+Sex information is stored in *samples_sex.csv*. Sex was determined in the field and confirmed at least once with a molecular sexing method in the lab. For cases with mismatch between field and molecular sex we set the sex to undetermined. Field observatins were updated in Sept. 2021 and corrected some previously misidentifications.  
 
 
 ```r
@@ -695,7 +695,7 @@ ngsRelate_results_sample_info$dyad_sex[ngsRelate_results_sample_info$dyad_sex ==
 
 
 unique(ngsRelate_results_sample_info$dyad_sex)
-#> [1] "male-female" NA            "female"      "male"
+#> [1] "male-female" "female"      "male"
 ```
 
 
@@ -929,7 +929,7 @@ lcmlkin_results_sample_info$dyad_sex[lcmlkin_results_sample_info$dyad_sex == "sa
 
 
 unique(lcmlkin_results_sample_info$dyad_sex)
-#> [1] "male-female" "female"      NA            "male"
+#> [1] "male-female" "female"      "male"
 ```
 
 
@@ -1206,7 +1206,7 @@ READ_results_sample_info$dyad_sex[READ_results_sample_info$dyad_sex == "same sex
 
 
 unique(READ_results_sample_info$dyad_sex)
-#> [1] NA            "male-female" "male"        "female"
+#> [1] "male"        "male-female" "female"
 ```
 
 
