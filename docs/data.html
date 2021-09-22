@@ -712,12 +712,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="setup" class="section level2">
 <h2><span class="header-section-number">4.1</span> Setup</h2>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">library</span>(tidyverse)</a>
-<a class="sourceLine" id="cb2-2" title="2"><span class="co">#&gt; -- Attaching packages ---------------------------------------------------------------------- tidyverse 1.3.0 --</span></a>
+<a class="sourceLine" id="cb2-2" title="2"><span class="co">#&gt; -- Attaching packages ---------------------------------------------------------------------------------------------------------------------------------------------------- tidyverse 1.3.0 --</span></a>
 <a class="sourceLine" id="cb2-3" title="3"><span class="co">#&gt; v ggplot2 3.3.2     v purrr   0.3.4</span></a>
 <a class="sourceLine" id="cb2-4" title="4"><span class="co">#&gt; v tibble  3.0.3     v dplyr   1.0.2</span></a>
 <a class="sourceLine" id="cb2-5" title="5"><span class="co">#&gt; v tidyr   1.1.2     v stringr 1.4.0</span></a>
 <a class="sourceLine" id="cb2-6" title="6"><span class="co">#&gt; v readr   1.3.1     v forcats 0.5.0</span></a>
-<a class="sourceLine" id="cb2-7" title="7"><span class="co">#&gt; -- Conflicts ------------------------------------------------------------------------- tidyverse_conflicts() --</span></a>
+<a class="sourceLine" id="cb2-7" title="7"><span class="co">#&gt; -- Conflicts ------------------------------------------------------------------------------------------------------------------------------------------------------- tidyverse_conflicts() --</span></a>
 <a class="sourceLine" id="cb2-8" title="8"><span class="co">#&gt; x dplyr::filter() masks stats::filter()</span></a>
 <a class="sourceLine" id="cb2-9" title="9"><span class="co">#&gt; x dplyr::lag()    masks stats::lag()</span></a>
 <a class="sourceLine" id="cb2-10" title="10"><span class="kw">library</span>(ggplot2)</a>
@@ -731,7 +731,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="data-collection" class="section level2">
 <h2><span class="header-section-number">4.2</span> Data collection</h2>
 <p>Group information is stored in <em>sequenced_samples_groups.csv</em>.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">sampleID_group &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;vignettes/data/sequenced_samples_groups.csv&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">&quot;;&quot;</span>, <span class="dt">as.is =</span> <span class="ot">TRUE</span>)</a>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">sampleID_group &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;data/sequenced_samples_groups.csv&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">&quot;;&quot;</span>, <span class="dt">as.is =</span> <span class="ot">TRUE</span>)</a>
 <a class="sourceLine" id="cb3-2" title="2"></a>
 <a class="sourceLine" id="cb3-3" title="3"></a>
 <a class="sourceLine" id="cb3-4" title="4"><span class="kw">str</span>(sampleID_group)</a>
@@ -762,7 +762,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb4-9" title="9"></a>
 <a class="sourceLine" id="cb4-10" title="10">sampleID_group &lt;-<span class="st"> </span><span class="kw">rbind</span>(sampleID_group, sample_info_add)</a></code></pre></div>
 <p>Sex information is stored in <em>samples_sex.csv</em>. Sex was determined in the field and confirmed at least once with a molecular sexing method in the lab. For cases with mismatch between field and molecular sex we set the sex to undetermined.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">sampleID_sex &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;vignettes/data/samples_sex.csv&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">&quot;;&quot;</span>, <span class="dt">as.is =</span> <span class="ot">TRUE</span>)</a>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">sampleID_sex &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;data/samples_sex.csv&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">&quot;;&quot;</span>, <span class="dt">as.is =</span> <span class="ot">TRUE</span>)</a>
 <a class="sourceLine" id="cb5-2" title="2"><span class="kw">str</span>(sampleID_sex)</a>
 <a class="sourceLine" id="cb5-3" title="3"><span class="co">#&gt; &#39;data.frame&#39;:    133 obs. of  2 variables:</span></a>
 <a class="sourceLine" id="cb5-4" title="4"><span class="co">#&gt;  $ ID : chr  &quot;A1295&quot; &quot;A1296&quot; &quot;A1297&quot; &quot;A1298&quot; ...</span></a>
@@ -781,7 +781,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="sequencing-data" class="section level3">
 <h3><span class="header-section-number">4.3.1</span> Sequencing data</h3>
 <p>First, we load an overview of the analysed sequencing libraries. They are stored in the folder <code>pipeline</code> as <em>file_list.tsv</em>.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1">seqlib_overview &lt;-<span class="st"> </span><span class="kw">read.delim</span>(<span class="st">&quot;vignettes/data/pipeline/file_list.tsv&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>,  <span class="dt">as.is =</span> <span class="ot">TRUE</span>)</a>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1">seqlib_overview &lt;-<span class="st"> </span><span class="kw">read.delim</span>(<span class="st">&quot;data/pipeline/file_list.tsv&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>,  <span class="dt">as.is =</span> <span class="ot">TRUE</span>)</a>
 <a class="sourceLine" id="cb7-2" title="2"><span class="kw">str</span>(seqlib_overview)</a>
 <a class="sourceLine" id="cb7-3" title="3"><span class="co">#&gt; &#39;data.frame&#39;:    238 obs. of  6 variables:</span></a>
 <a class="sourceLine" id="cb7-4" title="4"><span class="co">#&gt;  $ file_name: chr  &quot;mpg_L16936-1_W1350_S1_R1_001.fastq.gz&quot; &quot;mpg_L16936-1_W1350_S1_R2_001.fastq.gz&quot; &quot;mpg_L16926-1_W1398_S2_R1_001.fastq.gz&quot; &quot;mpg_L16926-1_W1398_S2_R2_001.fastq.gz&quot; ...</span></a>
@@ -805,7 +805,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb8-12" title="12"><span class="co">#&gt;  $ ID       : chr  &quot;W1350&quot; &quot;W1350&quot; &quot;W1398&quot; &quot;W1398&quot; ...</span></a></code></pre></div>
 <p>Next, we evaluate the quality of the data and the different sequencing approaches.
 An overview of the data as output from the Nextflow pipeline as of 29th July 2021 is stored in <em>preprocessing_overview.tsv</em></p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">data_overview &lt;-<span class="st"> </span><span class="kw">read.delim</span>(<span class="st">&quot;vignettes/data/pipeline/preprocessing_overview.tsv&quot;</span>, <span class="dt">as.is =</span> <span class="ot">TRUE</span>)</a>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">data_overview &lt;-<span class="st"> </span><span class="kw">read.delim</span>(<span class="st">&quot;data/pipeline/preprocessing_overview.tsv&quot;</span>, <span class="dt">as.is =</span> <span class="ot">TRUE</span>)</a>
 <a class="sourceLine" id="cb9-2" title="2"><span class="kw">str</span>(data_overview)</a>
 <a class="sourceLine" id="cb9-3" title="3"><span class="co">#&gt; &#39;data.frame&#39;:    119 obs. of  31 variables:</span></a>
 <a class="sourceLine" id="cb9-4" title="4"><span class="co">#&gt;  $ RGSM                                     : chr  &quot;RGID1_S1&quot; &quot;RGID1_S2&quot; &quot;RGID1_S3&quot; &quot;RGID1_S4&quot; ...</span></a>
@@ -1125,7 +1125,7 @@ An overview of the data as output from the Nextflow pipeline as of 29th July 202
 <div id="ngsrelate" class="section level4">
 <h4><span class="header-section-number">4.3.2.1</span> ngsRelate</h4>
 <p>This is an assessment of the ngsRelate results produced by the Nextflow pipleine created by Ben Hume/SeqAna. The data is saved in the folder <code>pipeline</code> in <code>ngsrelate</code> as <em>relatedness.isec.0002.exMito.thinned.ngsrelate.w.sample.names.results</em>. We now use the results excluding replicated samples and the Z chromosome, which are stored in <code>pipeline/no_repeats_no_Z_relatedness_results/nextflow_output/ngsrelate</code>.</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" title="1">ngsRelate_results &lt;-<span class="st"> </span><span class="kw">read.delim</span>(<span class="st">&quot;vignettes/data/pipeline/no_repeats_no_Z_relatedness_results/nextflow_output/ngsrelate/relatedness.isec.0002.exMito.thinned.ngsrelate.results&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>,  <span class="dt">as.is =</span> <span class="ot">TRUE</span>)</a>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" title="1">ngsRelate_results &lt;-<span class="st"> </span><span class="kw">read.delim</span>(<span class="st">&quot;data/pipeline/no_repeats_no_Z_relatedness_results/nextflow_output/ngsrelate/relatedness.isec.0002.exMito.thinned.ngsrelate.results&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>,  <span class="dt">as.is =</span> <span class="ot">TRUE</span>)</a>
 <a class="sourceLine" id="cb25-2" title="2"><span class="kw">str</span>(ngsRelate_results)</a>
 <a class="sourceLine" id="cb25-3" title="3"><span class="co">#&gt; &#39;data.frame&#39;:    4560 obs. of  35 variables:</span></a>
 <a class="sourceLine" id="cb25-4" title="4"><span class="co">#&gt;  $ a                     : int  0 0 0 0 0 0 0 0 0 0 ...</span></a>
@@ -1322,7 +1322,7 @@ An overview of the data as output from the Nextflow pipeline as of 29th July 202
 <div id="lcmlkin" class="section level4">
 <h4><span class="header-section-number">4.3.2.2</span> lcmlkin</h4>
 <p>We now use the results excluding replicated samples, which are stored in <code>pipeline/no_repeats_relatedness_results/nf_results/lcmlkin</code></p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb38-1" title="1">lcmlkin_results &lt;-<span class="st"> </span><span class="kw">read.delim</span>(<span class="st">&quot;vignettes/data/pipeline/no_repeats_relatedness_results/nf_results/lcmlkin/relatedness.isec.0002.exMito.thinned.lcmlkin.results&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>,  <span class="dt">as.is =</span> <span class="ot">TRUE</span>)</a>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb38-1" title="1">lcmlkin_results &lt;-<span class="st"> </span><span class="kw">read.delim</span>(<span class="st">&quot;data/pipeline/no_repeats_relatedness_results/nf_results/lcmlkin/relatedness.isec.0002.exMito.thinned.lcmlkin.results&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>,  <span class="dt">as.is =</span> <span class="ot">TRUE</span>)</a>
 <a class="sourceLine" id="cb38-2" title="2"><span class="kw">str</span>(lcmlkin_results)</a>
 <a class="sourceLine" id="cb38-3" title="3"><span class="co">#&gt; &#39;data.frame&#39;:    4560 obs. of  7 variables:</span></a>
 <a class="sourceLine" id="cb38-4" title="4"><span class="co">#&gt;  $ Ind1  : chr  &quot;RGID1_S83&quot; &quot;RGID1_S83&quot; &quot;RGID1_S83&quot; &quot;RGID1_S83&quot; ...</span></a>
@@ -1490,7 +1490,7 @@ An overview of the data as output from the Nextflow pipeline as of 29th July 202
 <div id="read" class="section level4">
 <h4><span class="header-section-number">4.3.2.3</span> READ</h4>
 <p>This is an assessment of the READ results produced by the Nextflow pipleine created by Ben Hume/SeqAna. The data is saved in the folder <code>pipeline</code> in <code>read</code> as <em>meansP0_AncientDNA_normalized</em>. The preprocessed data (categorizes unrelated, first- and second-order related) is sotred as <em>READ_results</em>.</p>
-<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb49-1" title="1">READ_rawresults &lt;-<span class="st"> </span><span class="kw">read.delim</span>(<span class="st">&quot;vignettes/data/pipeline/no_repeats_relatedness_results/nf_results/read/meansP0_AncientDNA_normalized&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">&quot; &quot;</span>, <span class="dt">as.is =</span> <span class="ot">TRUE</span>)</a>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb49-1" title="1">READ_rawresults &lt;-<span class="st"> </span><span class="kw">read.delim</span>(<span class="st">&quot;data/pipeline/no_repeats_relatedness_results/nf_results/read/meansP0_AncientDNA_normalized&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">&quot; &quot;</span>, <span class="dt">as.is =</span> <span class="ot">TRUE</span>)</a>
 <a class="sourceLine" id="cb49-2" title="2"><span class="kw">str</span>(READ_rawresults)</a>
 <a class="sourceLine" id="cb49-3" title="3"><span class="co">#&gt; &#39;data.frame&#39;:    4560 obs. of  5 variables:</span></a>
 <a class="sourceLine" id="cb49-4" title="4"><span class="co">#&gt;  $ PairIndividuals            : chr  &quot;RGID1_S10RGID1_S11&quot; &quot;RGID1_S10RGID1_S26&quot; &quot;RGID1_S10RGID1_S36&quot; &quot;RGID1_S10RGID1_S39&quot; ...</span></a>
@@ -1498,7 +1498,7 @@ An overview of the data as output from the Nextflow pipeline as of 29th July 202
 <a class="sourceLine" id="cb49-6" title="6"><span class="co">#&gt;  $ StandardError              : num  0.00477 0.00498 0.00534 0.00472 0.00489 ...</span></a>
 <a class="sourceLine" id="cb49-7" title="7"><span class="co">#&gt;  $ NonNormalizedP0            : num  0.341 0.346 0.333 0.347 0.352 ...</span></a>
 <a class="sourceLine" id="cb49-8" title="8"><span class="co">#&gt;  $ NonNormalizedStandardError : num  0.0017 0.00178 0.00191 0.00169 0.00175 ...</span></a></code></pre></div>
-<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" title="1">READ_kinresults &lt;-<span class="st"> </span><span class="kw">read.delim</span>(<span class="st">&quot;vignettes/data/pipeline/no_repeats_relatedness_results/nf_results/read/READ_results&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>, <span class="dt">as.is =</span> <span class="ot">TRUE</span>)</a>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" title="1">READ_kinresults &lt;-<span class="st"> </span><span class="kw">read.delim</span>(<span class="st">&quot;data/pipeline/no_repeats_relatedness_results/nf_results/read/READ_results&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>, <span class="dt">as.is =</span> <span class="ot">TRUE</span>)</a>
 <a class="sourceLine" id="cb50-2" title="2"><span class="kw">str</span>(READ_kinresults)</a>
 <a class="sourceLine" id="cb50-3" title="3"><span class="co">#&gt; &#39;data.frame&#39;:    4560 obs. of  4 variables:</span></a>
 <a class="sourceLine" id="cb50-4" title="4"><span class="co">#&gt;  $ PairIndividuals: chr  &quot;RGID1_S10RGID1_S11&quot; &quot;RGID1_S10RGID1_S26&quot; &quot;RGID1_S10RGID1_S36&quot; &quot;RGID1_S10RGID1_S39&quot; ...</span></a>

@@ -15,12 +15,12 @@ editor_options:
 
 ```r
 library(tidyverse)
-#> -- Attaching packages ---------------------------------------------------------------------- tidyverse 1.3.0 --
+#> -- Attaching packages ---------------------------------------------------------------------------------------------------------------------------------------------------- tidyverse 1.3.0 --
 #> v ggplot2 3.3.2     v purrr   0.3.4
 #> v tibble  3.0.3     v dplyr   1.0.2
 #> v tidyr   1.1.2     v stringr 1.4.0
 #> v readr   1.3.1     v forcats 0.5.0
-#> -- Conflicts ------------------------------------------------------------------------- tidyverse_conflicts() --
+#> -- Conflicts ------------------------------------------------------------------------------------------------------------------------------------------------------- tidyverse_conflicts() --
 #> x dplyr::filter() masks stats::filter()
 #> x dplyr::lag()    masks stats::lag()
 library(ggplot2)
@@ -39,7 +39,7 @@ An overview of the samples as of 26th April 2021 is stored in *Guineafowl-lcWGS_
 
 
 ```r
-sample_overview <- read.csv("vignettes/data/Guineafowl-lcWGS_DataOverview_20210426.csv", header = TRUE, sep = ";", as.is = TRUE)
+sample_overview <- read.csv("data/Guineafowl-lcWGS_DataOverview_20210426.csv", header = TRUE, sep = ";", as.is = TRUE)
 str(sample_overview)
 #> 'data.frame':	119 obs. of  17 variables:
 #>  $ individual                   : chr  "W1398" "W1429" "W1429" "W1502" ...

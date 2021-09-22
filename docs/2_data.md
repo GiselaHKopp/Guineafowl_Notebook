@@ -16,12 +16,12 @@ Data compiled and used in this project
 
 ```r
 library(tidyverse)
-#> -- Attaching packages ---------------------------------------------------------------------- tidyverse 1.3.0 --
+#> -- Attaching packages ---------------------------------------------------------------------------------------------------------------------------------------------------- tidyverse 1.3.0 --
 #> v ggplot2 3.3.2     v purrr   0.3.4
 #> v tibble  3.0.3     v dplyr   1.0.2
 #> v tidyr   1.1.2     v stringr 1.4.0
 #> v readr   1.3.1     v forcats 0.5.0
-#> -- Conflicts ------------------------------------------------------------------------- tidyverse_conflicts() --
+#> -- Conflicts ------------------------------------------------------------------------------------------------------------------------------------------------------- tidyverse_conflicts() --
 #> x dplyr::filter() masks stats::filter()
 #> x dplyr::lag()    masks stats::lag()
 library(ggplot2)
@@ -40,7 +40,7 @@ Group information is stored in *sequenced_samples_groups.csv*.
 
 
 ```r
-sampleID_group <- read.csv("vignettes/data/sequenced_samples_groups.csv", header = TRUE, sep = ";", as.is = TRUE)
+sampleID_group <- read.csv("data/sequenced_samples_groups.csv", header = TRUE, sep = ";", as.is = TRUE)
 
 
 str(sampleID_group)
@@ -82,7 +82,7 @@ Sex information is stored in *samples_sex.csv*. Sex was determined in the field 
 
 
 ```r
-sampleID_sex <- read.csv("vignettes/data/samples_sex.csv", header = TRUE, sep = ";", as.is = TRUE)
+sampleID_sex <- read.csv("data/samples_sex.csv", header = TRUE, sep = ";", as.is = TRUE)
 str(sampleID_sex)
 #> 'data.frame':	133 obs. of  2 variables:
 #>  $ ID : chr  "A1295" "A1296" "A1297" "A1298" ...
@@ -112,7 +112,7 @@ First, we load an overview of the analysed sequencing libraries. They are stored
 
 
 ```r
-seqlib_overview <- read.delim("vignettes/data/pipeline/file_list.tsv", header = TRUE,  as.is = TRUE)
+seqlib_overview <- read.delim("data/pipeline/file_list.tsv", header = TRUE,  as.is = TRUE)
 str(seqlib_overview)
 #> 'data.frame':	238 obs. of  6 variables:
 #>  $ file_name: chr  "mpg_L16936-1_W1350_S1_R1_001.fastq.gz" "mpg_L16936-1_W1350_S1_R2_001.fastq.gz" "mpg_L16926-1_W1398_S2_R1_001.fastq.gz" "mpg_L16926-1_W1398_S2_R2_001.fastq.gz" ...
@@ -147,7 +147,7 @@ An overview of the data as output from the Nextflow pipeline as of 29th July 202
 
 
 ```r
-data_overview <- read.delim("vignettes/data/pipeline/preprocessing_overview.tsv", as.is = TRUE)
+data_overview <- read.delim("data/pipeline/preprocessing_overview.tsv", as.is = TRUE)
 str(data_overview)
 #> 'data.frame':	119 obs. of  31 variables:
 #>  $ RGSM                                     : chr  "RGID1_S1" "RGID1_S2" "RGID1_S3" "RGID1_S4" ...
@@ -555,7 +555,7 @@ This is an assessment of the ngsRelate results produced by the Nextflow pipleine
 
 
 ```r
-ngsRelate_results <- read.delim("vignettes/data/pipeline/no_repeats_no_Z_relatedness_results/nextflow_output/ngsrelate/relatedness.isec.0002.exMito.thinned.ngsrelate.results", header = TRUE,  as.is = TRUE)
+ngsRelate_results <- read.delim("data/pipeline/no_repeats_no_Z_relatedness_results/nextflow_output/ngsrelate/relatedness.isec.0002.exMito.thinned.ngsrelate.results", header = TRUE,  as.is = TRUE)
 str(ngsRelate_results)
 #> 'data.frame':	4560 obs. of  35 variables:
 #>  $ a                     : int  0 0 0 0 0 0 0 0 0 0 ...
@@ -822,7 +822,7 @@ We now use the results excluding replicated samples, which are stored in `pipeli
 
 
 ```r
-lcmlkin_results <- read.delim("vignettes/data/pipeline/no_repeats_relatedness_results/nf_results/lcmlkin/relatedness.isec.0002.exMito.thinned.lcmlkin.results", header = TRUE,  as.is = TRUE)
+lcmlkin_results <- read.delim("data/pipeline/no_repeats_relatedness_results/nf_results/lcmlkin/relatedness.isec.0002.exMito.thinned.lcmlkin.results", header = TRUE,  as.is = TRUE)
 str(lcmlkin_results)
 #> 'data.frame':	4560 obs. of  7 variables:
 #>  $ Ind1  : chr  "RGID1_S83" "RGID1_S83" "RGID1_S83" "RGID1_S83" ...
@@ -1046,7 +1046,7 @@ This is an assessment of the READ results produced by the Nextflow pipleine crea
 
 
 ```r
-READ_rawresults <- read.delim("vignettes/data/pipeline/no_repeats_relatedness_results/nf_results/read/meansP0_AncientDNA_normalized", header = TRUE, sep = " ", as.is = TRUE)
+READ_rawresults <- read.delim("data/pipeline/no_repeats_relatedness_results/nf_results/read/meansP0_AncientDNA_normalized", header = TRUE, sep = " ", as.is = TRUE)
 str(READ_rawresults)
 #> 'data.frame':	4560 obs. of  5 variables:
 #>  $ PairIndividuals            : chr  "RGID1_S10RGID1_S11" "RGID1_S10RGID1_S26" "RGID1_S10RGID1_S36" "RGID1_S10RGID1_S39" ...
@@ -1058,7 +1058,7 @@ str(READ_rawresults)
 
 
 ```r
-READ_kinresults <- read.delim("vignettes/data/pipeline/no_repeats_relatedness_results/nf_results/read/READ_results", header = TRUE, sep = "\t", as.is = TRUE)
+READ_kinresults <- read.delim("data/pipeline/no_repeats_relatedness_results/nf_results/read/READ_results", header = TRUE, sep = "\t", as.is = TRUE)
 str(READ_kinresults)
 #> 'data.frame':	4560 obs. of  4 variables:
 #>  $ PairIndividuals: chr  "RGID1_S10RGID1_S11" "RGID1_S10RGID1_S26" "RGID1_S10RGID1_S36" "RGID1_S10RGID1_S39" ...

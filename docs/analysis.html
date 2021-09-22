@@ -711,12 +711,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="setup-1" class="section level2">
 <h2><span class="header-section-number">5.1</span> Setup</h2>
 <div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb69-1" title="1"><span class="kw">library</span>(tidyverse)</a>
-<a class="sourceLine" id="cb69-2" title="2"><span class="co">#&gt; -- Attaching packages ---------------------------------------------------------------------- tidyverse 1.3.0 --</span></a>
+<a class="sourceLine" id="cb69-2" title="2"><span class="co">#&gt; -- Attaching packages ---------------------------------------------------------------------------------------------------------------------------------------------------- tidyverse 1.3.0 --</span></a>
 <a class="sourceLine" id="cb69-3" title="3"><span class="co">#&gt; v ggplot2 3.3.2     v purrr   0.3.4</span></a>
 <a class="sourceLine" id="cb69-4" title="4"><span class="co">#&gt; v tibble  3.0.3     v dplyr   1.0.2</span></a>
 <a class="sourceLine" id="cb69-5" title="5"><span class="co">#&gt; v tidyr   1.1.2     v stringr 1.4.0</span></a>
 <a class="sourceLine" id="cb69-6" title="6"><span class="co">#&gt; v readr   1.3.1     v forcats 0.5.0</span></a>
-<a class="sourceLine" id="cb69-7" title="7"><span class="co">#&gt; -- Conflicts ------------------------------------------------------------------------- tidyverse_conflicts() --</span></a>
+<a class="sourceLine" id="cb69-7" title="7"><span class="co">#&gt; -- Conflicts ------------------------------------------------------------------------------------------------------------------------------------------------------- tidyverse_conflicts() --</span></a>
 <a class="sourceLine" id="cb69-8" title="8"><span class="co">#&gt; x dplyr::filter() masks stats::filter()</span></a>
 <a class="sourceLine" id="cb69-9" title="9"><span class="co">#&gt; x dplyr::lag()    masks stats::lag()</span></a>
 <a class="sourceLine" id="cb69-10" title="10"><span class="kw">library</span>(ggplot2)</a>
@@ -730,7 +730,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="data-overview" class="section level2">
 <h2><span class="header-section-number">5.2</span> Data overview</h2>
 <p>An overview of the samples as of 26th April 2021 is stored in <em>Guineafowl-lcWGS_DataOverview_20210426.csv</em>. This is needed to later assign the relatedness estimates to specific individuals</p>
-<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb70-1" title="1">sample_overview &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;vignettes/data/Guineafowl-lcWGS_DataOverview_20210426.csv&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">&quot;;&quot;</span>, <span class="dt">as.is =</span> <span class="ot">TRUE</span>)</a>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb70-1" title="1">sample_overview &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;data/Guineafowl-lcWGS_DataOverview_20210426.csv&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">&quot;;&quot;</span>, <span class="dt">as.is =</span> <span class="ot">TRUE</span>)</a>
 <a class="sourceLine" id="cb70-2" title="2"><span class="kw">str</span>(sample_overview)</a>
 <a class="sourceLine" id="cb70-3" title="3"><span class="co">#&gt; &#39;data.frame&#39;:    119 obs. of  17 variables:</span></a>
 <a class="sourceLine" id="cb70-4" title="4"><span class="co">#&gt;  $ individual                   : chr  &quot;W1398&quot; &quot;W1429&quot; &quot;W1429&quot; &quot;W1502&quot; ...</span></a>

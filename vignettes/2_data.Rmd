@@ -35,7 +35,7 @@ library(ggallin)
 Group information is stored in *sequenced_samples_groups.csv*.
 
 ```{r load group informatin}
-sampleID_group <- read.csv("vignettes/data/sequenced_samples_groups.csv", header = TRUE, sep = ";", as.is = TRUE)
+sampleID_group <- read.csv("data/sequenced_samples_groups.csv", header = TRUE, sep = ";", as.is = TRUE)
 
 
 str(sampleID_group)
@@ -64,7 +64,7 @@ sampleID_group <- rbind(sampleID_group, sample_info_add)
 Sex information is stored in *samples_sex.csv*. Sex was determined in the field and confirmed at least once with a molecular sexing method in the lab. For cases with mismatch between field and molecular sex we set the sex to undetermined. 
 
 ```{r load sex information}
-sampleID_sex <- read.csv("vignettes/data/samples_sex.csv", header = TRUE, sep = ";", as.is = TRUE)
+sampleID_sex <- read.csv("data/samples_sex.csv", header = TRUE, sep = ";", as.is = TRUE)
 str(sampleID_sex)
 ```
 
@@ -86,7 +86,7 @@ str(sample_info)
 First, we load an overview of the analysed sequencing libraries. They are stored in the folder `pipeline` as *file_list.tsv*. 
 
 ```{r load analysed seq libraries}
-seqlib_overview <- read.delim("vignettes/data/pipeline/file_list.tsv", header = TRUE,  as.is = TRUE)
+seqlib_overview <- read.delim("data/pipeline/file_list.tsv", header = TRUE,  as.is = TRUE)
 str(seqlib_overview)
 ```
 
@@ -104,7 +104,7 @@ Next, we evaluate the quality of the data and the different sequencing approache
 An overview of the data as output from the Nextflow pipeline as of 29th July 2021 is stored in *preprocessing_overview.tsv*
 
 ```{r import seq data analysis overview}
-data_overview <- read.delim("vignettes/data/pipeline/preprocessing_overview.tsv", as.is = TRUE)
+data_overview <- read.delim("data/pipeline/preprocessing_overview.tsv", as.is = TRUE)
 str(data_overview)
 
 ```
@@ -415,7 +415,7 @@ ggplot(filter(data_overview, original_reseq == "original"), aes(x = reorder(ID, 
 This is an assessment of the ngsRelate results produced by the Nextflow pipleine created by Ben Hume/SeqAna. The data is saved in the folder `pipeline` in `ngsrelate` as *relatedness.isec.0002.exMito.thinned.ngsrelate.w.sample.names.results*. We now use the results excluding replicated samples and the Z chromosome, which are stored in `pipeline/no_repeats_no_Z_relatedness_results/nextflow_output/ngsrelate`.
 
 ```{r load ngsRelate results}
-ngsRelate_results <- read.delim("vignettes/data/pipeline/no_repeats_no_Z_relatedness_results/nextflow_output/ngsrelate/relatedness.isec.0002.exMito.thinned.ngsrelate.results", header = TRUE,  as.is = TRUE)
+ngsRelate_results <- read.delim("data/pipeline/no_repeats_no_Z_relatedness_results/nextflow_output/ngsrelate/relatedness.isec.0002.exMito.thinned.ngsrelate.results", header = TRUE,  as.is = TRUE)
 str(ngsRelate_results)
 ```
 
@@ -623,7 +623,7 @@ ggplot(ngsRelate_results_sample_info_250k, aes(x = dyad_group, y = rab, color = 
 We now use the results excluding replicated samples, which are stored in `pipeline/no_repeats_relatedness_results/nf_results/lcmlkin`
 
 ```{r load lcMLkin results}
-lcmlkin_results <- read.delim("vignettes/data/pipeline/no_repeats_relatedness_results/nf_results/lcmlkin/relatedness.isec.0002.exMito.thinned.lcmlkin.results", header = TRUE,  as.is = TRUE)
+lcmlkin_results <- read.delim("data/pipeline/no_repeats_relatedness_results/nf_results/lcmlkin/relatedness.isec.0002.exMito.thinned.lcmlkin.results", header = TRUE,  as.is = TRUE)
 str(lcmlkin_results)
 ```
 
@@ -808,12 +808,12 @@ This is an assessment of the READ results produced by the Nextflow pipleine crea
 
 
 ```{r load READ raw results}
-READ_rawresults <- read.delim("vignettes/data/pipeline/no_repeats_relatedness_results/nf_results/read/meansP0_AncientDNA_normalized", header = TRUE, sep = " ", as.is = TRUE)
+READ_rawresults <- read.delim("data/pipeline/no_repeats_relatedness_results/nf_results/read/meansP0_AncientDNA_normalized", header = TRUE, sep = " ", as.is = TRUE)
 str(READ_rawresults)
 ```
 
 ```{r load READ kin results}
-READ_kinresults <- read.delim("vignettes/data/pipeline/no_repeats_relatedness_results/nf_results/read/READ_results", header = TRUE, sep = "\t", as.is = TRUE)
+READ_kinresults <- read.delim("data/pipeline/no_repeats_relatedness_results/nf_results/read/READ_results", header = TRUE, sep = "\t", as.is = TRUE)
 str(READ_kinresults)
 ```
 

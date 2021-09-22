@@ -34,7 +34,7 @@ library(gghighlight)
 An overview of the samples as of 26th April 2021 is stored in *Guineafowl-lcWGS_DataOverview_20210426.csv*. This is needed to later assign the relatedness estimates to specific individuals
 
 ```{r import data analysis overview}
-sample_overview <- read.csv("vignettes/data/Guineafowl-lcWGS_DataOverview_20210426.csv", header = TRUE, sep = ";", as.is = TRUE)
+sample_overview <- read.csv("data/Guineafowl-lcWGS_DataOverview_20210426.csv", header = TRUE, sep = ";", as.is = TRUE)
 str(sample_overview)
 
 ```
