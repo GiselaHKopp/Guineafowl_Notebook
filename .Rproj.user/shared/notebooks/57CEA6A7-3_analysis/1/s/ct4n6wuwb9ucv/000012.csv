@@ -1,0 +1,8 @@
+"0",""
+"0","relate_results$rab_z <- scale(relate_results$rab)"
+"0","relate_results$pi_HAT_z <- scale(relate_results$pi_HAT) "
+"0","relate_results$Normalized2AlleleDifference_z <- scale(relate_results$Normalized2AlleleDifference)"
+"0","relate_results$coverage_z <- scale(relate_results$coverage)"
+"0","relate_results$nbSNP_z <- scale(relate_results$nbSNP)"
+"0","relate_results$nSites_z <- scale(relate_results$nSites)"
+"0",""

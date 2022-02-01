@@ -1,0 +1,7 @@
+"0","ggplot(relate_results_gg, aes(x = rab, y = pi_HAT, color = dyad_sex, size = nSites, shape = dyad_group)) +"
+"0","  "
+"0","  scale_colour_manual(values = three_colors, na.value = 1) +"
+"0","  "
+"0","   geom_point(alpha = 0.3) +"
+"0","  "
+"0","  ggtitle(""Comparison ngsRelate vs. lcmlkin (Ref G. gallus)"")"

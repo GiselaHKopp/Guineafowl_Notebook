@@ -1,0 +1,329 @@
+---
+title: "Analysis"
+output: html_notebook
+editor_options:
+  chunk_output_type: inline
+---
+
+# Analysis
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      comment = "#>",
+                      collapse = TRUE)
+knitr::opts_knit$set(root.dir = '../')
+```
+
+## Setup
+
+
+```{r load packages for data processing, hide=TRUE}
+library(tidyverse)
+library(ggplot2)
+library(ggthemes)
+library(ggforce)
+library(ggridges)
+library(ggsci)
+library(wesanderson)
+library(gghighlight)
+library(network)
+library(GGally)
+library(igraph)
+library(tidygraph)
+library(ggraph)
+library(graphlayouts)
+```
+```{r load packages for data analysis, hide=TRUE}
+library(lme4)
+library(MuMIn)
+library(car)
+```
+
+## Data overview
+
+load relatedness results
+
+```{r import relatedness results}
+load("data/relate_results.RData")
+load("data/sample_Info.RData")
+load("data/data_overview.RData")
+
+```
+
+```{r}
+str(relate_results)
+```
+
+
+
+
+load association data
+```{r import association data}
+load("data/co-roosting-network.RData")
+str(network)
+
+```
+
+
+
+## network of relatedness
+let's try to visualize the relatedness relationships with network, in which each individual is a node and edges show genetic relationship
+
+```{r}
+#select relatedness data (ngsrelate rab) from mpala
+#relatedness_rab <- relate_results%>% subset(a_Group %in% c("mpala", "mpala_chicks") & b_Group %in% c("mpala", "mpala_chicks")) %>% select(ID_a, ID_b, rab)
+
+relatedness_rab <- relate_results %>% select(ID_a, ID_b, rab)
+
+#create node list
+ID_a <- relatedness_rab %>% distinct(ID_a) %>% rename(label = ID_a)
+
+ID_b <- relatedness_rab %>% distinct(ID_b) %>% rename(label = ID_b)
+
+nodes <- full_join(ID_a, ID_b, by = "label")
+
+nodes <- nodes %>% rowid_to_column("id")
+
+nodes <- left_join(nodes, sample_info, by = c("label"= "ID"))
+
+nodes
+
+```
+
+
+```{r}
+#create edge list
+edges <- relatedness_rab %>% left_join(nodes, by = c("ID_a" = "label")) %>% rename(id_a = id)
+
+edges <- edges %>% left_join(nodes, by = c("ID_b" = "label")) %>% rename(id_b = id) %>% rename (weight = rab)
+
+edges <- select(edges, id_a, id_b, weight)
+
+edges
+```
+
+
+using igraph
+
+tidygraph and ggraph
+
+
+```{r}
+#rab_tidy <- tbl_graph(nodes = nodes, edges = edges, directed = FALSE)
+
+#theme_set(dark_theme_classic())
+
+rab_igraph <- graph_from_data_frame(d = edges, vertices = nodes, directed = FALSE)
+
+#create a cutoff under which edges are not displayed or manually set cutoff to 0.1
+cut.off <- mean(edges$weight) 
+net.sp <- delete_edges(rab_igraph, E(rab_igraph)[weight<0.1])
+
+#generate colours based on sex
+V(net.sp)$shape <- case_when(V(net.sp)$sex == "f" ~ "circle",
+                                V(net.sp)$sex == "m" ~ "triangle")
+
+Ten_colors <-  scales::viridis_pal()(10)
+
+#generate shape based on group
+V(net.sp)$color <- case_when(V(net.sp)$Group_ID == "mpala" ~ Ten_colors[1],
+                                V(net.sp)$Group_ID == "mpala_chicks" ~ Ten_colors[2],
+                                V(net.sp)$Group_ID == "wing_tags" ~ Ten_colors[3],
+                                V(net.sp)$Group_ID == "5509" ~ Ten_colors[4],
+                                V(net.sp)$Group_ID == "5931-5938" ~ Ten_colors[5],
+                                V(net.sp)$Group_ID == "dump" ~ Ten_colors[6],
+                                V(net.sp)$Group_ID == "wt025" ~ Ten_colors[7],
+                                 V(net.sp)$Group_ID == "5512" ~ Ten_colors[8],
+                                 V(net.sp)$Group_ID == "RRWB" ~ Ten_colors[9],
+                                 V(net.sp)$Group_ID == "ROOP" ~ Ten_colors[10]
+                             )
+
+ggraph(net.sp, layout = "stress",bbox = 50) + 
+ # geom_node_point() +
+  geom_edge_link2(aes(width = weight), alpha = 0.2) + 
+  scale_edge_width(range = c(0, 3)) +
+  geom_node_point(color=V(net.sp)$color, shape = V(net.sp)$shape, size= 2)  +
+  labs(edge_width = "rab", color = "Group_ID", shape = "sex") +
+  theme_graph()+
+  theme(legend.position = "bottom") 
+
+
+
+
+```
+
+```{r}
+group <- c("mpala" , "mpala_chicks","wing_tags","5509" , "5931-5938", "dump" ,"wt025","5512" ,"RRWB","ROOP")
+ID <- (1:10)
+sex <- c("male" , "female","male", "female","male", "female","male", "female","male", "female" )
+
+test <- as.data.frame(cbind(group, ID, sex))
+
+ten_colors_sorted <- c(Ten_colors[4],Ten_colors[8],Ten_colors[5],Ten_colors[6],Ten_colors[1],Ten_colors[2],Ten_colors[10],Ten_colors[9], Ten_colors[3], Ten_colors[7])
+
+theme_set(theme_classic())
+
+ggplot(test, aes(x=group, y=sex)) +
+  
+  geom_point(aes(color=group, shape = sex)) +
+  
+  scale_color_manual(values = ten_colors_sorted)
+  
+  
+
+```
+
+
+
+
+
+```{r}
+# Community detection (by optimizing modularity over partitions):
+clp <- cluster_optimal(net.sp)
+class(clp)
+
+
+V(net.sp)$community <- clp$membership
+
+V(net.sp)$community2 <- case_when(V(net.sp)$community == "3" ~ Ten_colors[1],
+                                V(net.sp)$community == "4" ~ Ten_colors[3],
+                                V(net.sp)$community == "2" ~ Ten_colors[7],
+                                V(net.sp)$community == "1" ~ Ten_colors[2],
+                                V(net.sp)$community == "5" ~ Ten_colors[10],
+                                V(net.sp)$community == "6" ~ Ten_colors[9],
+                                V(net.sp)$community == "7" ~ "brown")
+
+
+ggraph(net.sp, layout = "stress",bbox = 50) + 
+  
+  geom_edge_link(aes(width = weight), alpha = 0.2) + 
+  scale_edge_width(range = c(0, 3)) +
+  geom_node_point(color=V(net.sp)$community2, shape = V(net.sp)$shape, size= 5) +
+  geom_node_point(color=V(net.sp)$color, shape = V(net.sp)$shape, size= 3) +
+  geom_node_text(aes(filter = (label == "  "), label = label, size = degree(net.sp))) +
+  labs(edge_width = "rab", color = "Group_ID", shape = "sex") +
+  theme_graph()+
+  theme(legend.position = "bottom") 
+
+```
+
+
+try better visualization with "backbone" following the tutorial http://mr.schochastics.net/netVizR.html
+
+```{r}
+bb <- layout_as_backbone(rab_igraph,keep = 0.1)
+E(rab_igraph)$col <- FALSE
+E(rab_igraph)$col[bb$backbone] <- TRUE
+
+ggraph(rab_igraph,layout = "manual",x = bb$xy[,1],y = bb$xy[,2])+
+  
+
+  geom_edge_link(aes(width = weight), alpha = 0.2) + 
+  scale_edge_width(range = c(0, 3)) +
+  
+  geom_node_point(aes(fill = Group_ID),shape = 21)+
+  scale_fill_brewer(palette = "Set1")+
+  theme_graph()+
+  theme(legend.position = "none")
+
+
+
+```
+
+
+#association network
+
+extract the networks for the six different seasons
+
+```{r}
+#get long format of associations from network data
+
+for(i in 1:6) {
+  
+ assoc_network <- network[[i]] %>% as.data.frame %>% tibble::rownames_to_column() %>% tidyr::pivot_longer(-rowname) %>% filter(rowname != name)
+
+names(assoc_network) <- c("id_a","id_b",paste("assoc", i, sep = "_")) 
+
+assign(paste("assoc_nw", i, sep = "_"), assoc_network)
+}
+
+#assoc_nw_1 <- network[[1]] %>% as.data.frame %>% tibble::rownames_to_column() %>% tidyr::pivot_longer(-rowname) %>% filter(rowname != name)
+
+#names(assoc_nw_1) <- c("id_a","id_b","assoc_1") 
+
+
+#combine association data in one table
+
+assoc_nw <- full_join(assoc_nw_1, assoc_nw_2, by = c("id_a", "id_b"))
+
+assoc_nw <- full_join(assoc_nw, assoc_nw_3, by = c("id_a", "id_b"))
+
+assoc_nw <- full_join(assoc_nw, assoc_nw_4, by = c("id_a", "id_b"))
+
+assoc_nw <- full_join(assoc_nw, assoc_nw_5, by = c("id_a", "id_b"))
+
+assoc_nw <- full_join(assoc_nw, assoc_nw_6, by = c("id_a", "id_b"))
+
+```
+
+#statistical analysis
+vgl. Dal Pesco et al. 2021
+Run general and gerneralized linear mixed models with the package `lme4`.
+Z-transform all covariates to a mean of 0 and a sd of 1 prior to fitting the model to allow easier interpretation of the estimates. But still need to inform about original means and sd.
+
+```{r z-transformation}
+
+relate_results$rab_z <- scale(relate_results$rab)
+relate_results$pi_HAT_z <- scale(relate_results$pi_HAT) 
+relate_results$Normalized2AlleleDifference_z <- scale(relate_results$Normalized2AlleleDifference)
+relate_results$coverage_z <- scale(relate_results$coverage)
+relate_results$nbSNP_z <- scale(relate_results$nbSNP)
+relate_results$nSites_z <- scale(relate_results$nSites)
+
+```
+
+
+
+
+Check for need of random slopes
+
+
+
+
+Model formular to test influence on relatedness
+
+response: dyadic relatedness
+main predictor: association and sex
+fixed control. group membership
+random intercept: identity
+coverage?
+need to run for every relatedness estimator
+for association: test 
+
+lmer(relatedness ~ association + group + sex + (1|ID_a) + (1|ID_b), data = relate_results, REML = F)
+
+testing this
+```{r}
+model_simpletest <- lmer(rab_z ~ dyad_group + dyad_sex + (1|ID_a) + (1|ID_b), data = relate_results, REML = F)
+model_simpletest
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

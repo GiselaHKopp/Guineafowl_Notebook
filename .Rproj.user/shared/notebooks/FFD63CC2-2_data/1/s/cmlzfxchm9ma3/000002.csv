@@ -1,0 +1,8 @@
+"0","ngsRelate_results_sample_info_250k <- filter(ngsRelate_results_sample_info, nSites >= 250000)"
+"0",""
+"0","unique(ngsRelate_results_sample_info_250k$dyad_group)"
+"1","[1]"
+"1"," ""intragroup"""
+"1"," ""intergroup"""
+"1","
+"

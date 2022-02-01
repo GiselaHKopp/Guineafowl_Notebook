@@ -27,24 +27,40 @@ library(ggridges)
 library(ggsci)
 library(wesanderson)
 library(ggallin)
+library(reshape2)
+library(Matrix)
+library(ggridges)
+library(ggdark)
+library(gghighlight)
+```
+
+set colour schemes
+```{r}
+two_colors <- c(wes_palette("Zissou1")[1], wes_palette("Zissou1")[4])
+
+two_colors_reverse <- c(wes_palette("Zissou1")[4], wes_palette("Zissou1")[1])
+
+three_colors <- c(wes_palette("BottleRocket2")[2], wes_palette("Zissou1")[2], wes_palette("Zissou1")[3])
 ```
 
 
 ## Data collection
 
+### Grouping information
+
 Group information is stored in *sequenced_samples_groups.csv*.
 
 ```{r load group informatin}
-sampleID_group <- read.csv("data/sequenced_samples_groups.csv", header = TRUE, sep = ";", as.is = TRUE)
+sampleID_group_full <- read.csv("data/sequenced_samples_groups.csv", header = TRUE, sep = ";", as.is = TRUE)
 
 
-str(sampleID_group)
+str(sampleID_group_full)
 
 #rename Real.ind.code to ID
-sampleID_group <- rename(sampleID_group, "ID" = "Sample.ind.code")
+sampleID_group_full <- rename(sampleID_group_full, "ID" = "Sample.ind.code")
 
 #only keep group and ID
-sampleID_group <- select(sampleID_group, Group_ID, ID)
+sampleID_group <- select(sampleID_group_full, Group_ID, ID)
 str(sampleID_group)
 ```
 
@@ -60,6 +76,68 @@ sampleID_group <- rbind(sampleID_group, sample_info_add)
 
 ```
 
+
+### Breeding pair information
+
+Information on breeding pairs in 2018 is stored in *breedingpairs_2018.csv*.
+
+```{r load breeding pair information}
+
+pairs <- read.csv("data/breedingpairs_2018.csv", header = TRUE, sep = ";", as.is = TRUE)
+str(pairs)
+
+```
+
+merge group and pairing information
+```{r}
+#add ID for females
+
+##rename Real.ind.code to ID
+pairs <- rename(pairs, "Colour_.bands" = "Female")
+
+pairs_ID <- left_join(pairs, sampleID_group_full, by = "Colour_.bands" )
+
+pairs_ID <- rename(pairs_ID, "ID_Pair_F" = "ID")
+
+##only keep group and ID
+pairs_ID <- select(pairs_ID, Male, group, Group_ID, ID_Pair_F)
+
+
+#add ID for males
+
+##rename Real.ind.code to ID
+pairs_ID <- rename(pairs_ID, "Colour_.bands" = "Male")
+
+pairs_ID <- left_join(pairs_ID, sampleID_group_full, by = "Colour_.bands" )
+
+pairs_ID <- rename(pairs_ID, "ID_Pair_M" = "ID")
+
+##only keep group and ID
+pairs_ID <- select(pairs_ID, ID_Pair_F, ID_Pair_M)
+
+# add column with concatenated pairs_ID to later match to relatedness table
+
+pairs_ID$ID_Pair <- paste(pairs_ID$ID_Pair_F, pairs_ID$ID_Pair_M, sep ="-")
+
+pairs_ID_2 <- pairs_ID
+pairs_ID_2$ID_Pair <- paste(pairs_ID$ID_Pair_M, pairs_ID$ID_Pair_F, sep ="-")
+
+pairs_ID <- bind_rows(pairs_ID, pairs_ID_2)
+
+
+#add column specifying breeding pair
+pairs_ID$breedingpair <- "breeding_pair"
+
+#drop NAs
+pairs_ID <- pairs_ID %>% drop_na()
+str(pairs_ID)
+
+
+
+```
+
+
+### Sex information
 
 Sex information is stored in *samples_sex.csv*. Sex was determined in the field and confirmed at least once with a molecular sexing method in the lab. For cases with mismatch between field and molecular sex we set the sex to undetermined. Field observatins were updated in Sept. 2021 and corrected some previously misidentifications.  
 
@@ -77,7 +155,53 @@ str(sample_info)
 
 ```
 
+### Dominance information
 
+Information on dominance hierarchy of the mpala group is stored in *mpala_ranks.csv*.
+
+```{r}
+dominance <- read.csv("data/mpala_ranks.csv", header = TRUE, sep = ",", as.is = TRUE)
+
+#remove first column of row numbers
+dominance <- dominance[2:3]
+
+#create dataframe with dominace differences between dyads
+
+##create two ID columns
+ID_1 <- dominance$ids_
+ID_2 <- dominance$ids_
+
+dominance_adjacency <- bind_cols(ID_1, ID_2)
+
+names(dominance_adjacency) <- c("ID_1", "ID_2")
+
+##generate all combinations of IDs
+dyads <- tidyr::expand(dominance_adjacency, ID_1, ID_2)
+
+##remove self to self dyads
+dyads <- filter(dyads, ID_1 != ID_2)
+
+##add column with dominance rank of ID_1
+dyads <- left_join(dyads, dominance, by = c("ID_1"="ids_"))
+dyads <- rename(dyads, c(rank_1="ranks_"))
+
+##add column with dominance rank of ID_2
+dyads <- left_join(dyads, dominance, by = c("ID_2"="ids_"))
+dyads <- rename(dyads, c(rank_2="ranks_"))
+
+##add column with rank difference of dyads
+dyads$RankDiff <- abs(dyads$rank_1 - dyads$rank_2) #take absolute value to not have negatives
+
+##add column with dyad
+dyads$dyad <- paste(dyads$ID_1, dyads$ID_2, sep = "-")
+
+```
+
+
+save sample overview
+```{r save sample_info}
+save(sample_info, file = "data/sample_info.RData")
+```
 
 ## Data processing
 
@@ -136,7 +260,7 @@ str(data_overview)
 
 save data overview
 ```{r save data_overview}
-save(data_overview, file = "data_overview.RData")
+save(data_overview, file = "data/data_overview.RData")
 ```
 
 Calculate total and mean number of raw reads
@@ -230,7 +354,7 @@ theme_set(theme_bw()) #set theme to black and white
 #compare reads (y-axis) between original vs. resequenced (x-axis, sorted to have original first) and color according to library prep (shotgun vs. capture)
 ggplot(data_overview, aes(x = factor(RGID, level = c("1", "2")), y = reads_post_trim_total, color = original_reseq, shape = original_reseq)) + 
   
-   scale_color_viridis_d(end = 0.5) +
+   scale_colour_manual(values = two_colors_reverse, na.value = 1) +
 
   geom_point(size = 2, alpha = 0.6, aes(group = ID), position = position_dodge(0.5)) + #make points, transparent, and group samples
   
@@ -265,7 +389,7 @@ theme_set(theme_bw()) #set theme to black and white
 #compare mapped reads (y-axis) between sequencing (x-axis, sorted to have original first) and color according to sequencing run
 ggplot(data_overview, aes(x = factor(RGID, level = c("1", "2")), y = reads_mapped_and_paired, color = original_reseq, shape = original_reseq)) + 
   
-  scale_color_viridis_d(end = 0.5) +
+  scale_colour_manual(values = two_colors_reverse, na.value = 1)  +
 
   geom_point(size = 2, alpha = 0.6, aes(group = ID), position = position_dodge(0.5)) + #make points, transparent, and group samples
   
@@ -301,7 +425,7 @@ theme_set(theme_bw()) #set theme to black and white
 #relate number of reads (y-axis) to final coverage (x-axis), color according to sequencing run (original vs. resequenced) and sample type, shape according to original run or resequencing
 ggplot(data_overview, aes(x = average_coverage, y = reads_post_trim_total, color = original_reseq, shape = original_reseq)) +
   
-  scale_color_viridis_d(end = 0.5) +
+  scale_colour_manual(values = two_colors_reverse, na.value = 1) +
   
   geom_line(aes(group = ID), color = "lightgrey", show.legend = FALSE) + #connect same samples
   
@@ -326,7 +450,7 @@ ggplot(data_overview, aes(x = average_coverage, y = reads_post_trim_total, color
 C-Curve
 
 ```{r figure c-curve}
-theme_set(theme_bw()) #set theme to black and white
+theme_set(dark_theme_bw()) #set theme to black and white
 
 #relate number of distinct reads (y-axis) to total reads (x-axis), color and shape according to original run or resequencing
 ggplot(data_overview, aes(x = unpaired_reads_examined_for_deduplication, y = sequenced_library_complexity, color = original_reseq, shape = original_reseq)) +
@@ -340,7 +464,7 @@ ggplot(data_overview, aes(x = unpaired_reads_examined_for_deduplication, y = seq
   labs(x = "total unpaired reads", y = "sequenced library complexity", 
        size = "coverage", color ="", shape = "") + #adjust axis and legend labels
   
-   scale_color_viridis_d(end = 0.5) +
+   scale_colour_manual(values = two_colors_reverse, na.value = 1) +
   
   ggtitle("c-curve (total unpaired reads)")
   
@@ -349,12 +473,12 @@ ggplot(data_overview, aes(x = unpaired_reads_examined_for_deduplication, y = seq
 comparison to total surviving reads from Trimmomatic to distinct mapped reads
 
 ```{r figure total surving reads to distinct mapped reads}
-theme_set(theme_bw()) #set theme to black and white
+theme_set(dark_theme_classic()) #set theme to black and white
 
 #relate number of distinct reads (y-axis) to total surviving reads (x-axis), color  and sample type, shape according to original run or resequencing
 ggplot(data_overview, aes(x =  reads_post_trim_total, y = sequenced_library_complexity, color = original_reseq, shape = original_reseq)) +
   
-  scale_color_viridis_d(end = 0.5) +
+  scale_colour_manual(values = two_colors_reverse) +
   
   geom_point(alpha = 0.5, aes(size = average_coverage, group = ID)) + #add points with slight transparency
   
@@ -370,15 +494,62 @@ ggplot(data_overview, aes(x =  reads_post_trim_total, y = sequenced_library_comp
 ```
 
 
+plot overview of sequencing
+
+try a ridge plot
+
+```{r}
+reads_overview <- select(data_overview, ID, reads_pre_trim_total, reads_post_trim_total, reads_mapped, reads_mapped_and_paired, paired_reads_examined_for_deduplication, paired_read_duplicates, original_reseq)
+
+#create column with nonduplicates
+reads_overview <- mutate(reads_overview, nonduplicates = 2*(paired_reads_examined_for_deduplication -  paired_read_duplicates))
+
+names(reads_overview) <-  c("ID", "raw", "filtered", "mapped", "mapped & paired", "paired examined", "paired duplicates", "original_reseq", "2 * paired non-duplicates")
+
+#reorganize data to have all read information in singel column
+reads_overview <- gather(reads_overview, "raw", "filtered", "mapped", "mapped & paired", "2 * paired non-duplicates", key = "processing_step", value = "reads")
+
+reads_overview <- mutate(reads_overview, mio_reads = reads/1000000)
+
+reads_overview$processing_step <- as.factor(reads_overview$processing_step)
+
+str(reads_overview)
+```
+
+```{r}
+
+#step_color <- c("#440154FF", "#5DC863FF", "#21908CFF", "#3B528BFF","#FDE725FF")
+
+Five_colors <- c(wes_palette("Zissou1")[5], wes_palette("Zissou1")[2], wes_palette("Zissou1")[3], wes_palette("Zissou1")[4], wes_palette("Zissou1")[1])
+
+ggplot(reads_overview, aes(x = mio_reads, y = fct_reorder(processing_step, reads, .fun = "max"), fill = processing_step)) +
+  
+   geom_density_ridges(alpha = 0.8, color = "white", scale = 1.5, rel_min_height = 0.01) +
+  
+  scale_fill_cyclical(values = Five_colors) +
+  
+  labs (x = "mio. reads", y = "processing step") +
+  
+  guides(fill = FALSE) +
+  
+  theme_ridges(center = TRUE) +
+  
+  dark_theme_classic()
+
+
+```
+
+
+
 plot  coverage and st.dv.
 
 ```{r coverage}
-theme_set(theme_bw()) #set theme to black and white
+theme_set(dark_theme_classic()) #set theme to black background
 
 #plot coverage (y-axis) including st.dev for every sample (x-axis), color according to original run or resequencing
 ggplot(filter(data_overview, original_reseq == "original"), aes(x = reorder(ID, average_coverage), y = average_coverage, color = original_reseq, shape = original_reseq)) +
   
-  scale_color_viridis_d(end = 0.5) +
+  scale_colour_manual(values = two_colors_reverse) +
   
   geom_point(aes(y=average_coverage), alpha = 0.8) +
   
@@ -404,6 +575,328 @@ ggplot(filter(data_overview, original_reseq == "original"), aes(x = reorder(ID, 
   scale_x_discrete(guide = guide_axis(n.dodge=2)) +  #avoid overlap of x-axis labels
 
   ggtitle("coverage per sample")
+  
+  
+```
+
+#### Sequencing data mapped to Gallus gallus
+
+To evaluate whether the reference genome has an impact on downstream results, we also mapped the sequencing reads to the *Gallus gallus* genome.
+
+Next, we evaluate the quality of the data and the different sequencing approaches.
+An overview of the data as output from the Nextflow pipeline as of 29th July 2021 is stored in *preprocessing_overview.tsv*
+
+```{r import Gg seq data analysis overview}
+data_overview_Gg <- read.delim("data/pipeline/Ref_Ggallus/ggallus_preprocessing_overview.tsv", as.is = TRUE)
+str(data_overview_Gg)
+```
+
+One sequencing library was resequenced in an additionl run but wrongly assigned to RGID 1, so we correct this
+
+```{r correct Gg seq data analysis overview}
+
+data_overview_Gg$RGID[data_overview_Gg$filename_one == "mpg_L16936-1_W1350_S1_R1_001.fastq.gz"] <- "2"
+
+```
+
+
+```{r}
+#create new column that specifies if sequencing results are from original run or from resequencing
+data_overview_Gg <- data_overview_Gg %>%
+  mutate(original_reseq = case_when(RGID == "1" ~ "original",
+                                RGID == "2" ~ "reseq"))
+```
+
+
+
+```{r create ID column in data_overview_Gg}
+#first need to create a new column that includes the sample ID
+data_overview_Gg$ID <- gsub("([[:alnum:]]{3}_[[:alnum:]]{6}-[[:digit:]])_([[:alnum:]]{5,7})_([[:alnum:]]{2,3}_[[:alnum:]]{2}_[[:graph:]]{12})", "\\2", data_overview_Gg$filename_one)
+
+str(data_overview_Gg)
+```
+
+save data overview
+```{r save data_overview_Gg}
+save(data_overview_Gg, file = "data/data_overview_Gg.RData")
+```
+
+Calculate total and mean number of raw reads (same as above)
+!!paired-end sequencing, so need to account for that
+```{r raw reads Gg}
+
+total_raw_reads <- sum(data_overview_Gg$reads_pre_trim_total)
+total_raw_reads
+
+mean_raw_reads <- mean(data_overview_Gg$reads_pre_trim_total)
+mean_raw_reads
+
+sd_raw_reads <- sd(data_overview_Gg$reads_pre_trim_total)
+sd_raw_reads
+
+```
+
+Calculate total and mean number of quality filtered reads (same as above)
+
+```{r quality filtered reads Gg}
+
+total_filtered_reads <- sum(data_overview_Gg$reads_post_trim_total)
+total_filtered_reads
+
+percent_filtered_reads <- total_filtered_reads/total_raw_reads  
+percent_filtered_reads
+
+mean_filtered_reads <- mean(data_overview_Gg$reads_post_trim_total)
+mean_filtered_reads
+
+percent_mean_filtered_reads <- mean_filtered_reads/mean_raw_reads
+percent_mean_filtered_reads
+
+sd_filtered_reads <- sd(data_overview_Gg$reads_post_trim_total)
+sd_filtered_reads
+
+
+median_Trimmomatic_dropped <- median(data_overview_Gg$reads_trimmed_lost_total, na.rm = TRUE)
+median_Trimmomatic_dropped
+
+IQR_Trimmomatic_dropped <- IQR(data_overview_Gg$reads_trimmed_lost_total, na.rm = TRUE)
+IQR_Trimmomatic_dropped
+
+range_Trimmomatic_dropped <- range(data_overview_Gg$reads_trimmed_lost_total, na.rm = TRUE)
+range_Trimmomatic_dropped
+
+```
+
+Calculate mapped reads
+```{r mapped reads Gg}
+median_mapped_reads_Gg <- median(data_overview_Gg$reads_mapped)
+median_mapped_reads_Gg
+
+IQR_mapped_reads_Gg <- IQR(data_overview_Gg$reads_mapped)
+IQR_mapped_reads_Gg
+
+range_mapped_reads_Gg <- range(data_overview_Gg$reads_mapped)
+range_mapped_reads_Gg
+
+```
+
+Calculate duplicates
+```{r duplicates Gg}
+median_duplicates_Gg <- median(data_overview_Gg$percent_duplication)
+median_duplicates_Gg
+
+range_duplicates_Gg <- range(data_overview_Gg$percent_duplication)
+range_duplicates_Gg
+
+```
+
+
+Calculate final coverage
+```{r final coverage Gg}
+median_final_coverage_Gg <- median(data_overview_Gg$average_coverage)
+median_final_coverage_Gg
+
+IQR_final_coverage_Gg <- IQR(data_overview_Gg$average_coverage)
+IQR_final_coverage_Gg
+
+range_final_coverage_Gg <- range(data_overview_Gg$average_coverage)
+range_final_coverage_Gg
+
+```
+
+
+compare sequencing approach to % reads that mapped.
+
+```{r figure Gg mapped reads per sequencing strategy}
+theme_set(theme_bw()) #set theme to black and white
+
+#compare mapped reads (y-axis) between sequencing (x-axis, sorted to have original first) and color according to sequencing run
+ggplot(data_overview_Gg, aes(x = factor(RGID, level = c("1", "2")), y = reads_mapped_and_paired, color = original_reseq, shape = original_reseq)) + 
+  
+  scale_colour_manual(values = two_colors_reverse, na.value = 1)  +
+
+  geom_point(size = 2, alpha = 0.6, aes(group = ID), position = position_dodge(0.5)) + #make points, transparent, and group samples
+  
+  geom_boxplot(alpha = 0.4, outlier.shape = NA) + #add boxplots but do not show them in legend
+  
+  #geom_violin(alpha = 0.5) + #or add violin plots
+  
+  
+  geom_line(aes(group = ID), color = "grey", position = position_dodge(0.5), show.legend = FALSE) + #add line to connect samples present in both sequencing approaches
+  
+  #stat_summary(fun = median, geom = "point", size = 5, alpha = 0.3, position = position_dodge(0.5)) +
+  
+  labs(x = "sequencing run", y = "mapped reads") + #adjust axis labels
+  
+ 
+  theme(legend.title = element_blank()) + #remove legend title
+  
+  theme(panel.grid.major.x = element_blank()) + #remove x-axis grid lines
+
+  
+  ggtitle("Increase of G. gallus mapped reads for resequenced samples")
+  
+```
+
+
+
+Finally, let's have a look at the coverage
+
+```{r figure number of reads and final coverage Gg}
+
+theme_set(theme_bw()) #set theme to black and white
+
+#relate number of reads (y-axis) to final coverage (x-axis), color according to sequencing run (original vs. resequenced) and sample type, shape according to original run or resequencing
+ggplot(data_overview_Gg, aes(x = average_coverage, y = reads_post_trim_total, color = original_reseq, shape = original_reseq)) +
+  
+  scale_colour_manual(values = two_colors_reverse, na.value = 1) +
+  
+  geom_line(aes(group = ID), color = "lightgrey", show.legend = FALSE) + #connect same samples
+  
+  geom_point(alpha = 0.5, aes(size = reads_mapped_and_paired, group = ID)) + #add points with slight transparency
+  
+  geom_vline(xintercept = 1, linetype = "dashed") + #include vertical line to show coverage cutoff
+  
+    #scale_y_log10(breaks = scales::trans_breaks("log10", function(x) 10^x), labels = scales::trans_format("log10", scales::math_format(10^.x))) + #make y-axis logarithmic
+  
+  #scale_x_log10() + #make x-axis logarithmic
+  
+  #annotation_logticks() +
+  
+  labs(x = "coverage", y = "reads (after quality filtering)", 
+       size = "% reads mapped G. gallus", color ="", shape = "") +
+  
+  ggtitle("Higher coverage with increasing number of reads (G. gallus)")
+  
+```
+
+
+C-Curve
+
+```{r figure c-curve Gg}
+theme_set(dark_theme_bw()) #set theme to black and white
+
+#relate number of distinct reads (y-axis) to total reads (x-axis), color and shape according to original run or resequencing
+ggplot(data_overview_Gg, aes(x = unpaired_reads_examined_for_deduplication, y = sequenced_library_complexity, color = original_reseq, shape = original_reseq)) +
+  
+  geom_line(aes(group = ID), color = "lightgrey", show.legend = FALSE) + #connect same samples
+  
+  geom_point(alpha = 0.5, aes(size = average_coverage, group = ID)) + #add points with slight transparency
+  
+  theme(panel.grid.minor.x = element_blank(), panel.grid.minor.y = element_blank()) + #remove x/y-axis grid lines
+  
+  labs(x = "total unpaired reads", y = "sequenced library complexity", 
+       size = "coverage", color ="", shape = "") + #adjust axis and legend labels
+  
+   scale_colour_manual(values = two_colors_reverse, na.value = 1) +
+  
+  ggtitle("c-curve (total unpaired reads) G. gallus")
+  
+```
+
+comparison to total surviving reads from Trimmomatic to distinct mapped reads
+
+```{r figure total surving reads to distinct mapped reads Gg}
+theme_set(dark_theme_classic()) #set theme to black and white
+
+#relate number of distinct reads (y-axis) to total surviving reads (x-axis), color  and sample type, shape according to original run or resequencing
+ggplot(data_overview_Gg, aes(x =  reads_post_trim_total, y = sequenced_library_complexity, color = original_reseq, shape = original_reseq)) +
+  
+  scale_colour_manual(values = two_colors_reverse) +
+  
+  geom_point(alpha = 0.5, aes(size = average_coverage, group = ID)) + #add points with slight transparency
+  
+  theme(panel.grid.minor.x = element_blank(), panel.grid.minor.y = element_blank()) + #remove x/y-axis grid lines
+  
+  labs(x = "total surviving reads (Trimmomatic)", y = "sequenced library complexity", 
+       size = "coverage", color ="", shape = "") +  #adjust axis and legend labels
+  
+  ggtitle("c-curve (total surviving reads) G. gallus")
+  
+  
+
+```
+
+
+plot overview of sequencing
+
+try a ridge plot
+
+```{r}
+reads_overview_Gg <- select(data_overview_Gg, ID, reads_pre_trim_total, reads_post_trim_total, reads_mapped, reads_mapped_and_paired, paired_reads_examined_for_deduplication, paired_read_duplicates, original_reseq)
+
+#create column with nonduplicates
+reads_overview_Gg <- mutate(reads_overview_Gg, nonduplicates = 2*(paired_reads_examined_for_deduplication -  paired_read_duplicates))
+
+names(reads_overview_Gg) <-  c("ID", "raw", "filtered", "mapped", "mapped & paired", "paired examined", "paired duplicates", "original_reseq", "2 * paired non-duplicates")
+
+#reorganize data to have all read information in singel column
+reads_overview_Gg <- gather(reads_overview_Gg, "raw", "filtered", "mapped", "mapped & paired", "2 * paired non-duplicates", key = "processing_step", value = "reads")
+
+reads_overview_Gg <- mutate(reads_overview_Gg, mio_reads = reads/1000000)
+
+reads_overview_Gg$processing_step <- as.factor(reads_overview_Gg$processing_step)
+
+str(reads_overview_Gg)
+```
+
+```{r}
+
+#step_color <- c("#440154FF", "#5DC863FF", "#21908CFF", "#3B528BFF","#FDE725FF")
+
+Five_colors <- c(wes_palette("Zissou1")[5], wes_palette("Zissou1")[2], wes_palette("Zissou1")[3], wes_palette("Zissou1")[4], wes_palette("Zissou1")[1])
+
+ggplot(reads_overview_Gg, aes(x = mio_reads, y = fct_reorder(processing_step, reads, .fun = "max"), fill = processing_step)) +
+  
+   geom_density_ridges(alpha = 0.8, color = "white", scale = 1.5, rel_min_height = 0.01) +
+  
+  scale_fill_cyclical(values = Five_colors) +
+  
+  labs (x = "mio. reads", y = "processing step") +
+  
+  guides(fill = FALSE) +
+  
+  theme_ridges(center = TRUE) +
+  
+  dark_theme_classic()
+
+
+```
+
+plot  coverage and st.dv.
+
+```{r coverage Gg}
+theme_set(dark_theme_classic()) #set theme to black background
+
+#plot coverage (y-axis) including st.dev for every sample (x-axis), color according to original run or resequencing
+ggplot(filter(data_overview_Gg, original_reseq == "original"), aes(x = reorder(ID, average_coverage), y = average_coverage, color = original_reseq, shape = original_reseq)) +
+  
+  scale_colour_manual(values = two_colors_reverse) +
+  
+  geom_point(aes(y=average_coverage), alpha = 0.8) +
+  
+  geom_point(data = filter(data_overview_Gg, original_reseq == "reseq"), aes(y=average_coverage), alpha = 0.8) +
+  
+  geom_errorbar(data = filter(data_overview_Gg, original_reseq == "reseq"), aes(ymin = average_coverage - average_coverage_stdev, ymax = average_coverage + average_coverage_stdev), alpha = 0.8) +
+  
+  geom_errorbar(aes(ymin = average_coverage - average_coverage_stdev, ymax = average_coverage + average_coverage_stdev), alpha = 0.8) +
+  
+  geom_hline(yintercept = 1, linetype = "dashed") + #include horizontal line to show coverage cutoff at 1X
+  
+  geom_hline(yintercept = median_final_coverage_Gg, linetype = "dotted") +
+  
+  coord_cartesian(ylim = c(0, 10)) + #adjust y axis
+  
+  scale_y_continuous(breaks = c(0, 2, 4, 6, 8, 10)) + 
+  
+  labs(x = "sample", y = "coverage (mean+-sd)", 
+       color ="", shape = "") + #adjust axis and legend labels
+  
+  theme(axis.text.x = element_text(angle = 50, vjust = 1, hjust = 1, size = 8)) +
+  
+  scale_x_discrete(guide = guide_axis(n.dodge=2)) +  #avoid overlap of x-axis labels
+
+  ggtitle("coverage per sample (G. gallus)")
   
   
 ```
@@ -543,19 +1036,21 @@ To get an overview of the distribution of relatedness coefficients, we plot pair
 
 ```{r figure dyadic relatedness (ngsrelate) distribution}
 
-theme_set(theme_classic())
+theme_set(dark_theme_classic())
 
 #plot relatedness rab (y-axis) for every dyad (x-axis), ordered from low to high relatedness and colored according to inter- or intragroup dyad
 
 ggplot(ngsRelate_results_sample_info_250k, aes(x = reorder(dyad, rab), y = rab, color = dyad_sex, shape = dyad_group)) +
   
-  scale_colour_viridis_d(na.value = 1) +
+  scale_colour_manual(values = three_colors) +
   
   geom_point(alpha = 0.2, aes(y = rab)) + #plot relatedness estimates as points 
   
   geom_hline(yintercept = c(0.125, 0.25, 0.5), linetype = "dashed") + #include horizontal line to show traditional kinship categories
   
   labs( x = "Dyad", y = "Relatedness (ngsRelate)") +
+  
+  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank()) +
   
   ggtitle("distribution of relatedness (ngsrelate) 250k SNPs")
 
@@ -575,7 +1070,7 @@ ggplot(ngsRelate_results_sample_info, aes(x = dyad_sex, y = nSites, color = cove
   
   scale_colour_viridis_c(na.value = 1) +
   
-  geom_boxplot(alpha = 0.4, outlier.shape = NA) +
+  geom_boxplot(alpha = 0, outlier.shape = NA) +
 
  ggtitle("ngsRelate: number of sites per sex")
 
@@ -588,35 +1083,244 @@ theme_set(theme_classic())
 
 #plot relatedness rab (y-axis) for the different categories of sex of dyad (x-axis) colored according to group membership
 
-ggplot(ngsRelate_results_sample_info_250k, aes(x = dyad_sex, y = rab, color = dyad_group, shape = dyad_group)) +
+ggplot(filter(ngsRelate_results_sample_info_250k, a_Group != "mpala_chicks", b_Group != "mpala_chicks"), aes(x = dyad_sex, y = rab, color = dyad_group, shape = dyad_group)) +
   
   geom_point(alpha = 0.2, position = position_dodge(0.7)) +
   
-  geom_boxplot(alpha = 0.4, outlier.shape = NA) + 
+  geom_boxplot(alpha = 0, outlier.shape = NA) + 
   
   scale_colour_viridis_d(end = 0.5) +
 
- ggtitle("relatedness (ngsrelate) 250k SNPs")
+ ggtitle("relatedness (ngsrelate) 250k SNPs, adults")
 
 ```
 
 
 ```{r figure (ngsrelate) relatedness for sex and group}
+theme_set(dark_theme_classic())
+
+#plot relatedness rab (y-axis) for the different categories of sex of dyad (x-axis) colored according to group membership
+
+ggplot(filter(ngsRelate_results_sample_info_250k, a_Group != "mpala_chicks", b_Group != "mpala_chicks"), aes(x = dyad_group, y = rab, color = dyad_sex)) +
+  
+  geom_sina(alpha = 0.2) +
+  
+  geom_violin(alpha = 0) +
+  
+  scale_colour_manual(values = three_colors, na.value = 1) +
+
+ ggtitle("relatedness (ngsRelate) 250k SNPs, adults")
+
+```
+
+##### ngsRelate mapped to G. gallus
+This is an assessment of the ngsRelate results produced by the Nextflow pipleine created by Ben Hume/SeqAna with the reference genome *G. gallus*. The data is saved in the folder `pipeline` in `Ref_Ggallus` as *relatedness.isec.0002.exMito.thinned.ngsrelate.results*.
+
+```{r load ngsRelate results gg}
+ngsRelate_results_gg <- read.delim("data/pipeline/Ref_Ggallus/relatedness.isec.0002.exMito.thinned.ngsrelate.results", header = TRUE,  as.is = TRUE)
+str(ngsRelate_results_gg)
+```
+
+Relatedness was estimated on an average of `r mean(ngsRelate_results_gg$nSites)` sites and a mean coverage of `r mean(ngsRelate_results_gg$coverage)`. On average, relatedness is `r mean(ngsRelate_results_gg$rab)` with a range of `r range(ngsRelate_results_gg$rab)`.
+
+We join together the relatedness estimates with the sample information, to know the identity of the dyads
+
+```{r join ngsrelat and ID information gg}
+#rename "ida" and "idb" to "RGSM_a" and "RGSM-b"
+ngsRelate_results_gg <- rename(ngsRelate_results_gg, "RGSM_a" = "ida")
+ngsRelate_results_gg <- rename(ngsRelate_results_gg, "RGSM_b" = "idb")
+
+#create a new column that includes RGSM_dyad
+ngsRelate_results_gg$RGSM_dyad <- if_else(ngsRelate_results_gg$RGSM_a < ngsRelate_results_gg$RGSM_b, paste(ngsRelate_results_gg$RGSM_a, ngsRelate_results_gg$RGSM_b, sep = "-"), paste(ngsRelate_results_gg$RGSM_b, ngsRelate_results_gg$RGSM_a, sep = "-"))
+
+#first include ID of individual a
+ngsRelate_results_ID_gg <- left_join(ngsRelate_results_gg, seqlib_overview[6:7], by = c("RGSM_a" = "RGSM"))
+
+#rename "ID" to "ID_a"
+ngsRelate_results_ID_gg <- rename(ngsRelate_results_ID_gg, "ID_a" = "ID")
+
+#now include ID of individual b
+ngsRelate_results_ID_gg <- left_join(ngsRelate_results_ID_gg, seqlib_overview[6:7], by = c("RGSM_b" = "RGSM"))
+
+#rename "ID" to "ID_b"
+ngsRelate_results_ID_gg <- rename(ngsRelate_results_ID_gg, "ID_b" = "ID")
+
+#create a new column that includes the dyad
+ngsRelate_results_ID_gg$dyad <- if_else(ngsRelate_results_ID_gg$ID_a < ngsRelate_results_ID_gg$ID_b, paste(ngsRelate_results_ID_gg$ID_a, ngsRelate_results_ID_gg$ID_b, sep = "-"), paste(ngsRelate_results_ID_gg$ID_b, ngsRelate_results_ID_gg$ID_a, sep = "-"))
+
+#remove duplicates ##maybe not necessary anymore
+
+ngsRelate_results_ID_gg <- distinct(ngsRelate_results_ID_gg)
+
+```
+
+We also include the group information
+
+```{r join ngsrelate and group information gg}
+#first include group of individual a
+ngsRelate_results_sample_info_gg <- left_join(ngsRelate_results_ID_gg, sample_info, by = c("ID_a" = "ID"))
+
+#rename "Group_ID" to "a_Group" and "sex" to "a_sex"
+ngsRelate_results_sample_info_gg <- rename(ngsRelate_results_sample_info_gg, "a_Group" = "Group_ID")
+ngsRelate_results_sample_info_gg <- rename(ngsRelate_results_sample_info_gg, "a_sex" = "sex")
+
+#then include group of individual b
+ngsRelate_results_sample_info_gg <- left_join(ngsRelate_results_sample_info_gg, sample_info, by = c("ID_b" = "ID"))
+
+#rename "Group_ID" to "b_Group" and "sex" to "b_sex"
+ngsRelate_results_sample_info_gg<- rename(ngsRelate_results_sample_info_gg, "b_Group" = "Group_ID")
+ngsRelate_results_sample_info_gg <- rename(ngsRelate_results_sample_info_gg, "b_sex" = "sex")
+```
+
+```{r include dyad group membership1 gg}
+#which group IDs are there?
+sort(unique(ngsRelate_results_sample_info_gg$a_Group))
+```
+
+
+```{r include dyad group membership2 gg}
+sort(unique(ngsRelate_results_sample_info_gg$b_Group))
+
+```
+
+```{r}
+#create new column that specifies if individuals are from same or different groups
+ngsRelate_results_sample_info_gg <- ngsRelate_results_sample_info_gg %>%
+  mutate(dyad_group = case_when(ID_a == ID_b ~ "identical",
+                                a_Group == b_Group ~ "intragroup",
+                                a_Group != b_Group ~ "intergroup"))
+
+unique(ngsRelate_results_sample_info_gg$dyad_group)
+
+```
+
+```{r}
+#create new column that specifies if individuals have same or different sex
+ngsRelate_results_sample_info_gg <- ngsRelate_results_sample_info_gg %>%
+  mutate(dyad_sex = case_when(ID_a == ID_b ~ "identical",
+                                a_sex == b_sex ~ "same sex",
+                                a_sex != b_sex ~ "male-female")) 
+
+#recode dyads for individuals with undetermined sex to NA
+ngsRelate_results_sample_info_gg$dyad_sex[ngsRelate_results_sample_info_gg$a_sex == "u"] <- NA
+ngsRelate_results_sample_info_gg$dyad_sex[ngsRelate_results_sample_info_gg$b_sex == "u"] <- NA
+
+#recode same sex dyads to male or female
+ngsRelate_results_sample_info_gg$dyad_sex[ngsRelate_results_sample_info_gg$dyad_sex == "same sex" & 
+                                         ngsRelate_results_sample_info_gg$a_sex == "f"] <- "female"
+ngsRelate_results_sample_info_gg$dyad_sex[ngsRelate_results_sample_info_gg$dyad_sex == "same sex" & 
+                                         ngsRelate_results_sample_info_gg$a_sex == "m"] <- "male"
+
+
+unique(ngsRelate_results_sample_info_gg$dyad_sex)
+
+```
+
+
+Let's have a closer look at the samples that were sequenced twice
+
+```{r}
+#find samples that were sequenced twice
+duplicates_gg <- filter(ngsRelate_results_sample_info_gg, ID_a == ID_b)
+
+#average relatedness of these duplicted inidividuals
+mean(duplicates_gg$rab)
+
+#range
+range(duplicates_gg$rab)
+```
+
+
+Create subset with at least 250k SNPs
+
+```{r 250k sNP subset ngsrelate gg}
+ngsRelate_results_sample_info_250k_gg <- filter(ngsRelate_results_sample_info_gg, nSites >= 250000)
+
+```
+
+
+
+To get an overview of the distribution of relatedness coefficients, we plot pairwise relatedness for all dyads
+
+```{r figure dyadic relatedness (ngsrelate) distribution gg}
+
+theme_set(dark_theme_classic())
+
+#plot relatedness rab (y-axis) for every dyad (x-axis), ordered from low to high relatedness and colored according to inter- or intragroup dyad
+
+ggplot(ngsRelate_results_sample_info_250k_gg, aes(x = reorder(dyad, rab), y = rab, color = dyad_sex, shape = dyad_group)) +
+  
+  scale_colour_manual(values = three_colors) +
+  
+  geom_point(alpha = 0.2, aes(y = rab)) + #plot relatedness estimates as points 
+  
+  geom_hline(yintercept = c(0.125, 0.25, 0.5), linetype = "dashed") + #include horizontal line to show traditional kinship categories
+  
+  labs( x = "Dyad", y = "Relatedness (ngsRelate)") +
+  
+  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank()) +
+  
+  ggtitle("distribution of relatedness (ngsrelate) 250k SNPs (Ref G. gallus)")
+
+
+```
+
+check correlation between number of SNPs and sex
+
+```{r figure (ngsrelate) dyad_sex and nSites gg}
+theme_set(theme_classic())
+
+#plot nSites (y-axis) and for the different categories of sex of dyad (x-axis) colored according to coverage
+
+ggplot(ngsRelate_results_sample_info_gg, aes(x = dyad_sex, y = nSites, color = coverage, shape = dyad_group)) +
+  
+  geom_point(alpha = 0.5, position = position_dodge(0.7)) +
+  
+  scale_colour_viridis_c(na.value = 1) +
+  
+  geom_boxplot(alpha = 0, outlier.shape = NA) +
+
+ ggtitle("ngsRelate: number of sites per sex (Ref G. gallus)")
+
+```
+
+Compare relatedness estimates according to group and sex
+
+```{r figure (ngsrelate) relatedness for group and sex gg}
 theme_set(theme_classic())
 
 #plot relatedness rab (y-axis) for the different categories of sex of dyad (x-axis) colored according to group membership
 
-ggplot(ngsRelate_results_sample_info_250k, aes(x = dyad_group, y = rab, color = dyad_sex)) +
+ggplot(filter(ngsRelate_results_sample_info_250k_gg, a_Group != "mpala_chicks", b_Group != "mpala_chicks"), aes(x = dyad_sex, y = rab, color = dyad_group, shape = dyad_group)) +
   
-  geom_point(alpha = 0.2, position = position_dodge(0.75)) +
+  geom_point(alpha = 0.2, position = position_dodge(0.7)) +
   
-  geom_boxplot(alpha = 0.4, outlier.shape = NA) +
+  geom_boxplot(alpha = 0, outlier.shape = NA) + 
   
-  scale_colour_viridis_d(na.value = 1) +
+  scale_colour_viridis_d(end = 0.5) +
 
- ggtitle("relatedness (ngsRelate) 250k SNPs")
+ ggtitle("relatedness (ngsrelate) 250k SNPs, adults (Ref. G. gallus)")
 
 ```
+
+
+```{r figure (ngsrelate) relatedness for sex and group gg}
+
+#plot relatedness rab (y-axis) for the different categories of sex of dyad (x-axis) colored according to group membership
+
+ggplot(filter(ngsRelate_results_sample_info_250k_gg, a_Group != "mpala_chicks", b_Group != "mpala_chicks"), aes(x = dyad_group, y = rab, color = dyad_sex)) +
+  
+  geom_sina(alpha = 0.2) +
+  
+  geom_violin(alpha = 0) +
+  
+  scale_colour_manual(values = three_colors, na.value = 1) +
+
+ ggtitle("relatedness (ngsRelate) 250k SNPs, adults (Ref G. gallus)")
+
+```
+
+
 
 #### lcmlkin
 
@@ -730,19 +1434,21 @@ lcmlkin_results_sample_info_300k <- filter(lcmlkin_results_sample_info, nbSNP >=
 
 ```{r figure dyadic relatedness (lcmlkin) distribution}
 
-theme_set(theme_classic())
+theme_set(dark_theme_classic())
 
 #plot relatedness pi_HAT (y-axis) for every dyad (x-axis), ordered from low to high relatedness and colored according to inter- or intragroup dyad
 
 ggplot(lcmlkin_results_sample_info_300k, aes(x = reorder(dyad, pi_HAT), y = pi_HAT, color = dyad_sex, shape = dyad_group)) +
   
-  geom_point(alpha = 0.1, aes(y = pi_HAT)) + #plot relatedness estimates as points 
+  geom_point(alpha = 0.2, aes(y = pi_HAT)) + #plot relatedness estimates as points 
   
   geom_hline(yintercept = c(0.125, 0.25, 0.5), linetype = "dashed") + #include horizontal line to show traditional kinship categories
   
   labs( x = "Dyad", y = "Relatedness (lcmlkin)") +
   
-  scale_colour_viridis_d(na.value = 1) +
+  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank()) +
+  
+  scale_colour_manual(values = three_colors, na.value = 1) +
 
  ggtitle("distribution of relatedness (lcmlkin) 300k SNPs")
 
@@ -786,21 +1492,66 @@ ggplot(lcmlkin_results_sample_info, aes(x = dyad_sex, y = nbSNP, color = dyad_gr
 ```
 
 ```{r figure (lcmlkin relatedness for group and sex}
-theme_set(theme_classic())
+theme_set(dark_theme_classic())
 
 #plot relatedness pi_HAT (y-axis) for the different categories of sex of dyad (x-axis) colored according to group membership
 
-ggplot(lcmlkin_results_sample_info_300k, aes(x = dyad_group, y = pi_HAT, color = dyad_sex)) +
+ggplot(filter(lcmlkin_results_sample_info_300k, a_Group != "mpala_chicks", b_Group != "mpala_chicks"), aes(x = dyad_group, y = pi_HAT, color = dyad_sex)) +
   
-  geom_point(alpha = 0.2, position = position_dodge(0.75)) +
+  geom_sina(alpha = 0.2) +
   
-  geom_boxplot(alpha = 0.4, outlier.shape = NA) +
+  geom_violin(alpha = 0) +
   
-  scale_colour_viridis_d(na.value = 1) + 
+  scale_colour_manual(values = three_colors, na.value = 1) + 
 
- ggtitle("relatedness (lcmlkin) 300k SNPs")
+ ggtitle("relatedness (lcmlkin) 300k SNPs, adults")
 
 ```
+
+
+#### lcmlkin mapped to G. gallus
+
+We now use the results mapped to *G. gallus*, which are stored in `pipeline/Ref_Ggallus` as `relatedness.isec.0002.exMito.thiinned.lcmlkin.results`.
+
+```{r load lcMLkin results gg}
+lcmlkin_results_gg <- read.delim("data/pipeline/Ref_Ggallus/relatedness.isec.0002.exMito.thinned.lcmlkin.results", header = TRUE,  as.is = TRUE)
+str(lcmlkin_results_gg)
+```
+
+We join together the relatedness estimates with the sample information, to know the identity of the dyads
+
+```{r join lcmlkin and ID information gg}
+#rename "ida" and "idb" to "RGSM_a" and "RGSM-b"
+lcmlkin_results_gg <- rename(lcmlkin_results_gg, "RGSM_a" = "Ind1")
+lcmlkin_results_gg <- rename(lcmlkin_results_gg, "RGSM_b" = "Ind2")
+
+#create a new column that includes RGSM_dyad
+lcmlkin_results_gg$RGSM_dyad <- if_else(lcmlkin_results_gg$RGSM_a < lcmlkin_results_gg$RGSM_b, paste(lcmlkin_results_gg$RGSM_a, lcmlkin_results_gg$RGSM_b, sep = "-"), paste(lcmlkin_results_gg$RGSM_b, lcmlkin_results_gg$RGSM_a, sep = "-"))
+
+#first include ID of individual a
+lcmlkin_results_ID_gg <- left_join(lcmlkin_results_gg, seqlib_overview[6:7], by = c("RGSM_a" = "RGSM"))
+
+#rename "ID" to "ID_a"
+lcmlkin_results_ID_gg <- rename(lcmlkin_results_ID_gg, "ID_a" = "ID")
+
+#now include ID of individual b
+lcmlkin_results_ID_gg <- left_join(lcmlkin_results_ID_gg, seqlib_overview[6:7], by = c("RGSM_b" = "RGSM"))
+
+#rename "ID" to "ID_b"
+lcmlkin_results_ID_gg <- rename(lcmlkin_results_ID_gg, "ID_b" = "ID")
+
+#create a new column that includes the dyad
+lcmlkin_results_ID_gg$dyad <- if_else(lcmlkin_results_ID_gg$ID_a < lcmlkin_results_ID_gg$ID_b, paste(lcmlkin_results_ID_gg$ID_a, lcmlkin_results_ID_gg$ID_b, sep = "-"), paste(lcmlkin_results_ID_gg$ID_b, lcmlkin_results_ID_gg$ID_a, sep = "-"))
+
+#remove duplicates ##maybe not necessary anymore
+
+lcmlkin_results_ID_gg <- distinct(lcmlkin_results_ID_gg)
+
+str(lcmlkin_results_ID_gg)
+
+```
+
+
 
 #### READ
 
@@ -929,19 +1680,31 @@ unique(READ_results_sample_info$dyad_sex)
 
 ```
 
+we include a column with normalized P0
+```{r}
+READ_results_sample_info <- mutate(READ_results_sample_info, NormalizedP0 = NonNormalizedP0/sd(NonNormalizedP0))
+```
+
+
+
 ```{r figure dyadic relatedness (READ) distribution}
 
-theme_set(theme_classic())
+theme_set(dark_theme_classic())
 
 #plot relatedness P0 (y-axis) for every dyad (x-axis), ordered from low to high relatedness and colored according to inter- or intragroup dyad
 
-ggplot(READ_results_sample_info, aes(x = reorder(PairIndividuals, NonNormalizedP0), y = NonNormalizedP0, color = dyad_sex)) +
+ggplot(READ_results_sample_info, aes(x = reorder(PairIndividuals, -NonNormalizedP0), y = NonNormalizedP0, color = dyad_sex))  +
   
-  geom_point(alpha = 0.1, aes(y = NonNormalizedP0)) + #plot relatedness estimates as points 
+  
+  scale_colour_manual(values = three_colors, na.value = 1) +
+  
+  geom_point(alpha = 0.4, aes(y = NonNormalizedP0)) + #plot relatedness estimates as points 
   
   labs( x = "Dyad", y = "Nonnormalized P0 (READ)") +
   
-  scale_colour_viridis_d(na.value = 1) +
+  scale_y_continuous(trans = "reverse") + #flip y axis
+  
+  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank()) +
   
   ggtitle("distribution of relatedness (READ)")
 
@@ -952,42 +1715,83 @@ Note: lower P0 values mean higher relatedness!
 
 
 ```{r figure (READ) relatedness for group and sex}
-theme_set(theme_classic())
+theme_set(dark_theme_classic())
 
 #plot relatedness P0 (y-axis) for the different categories of sex of dyad (x-axis) colored according to group membership
 
 ggplot(READ_results_sample_info, aes(x = dyad_sex, y = NonNormalizedP0, color = dyad_group)) +
   
-  geom_point(alpha = 0.2, position = position_dodge(0.7)) +
+  geom_sina(alpha = 0.2) +
   
-  geom_boxplot(alpha = 0.4, outlier.shape = NA) +
+  geom_violin(alpha = 0) +
   
-  scale_colour_viridis_d(end = 0.5) +
+  scale_colour_manual(values = two_colors, na.value = 1) +
 
  ggtitle("relatedness (READ)")
 
 ```
 
 ```{r figure (READ) relatedness for sex and group}
-theme_set(theme_classic())
+theme_set(dark_theme_classic())
+
+two_colors <- c(wes_palette("Zissou1")[1], wes_palette("Zissou1")[4])
+
+three_colors <- c(wes_palette("BottleRocket2")[2], wes_palette("Zissou1")[2], wes_palette("Zissou1")[3])
 
 #plot relatedness rab (y-axis) for the different categories of sex of dyad (x-axis) colored according to group membership
 
-ggplot(READ_results_sample_info, aes(x = dyad_group, y = NonNormalizedP0, color = dyad_sex)) +
+ggplot(filter(READ_results_sample_info, a_Group != "mpala_chicks", b_Group != "mpala_chicks"), aes(x = dyad_group, y = NonNormalizedP0, color = dyad_sex)) +
   
-  geom_point(alpha = 0.2, position = position_dodge(0.75)) +
+  geom_sina(alpha = 0.2) +
   
-  geom_boxplot(alpha = 0.4, outlier.shape = NA) +
+  geom_violin(alpha = 0) +
   
-  scale_colour_viridis_d(na.value = 1) +
+  scale_y_continuous(trans = "reverse") +
+  
+  scale_colour_manual(values = three_colors, na.value = 1) +
 
- ggtitle("relatedness (READ)")
+ ggtitle("relatedness (READ), adults")
 
+```
+
+#### READ mapped to G. gallus
+
+This is an assessment of the READ results produced by the Nextflow pipleine created by Ben Hume/SeqAna using the *G. gallus* genome. The data is saved in the folder `pipeline` in `Ref_Ggallus` as *meansP0_AncientDNA_normalized*. The preprocessed data (categorizes unrelated, first- and second-order related) is sotred as *READ_results*.
+
+
+```{r load READ raw results gg}
+READ_rawresults_gg <- read.delim("data/pipeline/Ref_Ggallus/meansP0_AncientDNA_normalized", header = TRUE, sep = " ", as.is = TRUE)
+str(READ_rawresults_gg)
+```
+
+```{r load READ kin results gg}
+READ_kinresults_gg <- read.delim("data/pipeline/Ref_Ggallus/READ_results", header = TRUE, sep = "\t", as.is = TRUE)
+str(READ_kinresults_gg)
+```
+
+Merge these two result files
+
+```{r combine READ results gg}
+READ_results_gg <- left_join(READ_rawresults_gg, READ_kinresults_gg, by = "PairIndividuals")
+str(READ_results_gg)
+```
+
+Now we need to split the *PairIndividuals* into individual 1 and 2, identify these individuals and then create the dyads corresponding to the previous results.
+
+```{r create ID columns in READ gg}
+#Need to split PairIndividuals into 2 new columns
+READ_results_gg$RGSM_a <- gsub("(RGID[[:alnum:]]{1}_S[[:alnum:]]{1,2})(RGID[[:alnum:]]{1}_S[[:alnum:]]{1,2})", "\\1", READ_results_gg$PairIndividuals)
+
+READ_results_gg$RGSM_b <- gsub("(RGID[[:alnum:]]{1}_S[[:alnum:]]{1,2})(RGID[[:alnum:]]{1}_S[[:alnum:]]{1,2})", "\\2", READ_results_gg$PairIndividuals)
+
+#create a new column that includes RGSM_dyad
+READ_results_gg$RGSM_dyad <- if_else(READ_results_gg$RGSM_a < READ_results_gg$RGSM_b, paste(READ_results_gg$RGSM_a, READ_results_gg$RGSM_b, sep = "-"), paste(READ_results_gg$RGSM_b, READ_results_gg$RGSM_a, sep = "-"))
+
+str(READ_results_gg)
 ```
 
 
 #### Combined relatedness results
-
 
 
 merge ngsrelate and lcmlkin
@@ -996,6 +1800,43 @@ merge ngsrelate and lcmlkin
 relate_results <- full_join(ngsRelate_results_sample_info, lcmlkin_results_sample_info, by = "RGSM_dyad")
 relate_results <- full_join(relate_results, READ_results_sample_info, by = "RGSM_dyad")
 ```
+
+
+merge datasets mapped to G. gallus
+```{r}
+relate_results_gg <- full_join(ngsRelate_results_sample_info_gg, lcmlkin_results_ID_gg, by = "RGSM_dyad")
+relate_results_gg <- full_join(relate_results_gg, READ_results_gg, by = "RGSM_dyad")
+```
+
+
+```{r}
+#add breeding pair information
+
+
+
+relate_results <- left_join(x = relate_results, y = pairs_ID, by = c("dyad" = "ID_Pair"))
+
+filter(relate_results, breedingpair == "breeding_pair")
+
+```
+
+
+
+
+save full dataset
+```{r save relate_results}
+save(relate_results, file = "data/relate_results.RData")
+```
+
+
+
+combine both mapping datasets
+
+```{r}
+relate_results_NmGg <- full_join(relate_results, relate_results_gg, by = "RGSM_dyad", suffix = c(".Nm", ".Gg"))
+```
+
+
 
 plot
 
@@ -1017,6 +1858,8 @@ ggplot(filter(relate_results, coverage > 0.85), aes(x = reorder(dyad, pi_HAT), c
   
   geom_point(alpha = 0.5, aes(y = rab), shape = 17) + # plot ngsRelate estimates
   
+  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank()) +
+  
   scale_y_continuous(
     
     name = "relatedness", #features of first axis
@@ -1029,13 +1872,45 @@ ggplot(filter(relate_results, coverage > 0.85), aes(x = reorder(dyad, pi_HAT), c
 
 ```
 
+
+```{r figure dyadic relatedness distribution gg}
+
+theme_set(theme_classic())
+
+#plot relatedness pi_HAT and rab (y-axis) for every dyad (x-axis), ordered from low to high relatedness and colored according to inter- or intragroup dyad
+
+ggplot(filter(relate_results_gg, coverage > 0.85), aes(x = reorder(dyad.x, pi_HAT), color = dyad_sex)) +
+  
+  scale_colour_viridis_d(na.value = 1) +
+  
+  geom_point(alpha = 0.5, aes(y = pi_HAT), shape = 15) + #plot lcmlkin relatedness estimates as points 
+  
+  geom_point(alpha = 0.5, aes(y = 0.7-NonNormalizedP0), shape = 16) + #plot READ estimate
+  
+  geom_point(alpha = 0.5, aes(y = rab), shape = 17) + # plot ngsRelate estimates
+  
+  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank()) +
+  
+  scale_y_continuous(
+    
+    name = "relatedness", #features of first axis
+    
+    sec.axis = sec_axis(~., name = "P0") #features of second axis
+  ) +
+  
+  ggtitle("Comparison of relatedness estimators (>0.85X) (Ref G. gallus)")
+
+
+```
+
+
 Compare correlation among the three estimators
 
 
 ```{r correlation ngsrelate lcmlkin}
 ggplot(relate_results, aes(x = rab, y = pi_HAT, color = dyad_sex, size = nSites, shape = dyad_group.x)) +
   
-  scale_colour_viridis_d(na.value = 1) +
+  scale_colour_manual(values = three_colors, na.value = 1) +
   
    geom_point(alpha = 0.2) +
   
@@ -1044,82 +1919,184 @@ ggplot(relate_results, aes(x = rab, y = pi_HAT, color = dyad_sex, size = nSites,
  
 ```
 
+```{r correlation ngsrelate lcmlkin gg}
+ggplot(relate_results_gg, aes(x = rab, y = pi_HAT, color = dyad_sex, size = nSites, shape = dyad_group)) +
+  
+  scale_colour_manual(values = three_colors, na.value = 1) +
+  
+   geom_point(alpha = 0.3) +
+  
+  ggtitle("Comparison ngsRelate vs. lcmlkin (Ref G. gallus)")
+  
+ 
+```
+
+
 ```{r correlation ngsrelate READ}
 
 ggplot(relate_results, aes(x = rab, y = NonNormalizedP0, color = dyad_sex, size = nSites, shape = dyad_group.x)) +
   
-  scale_colour_viridis_d(na.value = 1) +
+  scale_colour_manual(values = three_colors, na.value = 1) +
   
   geom_point(alpha = 0.2) +
   
+  scale_y_continuous(trans = "reverse") +
+  
   ggtitle("Comparison ngsRelate vs. READ")
 ```
+
+```{r correlation ngsrelate READ gg}
+
+ggplot(relate_results_gg, aes(x = rab, y = Normalized2AlleleDifference, color = dyad_sex, size = nSites, shape = dyad_group)) +
+  
+  scale_colour_manual(values = three_colors, na.value = 1) +
+  
+  geom_point(alpha = 0.2) +
+  
+  scale_y_continuous(trans = "reverse") +
+  
+  ggtitle("Comparison ngsRelate vs. READ (Ref. G. gallus)")
+```
+
 
 ```{r correlation lcmlkin READ}
 
 ggplot(relate_results, aes(x = pi_HAT, y = NonNormalizedP0, color = dyad_sex, size = nSites, shape = dyad_group.x)) +
   
-  scale_colour_viridis_d(na.value = 1) +
+  scale_colour_manual(values = three_colors, na.value = 1) +
   
   geom_point(alpha = 0.2) +
+  
+  scale_y_continuous(trans = "reverse") +
   
   ggtitle("Comparison lcmlkin vs. READ")
 ```
 
+```{r correlation lcmlkin READ gg}
+
+ggplot(relate_results_gg, aes(x = pi_HAT, y = Normalized2AlleleDifference, color = dyad_sex, size = nSites, shape = dyad_group)) +
+  
+  scale_colour_manual(values = three_colors, na.value = 1) +
+  
+  geom_point(alpha = 0.2) +
+  
+  scale_y_continuous(trans = "reverse") +
+  
+  ggtitle("Comparison lcmlkin vs. READ (Ref. G.gallus)")
+```
+
+Comparison of mapping
+
+```{r correlation Nm Gg mapping ngsrelate}
+ggplot(relate_results_NmGg, aes(x = rab.Nm, y = rab.Gg, color = dyad_sex.Nm, size = nSites.Gg)) +
+  
+  scale_colour_manual(values = three_colors, na.value = 1) +
+  
+  geom_point(alpha = 0.2) +
+  
+ # geom_smooth() +
+  
+  ggtitle("Comparison ngsRelate Ref. N. meleagris vs. Ref. G. gallus")
+```
+
+```{r correlation Nm Gg mapping ngsrelate}
+ggplot(relate_results_NmGg, aes(x = nSites.Nm/1000, y = nSites.Gg/1000, color = dyad_sex.Nm, shape = dyad_group.Nm)) +
+  
+  scale_colour_manual(values = three_colors, na.value = 1) +
+  
+  geom_point(alpha = 0.2) +
+  
+  geom_smooth() +
+  
+  ggtitle("Comparison ngsRelate Ref. N. meleagris vs. Ref. G. gallus")
+```
+
+```{r correlation Nm Gg mapping lcmlkin}
+ggplot(relate_results_NmGg, aes(x = pi_HAT.Nm, y = pi_HAT.Gg, color = dyad_sex.Nm, size = nbSNP.Nm)) +
+  
+  scale_colour_manual(values = three_colors, na.value = 1) +
+  
+  geom_point(alpha = 0.2) +
+  
+ # geom_smooth() +
+  
+  ggtitle("Comparison lcmlkin Ref. N. meleagris vs. Ref. G. gallus")
+
+```
+
+```{r correlation Nm Gg mapping READ}
+ggplot(relate_results_NmGg, aes(x = Normalized2AlleleDifference.Nm, y = Normalized2AlleleDifference.Gg, color = dyad_sex.Nm, size = coverage.Nm)) +
+  
+  scale_colour_manual(values = three_colors, na.value = 1) +
+  
+  geom_point(alpha = 0.2) +
+  
+ # geom_smooth() +
+  
+  ggtitle("Comparison READ Ref. N. meleagris vs. Ref. G. gallus")
+
+```
 
 Have a closer look at the groups
 
+filter(READ_results_sample_info, a_Group != "mpala_chicks", b_Group != "mpala_chicks")
+
 ```{r intragroup relatedness (ngsrelate) for each group}
-ggplot(filter(relate_results, dyad_group == "intragroup"), aes(x = dyad_sex, y = rab, color = dyad_sex)) +
+ggplot(filter(relate_results, dyad_group == "intragroup", a_Group != "mpala_chicks", b_Group != "ROOP"), aes(x = dyad_sex, y = rab, color = dyad_sex)) +
   
-  scale_color_viridis_d(na.value = 1) +
+  scale_color_manual(values = three_colors, na.value = 1) +
   
-  geom_point(alpha = 0.2, position = position_dodge(0.5)) +
+  geom_sina(alpha = 0.4) +
   
-  geom_boxplot(alpha = 0.4, outlier.shape = NA) +
+  geom_violin(alpha = 0.4) +
   
   facet_grid(.~a_Group) +
   
  theme (axis.text.x = element_blank(), 
-        axis.title.x = element_blank()) +
+        axis.title.x = element_blank(),
+        axis.ticks.x = element_blank()) +
   
-  ggtitle("Relatedness (ngsRelate) in each group")
+  ggtitle("Relatedness (ngsRelate) in each group, adults")
 
 ```
 
 ```{r intragroup relatedness (ngsrelate) X greater 0.75 for each group}
-ggplot(filter(relate_results, dyad_group == "intragroup", coverage > 0.75), aes(x = dyad_sex, y = rab, color = dyad_sex)) +
+ggplot(filter(relate_results, dyad_group == "intragroup", coverage > 0.75, a_Group != "mpala_chicks", b_Group != "ROOP"), aes(x = dyad_sex, y = rab, color = dyad_sex)) +
   
-  scale_color_viridis_d(na.value = 1) +
+  scale_color_manual(values = three_colors, na.value = 1) +
   
-  geom_point(alpha = 0.2, position = position_dodge(0.5)) +
+  geom_sina(alpha = 0.4) +
   
-  geom_boxplot(alpha = 0.4, outlier.shape = NA) +
+  geom_violin(alpha = 0.4) +
   
   facet_grid(.~a_Group) +
   
  theme (axis.text.x = element_blank(), 
-        axis.title.x = element_blank()) +
+        axis.title.x = element_blank(),
+        axis.ticks.x = element_blank()) +
   
-  ggtitle("Relatedness (ngsRelate) X greater 0.75 in each group")
+  ggtitle("Relatedness (ngsRelate), X greater 0.75 in each group, adults")
 
 ```
 
 ```{r intragroup relatedness (READ) for each group}
-ggplot(filter(relate_results, dyad_group == "intragroup"), aes(x = dyad_sex, y = NonNormalizedP0, color = dyad_sex)) +
+ggplot(filter(relate_results, dyad_group == "intragroup", a_Group != "mpala_chicks", b_Group != "ROOP"), aes(x = dyad_sex, y = NonNormalizedP0, color = dyad_sex)) +
   
-  scale_color_viridis_d(na.value = 1) +
+  scale_color_manual(values = three_colors, na.value = 1) +
   
-  geom_point(alpha = 0.2, position = position_dodge(0.5)) +
+  geom_sina(alpha = 0.4) +
   
-  geom_boxplot(alpha = 0.4, outlier.shape = NA) +
+  geom_violin(alpha = 0.4) +
   
   facet_grid(.~a_Group) +
   
- theme (axis.text.x = element_blank(), 
-        axis.title.x = element_blank()) +
+  scale_y_continuous(limits = c(0.4, 0.28), n.breaks = 4, trans = "reverse") +
   
-  ggtitle("Relatedness (READ) in each group")
+ theme (axis.text.x = element_blank(), 
+        axis.title.x = element_blank(),
+        axis.ticks.x = element_blank()) +
+  
+  ggtitle("Relatedness (READ) in each group, adults")
 
 ```
 
@@ -1128,8 +2105,209 @@ ggplot(filter(relate_results, dyad_group == "intragroup"), aes(x = dyad_sex, y =
 For comparison of relatedness estimators check Yaka et al. 2021 Curr Biol.
 
 
+```{r}
+
+ggplot(subset(relate_results, a_Group %in% c("mpala", "mpala_chicks") & b_Group %in% c("mpala", "mpala_chicks") & dyad_group %in% "intergroup"), aes(x = dyad_sex, y = NonNormalizedP0, color = dyad_sex)) +
+  
+  scale_color_manual(values = three_colors, na.value = 1) +
+  
+  geom_sina(alpha = 0.4) +
+  
+  geom_violin(alpha = 0) +
+  
+  scale_y_continuous(limits = c(0.4, 0.28), n.breaks = 4, trans = "reverse") +
+  
+  theme (axis.text.x = element_blank(), 
+        axis.title.x = element_blank(),
+        axis.ticks.x = element_blank()) +
+  
+  ggtitle("Relatedness (READ) Mpala adult-chick-dyads")
+
+```
 
 
+investigate breeding pairs in comparision to rest
+
+```{r}
+#extract breeding pair rows
+
+breeding_pair_relatedness <- filter(relate_results, !is.na(breedingpair))
+
+#only keep dyad, rank difference and relatedness values
+
+breeding_pair_relatedness <- select(breeding_pair_relatedness, dyad, a_sex, b_sex, rab, pi_HAT, NonNormalizedP0, breedingpair)
+
+breeding_pair_relatedness
+
+
+```
+
+
+```{r plot breeding pair relatedness}
+
+ggplot(subset(relate_results, dyad_group %in% "intragroup"), aes(x = dyad_sex, y = NonNormalizedP0, color = dyad_sex)) +
+  
+  scale_color_manual(values = three_colors) +
+  
+  geom_sina(alpha = 0.4) +
+  
+  geom_violin(alpha = 0) +
+  
+  gghighlight(!is.na(breedingpair)) +
+  
+  #scale_y_continuous(limits = c(0.4, 0.28), n.breaks = 4, trans = "reverse") +
+  
+  theme (axis.text.x = element_blank(), 
+        axis.title.x = element_blank(),
+        axis.ticks.x = element_blank()) +
+  
+  ggtitle("Relatedness (READ) breeding pairs")
+
+```
+
+investigate relatedness in dominance hierarchy
+
+```{r dominance relatedness}
+
+#add relatedness to dominance dyads
+
+dominance_relatedness <- left_join(dyads, relate_results)
+
+#only keep dyad, rank difference and relatedness values
+
+dominance_relatedness <- select(dominance_relatedness, RankDiff, dyad, rab, pi_HAT, NonNormalizedP0)
+
+#only keep dyads with existing relatedness values
+dominance_relatedness <- filter(dominance_relatedness, !is.na(NonNormalizedP0))
+
+str(dominance_relatedness)
+
+```
+
+
+```{r plot dominance relatedness}
+
+ggplot(dominance_relatedness, aes(x = RankDiff, y = NonNormalizedP0, color = RankDiff)) +
+  
+  scale_color_viridis_c() +
+  
+  geom_point(alpha = 0.8) +
+  
+  geom_smooth(method = "lm") +
+  
+  
+  ggtitle("Dominance and Relatedness (lcmlkin)")
+
+
+
+```
+
+investigate influence of coverage on relatedness
+```{r figure nSites vs relatedness ngsRelate}
+ggplot(relate_results, aes(x = nSites, y = rab, colour = dyad_sex)) +
+  
+  scale_color_manual(values = three_colors) +
+  
+  geom_point(alpha = 0.2) +
+  
+  geom_smooth(colour = "white") +
+  
+  
+  ggtitle("nSites vs relatedness (ngsRelate)")
+```
+
+this shows that ngsRelate relatedness estimates are influenced by coverage as there is an increase with nSites!
+
+
+```{r figure nbSNP vs relatedness ngsRelate}
+ggplot(relate_results, aes(x = nSites, y = pi_HAT, colour = dyad_sex)) +
+  
+  scale_color_manual(values = three_colors) +
+  
+  geom_point(alpha = 0.2) +
+  
+  geom_smooth(colour = "white") +
+  
+  
+  ggtitle("nSites vs relatedness (lcmlkin)")
+```
+
+```{r figure coverage vs relatedness READ}
+ggplot(relate_results, aes(x = coverage, y = NonNormalizedP0, colour = dyad_sex)) +
+  
+  scale_color_manual(values = three_colors) +
+  
+  geom_point(alpha = 0.2) +
+  
+  geom_smooth(colour = "white") +
+  
+  scale_y_continuous(trans = "reverse") +
+  
+  geom_rug(sides = "b", show.legend = FALSE) +
+  
+  
+  ggtitle("coverage vs relatedness (READ)")
+```
+
+investigate correlation between nSites and coverage
+
+```{r figure nSites vs coverage}
+ggplot(relate_results, aes(x = nSites, y = coverage, colour = dyad_sex)) +
+  
+  scale_color_manual(values = three_colors) +
+  
+  geom_point(alpha = 0.2) +
+  
+  geom_rug(sides = "l", show.legend = FALSE)
+  
+  #geom_smooth(colour = "white") +
+  
+  
+  ggtitle("nSites vs coverage")
+```
+
+
+
+#### Heatmap
+
+```{r relatedness heatmap}
+
+#convert data to matrix
+relatedness_rab <- relate_results%>% subset(a_Group %in% c("mpala", "mpala_chicks") & b_Group %in% c("mpala", "mpala_chicks")) %>% select(ID_a, ID_b, rab) %>% pivot_wider(names_from = ID_a, values_from = rab)
+
+relatedness_rab_matrix <- as.matrix.data.frame(relatedness_rab[2:24])
+
+rownames(relatedness_rab_matrix) <- relatedness_rab$ID_b
+
+#reorder the matrix using hclust for clustering
+## helper function to reorder
+#reorder_rab <- function (relatedness_rab_matrix) {
+  
+#  dd <- as.dist((1-relatedness_rab_matrix)/2)
+#hc <- hclust(dd)
+#relatedness_rab_matrix <-relatedness_rab_matrix[hc$order, hc$order]
+  
+#}
+
+## reorder relatedness matrix
+
+#relatedness_rab_matrix <- reorder_rab(relatedness_rab_matrix)
+
+#matrix to long format
+melted_rab <- melt(relatedness_rab_matrix, na.rm = TRUE)
+
+
+ggplot (melted_rab, aes(x = Var1, y = Var2, fill = value)) +
+  
+  scale_fill_viridis_c() +
+  
+  geom_raster() + 
+  
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, size = 8, hjust = 1))+
+  
+  coord_fixed()
+
+```
 
 
 

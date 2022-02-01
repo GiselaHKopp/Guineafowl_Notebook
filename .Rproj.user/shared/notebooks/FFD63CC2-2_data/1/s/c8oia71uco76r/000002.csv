@@ -1,0 +1,2 @@
+"0","relate_results <- full_join(ngsRelate_results_sample_info, lcmlkin_results_sample_info, by = ""RGSM_dyad"")"
+"0","relate_results <- full_join(relate_results, READ_results_sample_info, by = ""RGSM_dyad"")"

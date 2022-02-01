@@ -1,0 +1,1 @@
+"0","relate_results_NmGg <- full_join(relate_results, relate_results_gg, by = ""RGSM_dyad"", suffix = c("".Nm"", "".Gg""))"

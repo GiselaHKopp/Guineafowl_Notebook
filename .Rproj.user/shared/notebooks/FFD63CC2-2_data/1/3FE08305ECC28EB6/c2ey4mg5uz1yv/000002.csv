@@ -1,0 +1,4 @@
+"0","#create new column that specifies if sequencing results are from original run or from resequencing"
+"0","data_overview <- data_overview %>%"
+"0","  mutate(original_reseq = case_when(RGID == ""1"" ~ ""original"","
+"0","                                RGID == ""2"" ~ ""reseq""))"

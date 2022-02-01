@@ -1,0 +1,5 @@
+"0","two_colors <- c(wes_palette(""Zissou1"")[1], wes_palette(""Zissou1"")[4])"
+"0",""
+"0","two_colors_reverse <- c(wes_palette(""Zissou1"")[4], wes_palette(""Zissou1"")[1])"
+"0",""
+"0","three_colors <- c(wes_palette(""BottleRocket2"")[2], wes_palette(""Zissou1"")[2], wes_palette(""Zissou1"")[3])"

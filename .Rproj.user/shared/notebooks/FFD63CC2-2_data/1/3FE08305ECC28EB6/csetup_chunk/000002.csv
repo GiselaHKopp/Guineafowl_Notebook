@@ -1,0 +1,4 @@
+"0","knitr::opts_chunk$set(echo = TRUE,"
+"0","                      comment = ""#>"","
+"0","                      collapse = TRUE)"
+"0","knitr::opts_knit$set(root.dir = '../')"

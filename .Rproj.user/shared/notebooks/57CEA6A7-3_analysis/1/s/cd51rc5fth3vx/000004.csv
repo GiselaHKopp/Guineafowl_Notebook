@@ -1,0 +1,14 @@
+"0","library(lme4)"
+"2","Lade nötiges Paket: Matrix
+"
+"2","
+Attache Paket: ‘Matrix’
+
+"
+"2","The following objects are masked from ‘package:tidyr’:
+
+    expand, pack, unpack
+
+"
+"0","library(MuMIn)"
+"0","library(car)"

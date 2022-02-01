@@ -1,0 +1,8 @@
+"0","#create edge list"
+"0","edges <- relatedness_rab %>% left_join(nodes, by = c(""ID_a"" = ""label"")) %>% rename(id_a = id)"
+"0",""
+"0","edges <- edges %>% left_join(nodes, by = c(""ID_b"" = ""label"")) %>% rename(id_b = id) %>% rename (weight = rab)"
+"0",""
+"0","edges <- select(edges, id_a, id_b, weight)"
+"0",""
+"0","edges"

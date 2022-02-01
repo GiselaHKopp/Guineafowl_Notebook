@@ -1,0 +1,7 @@
+"0","#add breeding pair information"
+"0",""
+"0",""
+"0",""
+"0","relate_results <- left_join(x = relate_results, y = pairs_ID, by = c(""dyad"" = ""ID_Pair""))"
+"0",""
+"0","filter(relate_results, breedingpair == ""breeding_pair"")"

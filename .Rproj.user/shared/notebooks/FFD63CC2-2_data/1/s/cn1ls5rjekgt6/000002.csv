@@ -1,0 +1,2 @@
+"0","lcmlkin_results_sample_info_300k <- filter(lcmlkin_results_sample_info, nbSNP >= 300000)"
+"0",""
