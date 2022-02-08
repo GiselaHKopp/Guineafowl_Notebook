@@ -2175,7 +2175,7 @@ dominance_relatedness <- left_join(dyads, relate_results)
 
 #only keep dyad, rank difference and relatedness values
 
-dominance_relatedness <- select(dominance_relatedness, RankDiff, dyad, rab, pi_HAT, NonNormalizedP0)
+dominance_relatedness <- select(dominance_relatedness, RankDiff, dyad, rab, pi_HAT, NonNormalizedP0, coverage)
 
 #only keep dyads with existing relatedness values
 dominance_relatedness <- filter(dominance_relatedness, !is.na(NonNormalizedP0))
@@ -2187,7 +2187,7 @@ str(dominance_relatedness)
 
 ```{r plot dominance relatedness}
 
-ggplot(dominance_relatedness, aes(x = RankDiff, y = NonNormalizedP0, color = RankDiff)) +
+ggplot(dominance_relatedness, aes(x = RankDiff, y = pi_HAT, color = RankDiff, size = coverage)) +
   
   scale_color_viridis_c() +
   

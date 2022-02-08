@@ -841,14 +841,16 @@ assoc_nw <- full_join(assoc_nw, assoc_nw_6, by = c(\id_a\, \id_b\))
 Run general and generalized linear mixed models with the package `lme4`.
 
 Model formular to test influence on relatedness: is relatedness influenced by group membership and is this different for males and females?
+full model
 
-response: dyadic relatedness
-main predictors: association and sex
-fixed control. group membership
+response: dyadic relatedness (need to run for every relatedness estimator)
+main predictors: association (covariate, alternative: group_dyad (factor)) and sex (factor)
+fixed control: group membership
 random intercept: identity
 coverage?
-need to run for every relatedness estimator
 for association: test 
+
+lmer(relatedness ~ association + group + sex + (1|ID_a) + (1|ID_b), data = relate_results, REML = F)
 
 
 ## Check the data
@@ -875,7 +877,8 @@ str(relate_results)
 
 
 inspect the data:
-inspect the distribution of the predictor 
+
+inspect the distribution of the response: relatedness
 
 <!-- rnb-text-end -->
 
@@ -897,7 +900,7 @@ hist()
 <!-- rnb-text-begin -->
 
 
-and the responses
+inspect the distribution of the predictors: (i) association (covariate)
 
 <!-- rnb-text-end -->
 
@@ -919,6 +922,10 @@ hist()
 <!-- rnb-text-begin -->
 
 
+alternatively (i) group_dyad (factor with 2 levels: intragroup, intergroup)
+
+
+(ii) sex (factor with 3 levels: male-male, male-female, female-female)
 
 <!-- rnb-text-end -->
 
@@ -938,6 +945,30 @@ hist()
 
 
 <!-- rnb-text-begin -->
+
+
+(iii) coverage/nbSNP/nSites
+
+<!-- rnb-text-end -->
+
+
+<!-- rnb-chunk-begin -->
+
+
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGlzdCgpXG5gYGAifQ== -->
+
+```r
+hist()
+```
+
+<!-- rnb-source-end -->
+
+<!-- rnb-chunk-end -->
+
+
+<!-- rnb-text-begin -->
+
+ 
 
 
 is there a need to transform any of the variables?
@@ -951,16 +982,16 @@ Z-transform all covariates to a mean of 0 and a sd of 1 prior to fitting the mod
 <!-- rnb-chunk-begin -->
 
 
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5yZWxhdGVfcmVzdWx0cyRyYWJfeiA8LSBzY2FsZShyZWxhdGVfcmVzdWx0cyRyYWIpXG5yZWxhdGVfcmVzdWx0cyRwaV9IQVRfeiA8LSBzY2FsZShyZWxhdGVfcmVzdWx0cyRwaV9IQVQpIFxucmVsYXRlX3Jlc3VsdHMkTm9ybWFsaXplZDJBbGxlbGVEaWZmZXJlbmNlX3ogPC0gc2NhbGUocmVsYXRlX3Jlc3VsdHMkTm9ybWFsaXplZDJBbGxlbGVEaWZmZXJlbmNlKVxucmVsYXRlX3Jlc3VsdHMkY292ZXJhZ2VfeiA8LSBzY2FsZShyZWxhdGVfcmVzdWx0cyRjb3ZlcmFnZSlcbnJlbGF0ZV9yZXN1bHRzJG5iU05QX3ogPC0gc2NhbGUocmVsYXRlX3Jlc3VsdHMkbmJTTlApXG5yZWxhdGVfcmVzdWx0cyRuU2l0ZXNfeiA8LSBzY2FsZShyZWxhdGVfcmVzdWx0cyRuU2l0ZXMpXG5cbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5yZWxhdGVfcmVzdWx0cyRyYWJfeiA8LSBhcy52ZWN0b3Ioc2NhbGUocmVsYXRlX3Jlc3VsdHMkcmFiKSlcbnJlbGF0ZV9yZXN1bHRzJHBpX0hBVF96IDwtIGFzLnZlY3RvcihzY2FsZShyZWxhdGVfcmVzdWx0cyRwaV9IQVQpKSBcbnJlbGF0ZV9yZXN1bHRzJE5vcm1hbGl6ZWQyQWxsZWxlRGlmZmVyZW5jZV96IDwtIGFzLnZlY3RvcihzY2FsZShyZWxhdGVfcmVzdWx0cyROb3JtYWxpemVkMkFsbGVsZURpZmZlcmVuY2UpKVxucmVsYXRlX3Jlc3VsdHMkY292ZXJhZ2VfeiA8LSBhcy52ZWN0b3Ioc2NhbGUocmVsYXRlX3Jlc3VsdHMkY292ZXJhZ2UpKVxucmVsYXRlX3Jlc3VsdHMkbmJTTlBfeiA8LSBhcy52ZWN0b3Ioc2NhbGUocmVsYXRlX3Jlc3VsdHMkbmJTTlApKVxucmVsYXRlX3Jlc3VsdHMkblNpdGVzX3ogPC0gYXMudmVjdG9yKHNjYWxlKHJlbGF0ZV9yZXN1bHRzJG5TaXRlcykpXG5cbmBgYCJ9 -->
 
 ```r
 
-relate_results$rab_z <- scale(relate_results$rab)
-relate_results$pi_HAT_z <- scale(relate_results$pi_HAT) 
-relate_results$Normalized2AlleleDifference_z <- scale(relate_results$Normalized2AlleleDifference)
-relate_results$coverage_z <- scale(relate_results$coverage)
-relate_results$nbSNP_z <- scale(relate_results$nbSNP)
-relate_results$nSites_z <- scale(relate_results$nSites)
+relate_results$rab_z <- as.vector(scale(relate_results$rab))
+relate_results$pi_HAT_z <- as.vector(scale(relate_results$pi_HAT)) 
+relate_results$Normalized2AlleleDifference_z <- as.vector(scale(relate_results$Normalized2AlleleDifference))
+relate_results$coverage_z <- as.vector(scale(relate_results$coverage))
+relate_results$nbSNP_z <- as.vector(scale(relate_results$nbSNP))
+relate_results$nSites_z <- as.vector(scale(relate_results$nSites))
 
 ```
 
@@ -1002,7 +1033,9 @@ max(abs(vars.cor[upper.tri(vars.cor)]))
 
 ## fit the model
 
-full model
+
+
+
 
 <!-- rnb-text-end -->
 
@@ -1037,6 +1070,35 @@ for hypothesis testing, we also need a null model
 
 
 <!-- rnb-text-begin -->
+
+
+
+
+
+
+testing this
+
+<!-- rnb-text-end -->
+
+
+<!-- rnb-chunk-begin -->
+
+
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubW9kZWxfc2ltcGxldGVzdCA8LSBsbWVyKHJhYl96IH4gZHlhZF9ncm91cCArIGR5YWRfc2V4ICsgKDF8SURfYSkgKyAoMXxJRF9iKSwgZGF0YSA9IHJlbGF0ZV9yZXN1bHRzLCBSRU1MID0gRilcbm1vZGVsX3NpbXBsZXRlc3RcbmBgYCJ9 -->
+
+```r
+model_simpletest <- lmer(rab_z ~ dyad_group + dyad_sex + (1|ID_a) + (1|ID_b), data = relate_results, REML = F)
+model_simpletest
+```
+
+<!-- rnb-source-end -->
+
+<!-- rnb-chunk-end -->
+
+
+<!-- rnb-text-begin -->
+
+
 
 
 ## model diagnostics
@@ -1248,7 +1310,7 @@ max(as.vector(influence(res)$hat))
 
 
 Variance Inflation Factors (VIF) requires `car` package.
-
+for categorical predictors with more than two levels we use the modification Generalized VIF (GVIF)
 
 <!-- rnb-text-end -->
 
@@ -1268,6 +1330,8 @@ vif(res) #check recommended thresholds in Mundry handout 03b
 
 
 <!-- rnb-text-begin -->
+
+
 
 
 
@@ -1298,64 +1362,6 @@ Check for need of random slopes
 
 
 
-Model formular to test influence on relatedness
-
-response: dyadic relatedness
-main predictor: association and sex
-fixed control. group membership
-random intercept: identity
-coverage?
-need to run for every relatedness estimator
-for association: test 
-
-lmer(relatedness ~ association + group + sex + (1|ID_a) + (1|ID_b), data = relate_results, REML = F)
-
-testing this
-
-<!-- rnb-text-end -->
-
-
-<!-- rnb-chunk-begin -->
-
-
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxubW9kZWxfc2ltcGxldGVzdCA8LSBsbWVyKHJhYl96IH4gZHlhZF9ncm91cCArIGR5YWRfc2V4ICsgKDF8SURfYSkgKyAoMXxJRF9iKSwgZGF0YSA9IHJlbGF0ZV9yZXN1bHRzLCBSRU1MID0gRilcbm1vZGVsX3NpbXBsZXRlc3RcbmBgYFxuYGBgIn0= -->
-
-```r
-```r
-model_simpletest <- lmer(rab_z ~ dyad_group + dyad_sex + (1|ID_a) + (1|ID_b), data = relate_results, REML = F)
-model_simpletest
-```
-```
-
-<!-- rnb-source-end -->
-
-<!-- rnb-output-begin eyJkYXRhIjoiTGluZWFyIG1peGVkIG1vZGVsIGZpdCBieSBtYXhpbXVtIGxpa2VsaWhvb2QgIFsnbG1lck1vZCddXG5Gb3JtdWxhOiByYWJfeiB+IGR5YWRfZ3JvdXAgKyBkeWFkX3NleCArICgxIHwgSURfYSkgKyAoMSB8IElEX2IpXG4gICBEYXRhOiByZWxhdGVfcmVzdWx0c1xuICAgICAgQUlDICAgICAgIEJJQyAgICBsb2dMaWsgIGRldmlhbmNlICBkZi5yZXNpZCBcbiA5NzEyLjkxNyAgOTc1Ny44OTIgLTQ4NDkuNDU4ICA5Njk4LjkxNyAgICAgIDQ1NTMgXG5SYW5kb20gZWZmZWN0czpcbiBHcm91cHMgICBOYW1lICAgICAgICBTdGQuRGV2LlxuIElEX2EgICAgIChJbnRlcmNlcHQpIDAuMzk2MyAgXG4gSURfYiAgICAgKEludGVyY2VwdCkgMC4zMzQ4ICBcbiBSZXNpZHVhbCAgICAgICAgICAgICAwLjY2NTIgIFxuTnVtYmVyIG9mIG9iczogNDU2MCwgZ3JvdXBzOiAgSURfYSwgOTU7IElEX2IsIDk1XG5GaXhlZCBFZmZlY3RzOlxuICAgICAgICAgKEludGVyY2VwdCkgIGR5YWRfZ3JvdXBpbnRyYWdyb3VwICAgICAgICAgIGR5YWRfc2V4bWFsZSAgIGR5YWRfc2V4bWFsZS1mZW1hbGUgIFxuICAgICAgICAgICAgICAwLjYwNzMgICAgICAgICAgICAgICAgMC41Mzk5ICAgICAgICAgICAgICAgLTAuMzg5MCAgICAgICAgICAgICAgIC0xLjE4MDIgIFxuIn0= -->
-
-```
-Linear mixed model fit by maximum likelihood  ['lmerMod']
-Formula: rab_z ~ dyad_group + dyad_sex + (1 | ID_a) + (1 | ID_b)
-   Data: relate_results
-      AIC       BIC    logLik  deviance  df.resid 
- 9712.917  9757.892 -4849.458  9698.917      4553 
-Random effects:
- Groups   Name        Std.Dev.
- ID_a     (Intercept) 0.3963  
- ID_b     (Intercept) 0.3348  
- Residual             0.6652  
-Number of obs: 4560, groups:  ID_a, 95; ID_b, 95
-Fixed Effects:
-         (Intercept)  dyad_groupintragroup          dyad_sexmale   dyad_sexmale-female  
-              0.6073                0.5399               -0.3890               -1.1802  
-```
-
-
-
-<!-- rnb-output-end -->
-
-<!-- rnb-chunk-end -->
-
-
-<!-- rnb-text-begin -->
 
 
 

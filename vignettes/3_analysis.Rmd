@@ -280,14 +280,20 @@ assoc_nw <- full_join(assoc_nw, assoc_nw_6, by = c("id_a", "id_b"))
 Run general and generalized linear mixed models with the package `lme4`.
 
 Model formular to test influence on relatedness: is relatedness influenced by group membership and is this different for males and females?
+full model
 
-response: dyadic relatedness
-main predictors: association and sex
-fixed control. group membership
+response: dyadic relatedness (need to run for every relatedness estimator)
+main predictors: association (covariate, alternative: group_dyad (factor)) and sex (factor). Factor with k levels is coded with k-1 dummy predictors.
+fixed control: group membership
 random intercept: identity
-coverage?
-need to run for every relatedness estimator
+coverage? either include coverage as a predictor or use weighted regression
 for association: test 
+test interaction of coverage and sex (for interaction of 2 factors, they need to be fully crossed (i.c. each combination of their levels exists))
+and interaction of dyad_sex and dyad_group
+
+full model (response ~ test predictors + control predictors): relatedness = group_dyad + sex_dyad + coverage + sex_dyad:coverage
+
+null model (response ~ control predictors): relatedness = coverage 
 
 
 ## Check the data
@@ -297,34 +303,82 @@ str(relate_results)
 ```
 
 inspect the data:
-inspect the distribution of the predictor 
+
+inspect the distribution of the response: relatedness
 ```{r}
 hist()
 ```
 
-and the responses
+is there a need for transformation?
+
+inspect the distribution of the predictors: (i) association (covariate)
 ```{r}
 hist()
 ```
 
+alternatively (i) group_dyad (factor with 2 levels: intragroup, intergroup)
+
+
+(ii) sex (factor with 3 levels: male-male, male-female, female-female)
 ```{r}
 hist()
 ```
+
+(iii) coverage/nbSNP/nSites
+```{r}
+hist()
+```
+ 
+ or do all at once
+```{r}
+test.vars <- c("predictor1", "predictor2", "predictor3")
+
+par(mfrow = c(2,2))
+
+for(i in 1:length(test.vars)){
+	hist(data[,test.vars[i]], main = test.vars[i])
+	}
+```
+
 
 is there a need to transform any of the variables?
 
+if need to transfrom:
+check if log is good
+min(predictor)
+hist(log(data$predictor))
+data$log_predictor <- log(data$predictor)
+
+plot interacting predictors
+```{r}
+plot(data$log_predictor, data$predictor2)
+```
+
+to include the interaction of 2 covariates we need to z-transform them 
 Z-transform all covariates to a mean of 0 and a sd of 1 prior to fitting the model to allow easier interpretation of the estimates. But still need to inform about original means and sd.
 
 ```{r z-transformation}
-
-relate_results$rab_z <- scale(relate_results$rab)
-relate_results$pi_HAT_z <- scale(relate_results$pi_HAT) 
-relate_results$Normalized2AlleleDifference_z <- scale(relate_results$Normalized2AlleleDifference)
-relate_results$coverage_z <- scale(relate_results$coverage)
-relate_results$nbSNP_z <- scale(relate_results$nbSNP)
-relate_results$nSites_z <- scale(relate_results$nSites)
-
+pred.vars <- c("log.predictor", "predictor2", "predictor3)
+xx <- data.frame(scale(data[,pred.vars]))
+names(xx) <- paste("z", names(xx), sep = "_"
 ```
+
+or for each individually
+relate_results$rab_z <- as.vector(scale(relate_results$rab))
+relate_results$pi_HAT_z <- as.vector(scale(relate_results$pi_HAT)) 
+relate_results$Normalized2AlleleDifference_z <- as.vector(scale(relate_results$Normalized2AlleleDifference))
+relate_results$coverage_z <- as.vector(scale(relate_results$coverage))
+relate_results$nbSNP_z <- as.vector(scale(relate_results$nbSNP))
+relate_results$nSites_z <- as.vector(scale(relate_results$nSites))
+
+check whether z-transformation worked
+```{r}
+apply(X = xx, MARGIN = 2, FUN = mean)
+apply(X = xx, MARGIN = 2, FUN = sd)
+
+data <- data.frame(data, xx)
+```
+
 
 check correlations among the predictors
 
@@ -339,15 +393,34 @@ max(abs(vars.cor[upper.tri(vars.cor)]))
 
 ## fit the model
 
-full model
+lmer(relatedness ~ association + group + sex + (1|ID_a) + (1|ID_b), data = relate_results, REML = F)
+
+
 ```{r full glmm}
-res <- lm(response ~ predictor1 + predictor2, data)
+res <- lm(response ~ predictor1 + predictor2 + predictor3 + predictor1:predictor3, weights = weight, data = data)
+#or
+res_full <- lm(response ~ predictor1*predictor3 + predictor2, data)
 ```
 
 for hypothesis testing, we also need a null model
 ```{r null glmm}
-
+res_null <- 
 ```
+
+Build a reduced model without the important factor
+```{r reduced model}
+red <- lm(response ~ covariate + factor, data = data)
+```
+
+
+
+testing this
+```{r}
+model_simpletest <- lmer(rab_z ~ dyad_group + dyad_sex + (1|ID_a) + (1|ID_b), data = relate_results, REML = F)
+model_simpletest
+```
+
+
 
 ## model diagnostics
 
@@ -397,9 +470,9 @@ hist(dffits(res))
 model estimates (DFBeta)
 
 ```{r}
-dfbeta(res) #unstandardized DFBeta
+dfbeta(res) #unstandardized DFBeta, should reveal little variation
 
-xx <- cbind(coefficients(res), coefficients(res) +
+xx <- cbind(res$coefficients, res$coefficients +
               t(apply(X = dfbeta(res), MARGIN = 2, FUN = range)))
 
 colnames(xx) <- c("orig", "min", "max")
@@ -421,10 +494,17 @@ leverage
 max(as.vector(influence(res)$hat))
 ```
 
-Variance Inflation Factors (VIF) requires `car` package.
-
+Check for collinearity with Variance Inflation Factors (VIF) requires `car` package.
+for categorical predictors with more than two levels we use the modification Generalized VIF (GVIF)
+interactions frequently lead to large VIF, we exclude the interactions before
 ```{r}
-vif(res) #check recommended thresholds in Mundry handout 03b
+res_vif <- lm(response ~ predictor1 + predictor2 + predictor3, data)
+vif(res_vif) #check recommended thresholds in Mundry handout 03b
+```
+
+to interpret like standard VIF
+```{r}
+vif(res)[,3]^2
 ```
 
 
@@ -434,6 +514,66 @@ SEE FUNCTION IN MUNDRY SCRIPT 02b
 
 
 ## Inference
+
+compare full model and reduced model using the function `anova´.
+
+could also compare to null model. When using weighted model, check results of unweighted model. 
+
+```{r}
+as.data.frame(anova(red, res, test = F) #simple model first
+```
+if significant, this means that factor that was reduced has a significant effect.
+
+
+inspect results of full model
+```{r}
+summary(res_full)
+```
+
+only if full model significant, start looking at individual predictors!
+
+results for individual predictors
+```{r}
+summary(res)$coefficients
+```
+
+safe results
+```{r}
+write.table(summary(res)$coefficients, file = "results/glmm/fullmodel_results.txt", row.names = T, col.names = T, sep = "\t")
+```
+
+
+Overall effect size
+```{r}
+summary(res)$adj.r.squared
+```
+
+effect sizes for the individual effects with the function 'drop1', which drops each term from the model (one at a time) and uses and F-test to compare the full with the respective reduced model.
+```{r}
+xx <- drop1(res)$RSS
+
+(xx[-1]-xx[1])/xx[-1]
+```
+
+test effect sizes
+```{r}
+drop1(res, test = "F")
+```
+
+obtain confidence intervals
+```{r}
+confint(object = res)
+```
+
+combine confidence intervals with original estimates
+```{r}
+round(cbind(orig = coefficients(res), confint(object = res)), digits = 3)
+```
+
+FOR PLOTTING SEE Mundry script 04b
+
+
+
 
 Protection agains multiple testing with full-null model comparison
 
@@ -455,23 +595,7 @@ Check for need of random slopes
 
 
 
-Model formular to test influence on relatedness
 
-response: dyadic relatedness
-main predictor: association and sex
-fixed control. group membership
-random intercept: identity
-coverage?
-need to run for every relatedness estimator
-for association: test 
-
-lmer(relatedness ~ association + group + sex + (1|ID_a) + (1|ID_b), data = relate_results, REML = F)
-
-testing this
-```{r}
-model_simpletest <- lmer(rab_z ~ dyad_group + dyad_sex + (1|ID_a) + (1|ID_b), data = relate_results, REML = F)
-model_simpletest
-```
 
 
 
