@@ -283,9 +283,11 @@ Model formular to test influence on relatedness: is relatedness influenced by gr
 full model
 
 response: dyadic relatedness (need to run for every relatedness estimator)
+fixed effects:
 main predictors: association (covariate, alternative: group_dyad (factor)) and sex (factor). Factor with k levels is coded with k-1 dummy predictors.
 fixed control: group membership
-random intercept: identity
+random effect: 
+random intercept: individual/identity, group?
 coverage? either include coverage as a predictor or use weighted regression
 for association: test 
 test interaction of coverage and sex (for interaction of 2 factors, they need to be fully crossed (i.c. each combination of their levels exists))
