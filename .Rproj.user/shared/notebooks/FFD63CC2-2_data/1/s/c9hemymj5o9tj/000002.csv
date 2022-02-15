@@ -1,6 +1,4 @@
 "0",""
-"0","theme_set(dark_theme_classic())"
-"0",""
 "0","#plot relatedness rab (y-axis) for every dyad (x-axis), ordered from low to high relatedness and colored according to inter- or intragroup dyad"
 "0",""
 "0","ggplot(ngsRelate_results_sample_info_250k, aes(x = reorder(dyad, rab), y = rab, color = dyad_sex, shape = dyad_group)) +"

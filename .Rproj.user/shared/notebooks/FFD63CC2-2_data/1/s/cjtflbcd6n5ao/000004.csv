@@ -1,0 +1,6 @@
+"0","#add column for group"
+"0","dominance_relatedness_mpala$group <- ""mpala"""
+"0","dominance_relatedness_wingtags$group <- ""wingtags"""
+"0","dominance_relatedness_wt025$group <- ""wt025"""
+"0",""
+"0","dominance_relatedness <- rbind(dominance_relatedness_mpala, dominance_relatedness_wingtags, dominance_relatedness_wt025)"
